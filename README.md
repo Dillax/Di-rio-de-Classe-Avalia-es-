@@ -9,7 +9,7 @@ somente no IndexedDB do aparelho dele. Não há servidor, conta ou banco central
 3. Link final: `https://SEU-USUARIO.github.io/diario-classe/`
 
 ## Logo padrão
-Coloque a logo em `assets/logo-escola.png` antes de publicar.
+Coloque a logo em `logo-escola.png` antes de publicar.
 Sem esse arquivo, o app mostra o nome da escola cadastrado no perfil.
 
 ## Instalar (cada professor, uma vez)

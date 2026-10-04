@@ -1,0 +1,1095 @@
+:root{
+  --bg:#040920;--bg2:#071233;--panel:rgba(8,20,56,.78);--panel2:rgba(10,26,70,.6);
+  --line:rgba(56,124,255,.38);--line2:rgba(56,124,255,.2);
+  --blue:#3b82f6;--blue2:#2563eb;--violet:#7c3aed;--cyan:#22d3ee;
+  --ok:#22e3a0;--warn:#fbbf24;--bad:#ff4d7d;
+  --text:#eaf2ff;--muted:#8fa6cc;--radius:14px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;color:var(--text);font-family:Inter,"Segoe UI",Roboto,system-ui,-apple-system,sans-serif;
+  background:radial-gradient(1200px 600px at 55% -10%,#12307a 0,transparent 60%),radial-gradient(900px 500px at 100% 100%,rgba(70,40,170,.25),transparent 60%),linear-gradient(180deg,#050b26,#020616);background-attachment:fixed}
+button,input,select,textarea{font:inherit;color:inherit}
+.hidden{display:none!important}
+.muted{color:var(--muted)}
+.t-ok{color:var(--ok)}.t-warn{color:var(--warn)}.t-bad{color:var(--bad)}
+i[data-i]{display:inline-flex;width:1.2em;height:1.2em;flex:none}
+i[data-i] svg{width:100%;height:100%}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+
+.panel{background:linear-gradient(160deg,rgba(12,30,80,.82),rgba(5,14,42,.82));border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:0 0 0 1px rgba(80,140,255,.05) inset,0 10px 30px rgba(0,8,40,.45),0 0 22px rgba(40,100,255,.10);backdrop-filter:blur(10px)}
+h1,h2,h3{margin:0;font-weight:650;letter-spacing:.1px}
+h2{font-size:17px}h3{font-size:14px}
+
+/* botões */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(20,44,110,.7),rgba(10,24,64,.7));cursor:pointer;white-space:nowrap;font-size:14px;transition:border-color .15s,box-shadow .15s}
+.btn:hover{border-color:rgba(90,160,255,.8);box-shadow:0 0 14px rgba(59,130,246,.3)}
+.btn.primary{background:linear-gradient(90deg,var(--blue2),#4f46e5);border-color:#6d8bff;box-shadow:0 0 18px rgba(79,70,229,.45)}
+.btn.danger{color:#ff8fae;border-color:rgba(255,77,125,.45)}
+.btn.sm{padding:6px 10px;font-size:12.5px}
+.btn.full{width:100%}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.icon-btn{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;border:1px solid transparent;background:none;color:var(--muted);cursor:pointer;font-size:20px}
+.icon-btn:hover{color:#fff;border-color:var(--line)}
+
+/* marcas */
+.brands{display:flex;align-items:center;gap:14px}
+.brands.center{justify-content:center}
+.school-badge{display:inline-grid;place-items:center;background:#fff;border-radius:10px;padding:3px 6px;box-shadow:0 0 14px rgba(120,170,255,.35)}
+.school-badge img{display:block;height:44px;width:auto}
+.school-badge.sm img{height:34px}.school-badge.lg img{height:80px}
+.parana-logo{height:46px;width:auto;display:block}
+.parana-logo.sm{height:34px}
+.sep{width:1px;height:42px;background:linear-gradient(transparent,#5a77b0,transparent)}
+
+/* topo */
+.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:20px;padding:10px 22px;padding-top:calc(10px + env(safe-area-inset-top,0px));
+  background:linear-gradient(180deg,rgba(4,10,34,.96),rgba(4,10,34,.88));border-bottom:1px solid rgba(60,130,255,.45);box-shadow:0 1px 18px rgba(40,110,255,.25)}
+.app-title{display:flex;align-items:center;gap:12px;margin-left:24px}
+.app-title i,.login-title i{width:38px;height:38px;color:#a78bfa;filter:drop-shadow(0 0 10px rgba(139,92,246,.7))}
+.app-title b{display:block;font-size:20px;font-weight:600}
+.app-title small,.login-title small{display:block;color:#7fb2ff;font-size:13px;margin-top:2px}
+.profile{margin-left:auto;display:flex;align-items:center;gap:10px;padding-left:18px;border-left:1px solid var(--line2)}
+.avatar{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1.5px solid #4f8dff;background:radial-gradient(circle at 50% 30%,#1d3f8f,#0b1d4d);color:#cfe0ff;flex:none}
+.avatar i{width:60%;height:60%}
+.avatar.big{width:56px;height:56px}
+.who b{display:block;font-size:14px;font-weight:600}.who small{color:var(--muted);font-size:12.5px}
+.demo-banner{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:7px 14px;background:rgba(251,191,36,.10);border-bottom:1px solid rgba(251,191,36,.35);color:#ffd77a;font-size:13px}
+
+/* estrutura */
+.layout{display:grid;grid-template-columns:200px 1fr;min-height:calc(100vh - 72px)}
+.sidebar{display:flex;flex-direction:column;gap:18px;padding:18px 12px;border-right:1px solid var(--line2);background:linear-gradient(180deg,rgba(6,14,44,.7),rgba(3,8,26,.7))}
+.nav{display:flex;align-items:center;gap:12px;width:100%;padding:13px 14px;margin-bottom:6px;border-radius:11px;border:1px solid transparent;background:none;color:#a9bde0;text-align:left;font-size:15px;cursor:pointer}
+.nav i{width:22px;height:22px}
+.nav:hover{color:#fff;background:rgba(40,80,180,.18)}
+.nav.active{color:#fff;background:linear-gradient(90deg,rgba(67,56,202,.85),rgba(37,99,235,.55));border-color:rgba(120,140,255,.7);box-shadow:0 0 18px rgba(79,70,229,.45)}
+.side-quote{margin:auto 8px 0;color:#9fb3d6;font-style:italic;font-size:15px;line-height:1.45;font-family:Georgia,"Times New Roman",serif}
+.side-brands{display:flex;align-items:center;gap:8px;padding:12px 4px 2px;border-top:1px solid var(--line2)}
+.main{padding:18px;min-width:0}
+.section{min-width:0}
+
+/* turmas */
+.turma-grid{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:16px;align-items:start}
+.turma-main{min-width:0;display:grid;gap:14px}
+.filters{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.filters.two{grid-template-columns:minmax(0,1fr) auto;margin-bottom:14px}
+.filter{display:flex;align-items:center;gap:12px;padding:10px 14px;cursor:pointer}
+.filter>i{width:30px;height:30px;color:#8fb5ff}
+.filter span{flex:1;min-width:0}
+.filter small{display:block;color:var(--muted);font-size:12px}
+.filter select{width:100%;border:0;background:transparent;font-size:16px;padding:2px 0;cursor:pointer;appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b8cdf5' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right center;background-size:18px;padding-right:22px}
+.filter select option{background:#0a1a45;color:#fff}
+.filter-actions{display:flex;gap:10px;align-items:stretch}
+.empty{padding:30px;text-align:center}.empty p{margin:8px 0 16px}
+
+.table-panel{padding:0;overflow:hidden}
+.table-head{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line2)}
+.table-head h2{font-size:19px;white-space:nowrap}
+.search{flex:1;display:flex;align-items:center;gap:8px;max-width:440px;margin-left:12px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:rgba(4,12,36,.7);color:var(--muted)}
+.search input{flex:1;border:0;background:none;outline:none;min-width:0}
+.table-head .btn{margin-left:auto}
+.table-wrap{overflow:auto;max-height:62vh}
+table{width:100%;border-collapse:collapse}
+#gradesTable{min-width:860px}
+#gradesTable th,#reportTable th{position:sticky;top:0;z-index:2;padding:8px 6px;font-size:11.5px;font-weight:600;color:#cfe0ff;background:#0b1d4f;border-bottom:1px solid var(--line);border-left:1px solid var(--line2);text-align:center;vertical-align:bottom}
+#gradesTable th i{display:block;margin:0 auto 3px;width:18px;height:18px}
+#gradesTable th small{display:block;font-weight:400;color:#9db3dc;font-size:10px}
+th.cat{background:linear-gradient(180deg,rgba(var(--c),.45),rgba(var(--c),.18)),#0b1d4f!important;color:#fff!important}
+th.cat i{color:rgb(var(--c))}
+td{padding:7px 6px;text-align:center;font-size:13.5px;border-bottom:1px solid rgba(60,120,220,.16);border-left:1px solid rgba(60,120,220,.10)}
+td.cat{background:rgba(var(--c),.07)}
+td.l,th.l{text-align:left}
+#gradesTable td:nth-child(2),#gradesTable th:nth-child(2){position:sticky;left:0;z-index:1;text-align:left;min-width:170px;background:#08173f}
+#gradesTable th:nth-child(2){z-index:3;background:#0b1d4f}
+#gradesTable tbody tr{cursor:pointer}
+#gradesTable tbody tr:hover td{background-color:rgba(59,130,246,.10)}
+#gradesTable tbody tr.selected td{background-color:rgba(79,70,229,.22)}
+#gradesTable tbody tr.selected td:nth-child(2){box-shadow:inset 3px 0 0 #6d8bff}
+.grade{width:56px;padding:6px 2px;text-align:center;border:1px solid rgba(110,150,230,.28);border-radius:7px;background:rgba(3,10,30,.55);font-size:13.5px;font-variant-numeric:tabular-nums}
+.grade:hover{border-color:rgba(130,170,255,.6)}
+.grade:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 2px rgba(34,211,238,.3);background:#06143a}
+.grade.invalid{border-color:var(--bad)}
+.num{font-variant-numeric:tabular-nums}
+
+.card-list{display:none}
+.action-row{display:flex;flex-wrap:wrap;gap:10px}
+.summary-row{display:grid;grid-template-columns:1.25fr 1fr;gap:14px}
+.summary,.general{padding:14px}
+.summary h3,.general h3{margin-bottom:10px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stat-grid.wide{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-bottom:14px}
+.stat{padding:10px 12px;border:1px solid var(--line2);border-radius:11px;background:rgba(5,14,42,.6)}
+.stat small{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12px}
+.stat small i{color:#8fb5ff}
+.stat b{display:block;margin-top:6px;font-size:22px;font-variant-numeric:tabular-nums}
+.general-body{display:flex;align-items:center;gap:16px}
+.general-bars{flex:1;display:grid;gap:9px}
+.gb{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;font-size:12.5px}
+.gb .dot{width:12px;height:12px;border-radius:3px}
+.gb .track{grid-column:1/-1;height:6px;border-radius:6px;background:rgba(40,70,140,.4);overflow:hidden}
+.gb .track span{display:block;height:100%;border-radius:6px}
+
+/* anel */
+.ring{--p:0;--rc:var(--cyan);position:relative;width:132px;height:132px;flex:none;border-radius:50%;display:grid;place-content:center;text-align:center;
+  background:radial-gradient(closest-side,#071436 78%,transparent 79% 100%),conic-gradient(from 200deg,#22d3ee,#3b82f6 calc(var(--p)*1%),rgba(40,70,140,.35) 0);box-shadow:0 0 22px rgba(34,211,238,.18)}
+.ring span{font-size:28px;font-weight:700;font-variant-numeric:tabular-nums}
+.ring small{color:#cfe0ff;font-size:12.5px}
+.ring.sm{width:96px;height:96px}.ring.sm span{font-size:21px}.ring.sm small{font-size:11px}
+
+/* detalhes */
+.detail{display:grid;gap:12px;position:sticky;top:88px}
+.detail .panel{padding:14px}
+.detail h2{margin-bottom:10px}
+.detail-top{display:flex;align-items:center;justify-content:space-between}
+.detail-top h2{margin:0}
+.sheet-close{display:none}
+.student-card{display:flex;align-items:center;gap:12px;margin:10px 0 12px;padding:10px;border:1px solid var(--line2);border-radius:12px;background:rgba(5,14,42,.5)}
+.student-card b{display:block;font-size:19px}
+.student-card small{color:#8fb5ff;font-size:13px}
+.score-summary{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.score-boxes{flex:1;display:grid;gap:8px;min-width:0}
+.box{padding:9px 12px;border:1px solid var(--line2);border-radius:11px;background:rgba(5,14,42,.5)}
+.box small{display:block;color:var(--muted);font-size:12px}
+.box strong{display:block;font-size:30px;line-height:1.1;color:var(--bad);font-variant-numeric:tabular-nums}
+#statusBox{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600}
+#statusBox i{width:20px;height:20px}
+.bar-row{display:grid;grid-template-columns:28px 1fr auto auto;align-items:center;gap:6px 10px;margin:9px 0}
+.bar-row .ic{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:rgba(var(--c),.22);color:rgb(var(--c))}
+.bar-row .ic i{width:17px;height:17px}
+.bar-row .nm{font-size:13px}.bar-row .vl{font-size:13px;font-variant-numeric:tabular-nums}.bar-row .pc{font-size:12px;color:var(--muted);width:38px;text-align:right}
+.bar-row .track{grid-column:2/-1;height:7px;border-radius:7px;background:rgba(40,70,140,.4);overflow:hidden;margin-top:-3px}
+.bar-row .track span{display:block;height:100%;border-radius:7px;background:rgb(var(--c));box-shadow:0 0 10px rgba(var(--c),.6)}
+.chart svg{display:block;width:100%;height:auto}
+.meta-head,.meta-foot{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.meta-head h2{margin:0}
+.meta-head span,.meta-foot span{font-size:13.5px;font-variant-numeric:tabular-nums}
+.progress{height:11px;margin:12px 0 8px;border-radius:11px;background:rgba(40,70,140,.4);overflow:hidden}
+.progress span{display:block;height:100%;border-radius:11px;background:linear-gradient(90deg,#16d8a0,#22d3ee,#3b82f6);box-shadow:0 0 12px rgba(34,211,238,.5)}
+
+/* início */
+.page-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.page-head h1{font-size:24px}.page-head p{margin:4px 0 0}
+.home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.home-card{padding:16px;display:grid;gap:12px;cursor:pointer;text-align:left;width:100%}
+.home-card:hover{border-color:rgba(110,160,255,.8)}
+.home-card h3{font-size:18px}
+.home-card .hc-row{display:flex;gap:10px}
+.home-card .hc-row div{flex:1;padding:8px 10px;border:1px solid var(--line2);border-radius:10px}
+.home-card small{display:block;color:var(--muted);font-size:11.5px}
+.home-card b{font-size:19px;font-variant-numeric:tabular-nums}
+
+/* configurações */
+.config-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.card{padding:18px}.card h2{margin-bottom:8px}.card p{font-size:13.5px;line-height:1.5}
+.stack{display:grid;gap:10px}
+.stack label{font-size:12.5px;color:#a9bde0}
+.stack input,.stack textarea,.cat-row input,.grade-fields input{display:block;width:100%;margin-top:6px;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:rgba(3,10,30,.75)}
+.stack textarea{resize:vertical}
+input[type=file]{display:none!important}
+.file-btn{cursor:pointer;color:var(--text)!important;font-size:14px!important}
+.logo-preview{display:grid;place-items:center;min-height:110px;margin:10px 0 14px;border:1px dashed var(--line);border-radius:12px}
+
+/* diálogos */
+dialog{color:var(--text);padding:20px;width:min(540px,94vw);max-height:92vh;overflow:auto;border:1px solid var(--line)}
+dialog::backdrop{background:rgba(1,4,16,.72);backdrop-filter:blur(3px)}
+dialog h2{font-size:19px}dialog h3{margin-top:6px;color:#c8d9ee}
+.dialog-title{display:flex;align-items:center;gap:12px}
+.dialog-actions{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap}.spacer{flex:1}
+.cat-row{display:grid;grid-template-columns:1fr 84px auto;gap:8px;align-items:center}.cat-row input{margin:0}
+.grade-fields{display:grid;gap:10px}
+.gf{display:grid;grid-template-columns:34px 1fr 110px;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line2);border-radius:12px;background:rgba(var(--c),.07)}
+.gf .ic{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:rgba(var(--c),.22);color:rgb(var(--c))}
+.gf .ic i{width:19px;height:19px}
+.gf b{display:block;font-size:14.5px}.gf small{color:var(--muted);font-size:12px}
+.gf input{margin:0;text-align:center;font-size:18px!important;font-variant-numeric:tabular-nums}
+.gd-total{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:12px;background:rgba(59,130,246,.12);border:1px solid var(--line)}
+.gd-total b{font-size:22px}
+
+/* login */
+.login-view{min-height:100vh;display:grid;place-items:center;padding:20px}
+.login-card{width:min(470px,100%);padding:26px;display:grid;gap:18px}
+.login-title{display:flex;align-items:center;gap:12px;justify-content:center}
+.login-title b{font-size:20px}
+.login-note{color:#7189aa;text-align:center;line-height:1.4}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:80;max-width:90vw;text-align:center;
+  padding:11px 16px;border-radius:11px;background:#0d2552;border:1px solid var(--blue);font-size:14px;transition:.25s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.bottom-nav{display:none}
+
+/* ===== responsivo ===== */
+@media(max-width:1280px){.turma-grid{grid-template-columns:minmax(0,1fr) 340px}.app-title{margin-left:8px}.app-title b{font-size:17px}}
+@media(max-width:1100px){
+  .layout{grid-template-columns:76px 1fr}
+  .sidebar .nav span,.side-quote,.side-brands{display:none}
+  .sidebar .nav{justify-content:center;padding:13px 0}
+  .turma-grid{grid-template-columns:1fr}
+  .detail{position:static;grid-template-columns:repeat(2,1fr)}
+  .app-title{display:none}
+}
+@media(max-width:760px){
+  body{background-attachment:scroll}
+  .topbar{gap:10px;padding:8px 12px;padding-top:calc(8px + env(safe-area-inset-top,0px))}
+  .brands{gap:8px}.school-badge img{height:34px}.parana-logo{height:34px}.sep{height:30px}
+  .profile{padding-left:0;border:0;gap:4px}.profile .who,.profile .avatar,.profile [data-go]{display:none}
+  .layout{display:block}.sidebar{display:none}
+  .main{padding:12px 10px calc(92px + env(safe-area-inset-bottom,0px))}
+  .filters{grid-template-columns:1fr 1fr;gap:8px}
+  .filters .filter:first-child{grid-column:1/-1}
+  .filters.two{grid-template-columns:1fr}
+  .filter{padding:8px 12px}.filter>i{width:24px;height:24px}
+  .table-head{flex-wrap:wrap}.search{order:3;max-width:none;margin:0;flex-basis:100%}
+  .table-wrap{display:none}
+  #sec-relatorios .table-wrap{display:block;max-height:none}
+  #reportTable{min-width:520px}
+  .card-list{display:grid;gap:8px;padding:10px}
+  .scard{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line2);border-radius:12px;background:rgba(5,14,42,.6);text-align:left;width:100%;cursor:pointer}
+  .scard.selected{border-color:#6d8bff;box-shadow:0 0 12px rgba(79,70,229,.4)}
+  .scard .n{width:26px;color:var(--muted);font-size:12.5px;text-align:center}
+  .scard b{display:block;font-size:15px}
+  .scard .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+  .chip{font-size:11.5px;padding:2px 7px;border-radius:20px;border:1px solid var(--line2);color:#cfe0ff;font-variant-numeric:tabular-nums}
+  .scard .go{display:grid;place-items:center;width:42px;height:42px;border-radius:11px;background:linear-gradient(90deg,var(--blue2),#4f46e5);color:#fff}
+  .scard .go i{width:20px;height:20px}
+  .action-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .action-row #gradesBtn,.action-row #editStudentBtn{display:none}
+  .action-row .btn{font-size:13px;padding:10px 8px}
+  .summary-row{grid-template-columns:1fr}
+  .stat-grid{grid-template-columns:1fr 1fr}
+  /* detalhes vira folha em tela cheia */
+  .detail{display:none}
+  .detail.open{display:grid;grid-template-columns:1fr;position:fixed;inset:0;z-index:60;overflow:auto;padding:calc(12px + env(safe-area-inset-top,0px)) 10px calc(24px + env(safe-area-inset-bottom,0px));background:linear-gradient(180deg,#050b26,#020616)}
+  .sheet-close{display:grid}
+  .ring{width:112px;height:112px}.ring span{font-size:24px}
+  .box strong{font-size:26px}
+  .bottom-nav{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;left:0;right:0;bottom:0;z-index:40;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));background:rgba(3,8,28,.97);border-top:1px solid rgba(60,130,255,.45)}
+  .bottom-nav .nav{flex-direction:column;gap:3px;margin:0;padding:7px 2px;font-size:11.5px;justify-content:center}
+  .bottom-nav .nav i{width:22px;height:22px}
+  .page-head h1{font-size:20px}
+  input,select,textarea{font-size:16px!important}
+  .gf{grid-template-columns:34px 1fr 96px}
+  dialog{padding:16px}
+  .dialog-actions .btn{flex:1}.dialog-actions .spacer{display:none}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+/* impressão */
+#printArea{display:none}
+@media print{
+  body{background:#fff!important;color:#000}
+  body>*:not(#printArea){display:none!important}
+  #printArea{display:block;color:#000;font:11pt/1.35 "Times New Roman",serif}
+  .p-head{display:flex;align-items:center;gap:14px;border-bottom:1.5px solid #000;padding-bottom:8px;margin-bottom:12px}
+  .p-head img{height:60px;width:auto}.p-head .p-date{margin-left:auto;font-size:10pt}
+  #printArea table{width:100%;border-collapse:collapse}
+  #printArea th,#printArea td{border:1px solid #444;padding:3px 5px;text-align:center;font-size:9.5pt;color:#000;background:none}
+  #printArea td.l{text-align:left}#printArea th{background:#eee}
+  #printArea tr{page-break-inside:avoid}
+  .p-foot{font-size:9pt;margin-top:10px}
+  @page{margin:14mm}
+}
+/* ajustes v3 */
+.filters{grid-template-columns:repeat(3,minmax(0,1fr)) auto}
+.filter-tools{display:grid;gap:6px}
+.filter-tools .btn{justify-content:flex-start}
+.action-row #editClass,.action-row #newClass{display:none}
+.topbar .school-badge img{height:52px}.topbar .parana-logo{height:54px}.topbar .sep{height:50px}
+@media(max-width:760px){
+  .filters{grid-template-columns:1fr 1fr}.filter-tools{display:none}
+  .action-row #editClass,.action-row #newClass{display:inline-flex}
+  .topbar .school-badge img{height:36px}.topbar .parana-logo{height:36px}.topbar .sep{height:30px}
+}
+html{background:#020616}
+
+
+
+/* ==========================================================================
+   CAMADA VISUAL — código dos cartões do Portal IFA (Cristal v16, folha final
+   do _worker.js V79) + botões espelhados (regra .home-rail-control do IFA).
+   Cartões: vidro muito claro, sem blur; borda 22% da cor da luz; quatro
+   trechos de LED no centro de cada lado (::before) + halo desses trechos (::after).
+   Botões: vidro espelhado (reflexo diagonal + relevo interno) com os mesmos
+   quatro trechos de LED. Fundo da página sem faixas de luz.
+   ========================================================================== */
+:root{
+  --v16-edge-default:#63dcff; --edge-light:var(--v16-edge-default); --v16-glass-fill:rgb(0 8 24 / 7%);
+  --azul-rgb:31,95,224; --lilas:#6a5cf3; --lilas-rgb:106,92,243; --quente:#e8feff;
+  --azul-fio:rgba(47,110,255,.55);
+  --ok:#14e6a0; --warn:#ffc234; --bad:#ff3d6e;
+  --texto:#eef3ff; --rotulo:#9db6e6; --destaque:#7fc8ff;
+}
+/* cores da luz, como no IFA: ciano (Física) para cartões e botões; violeta (Robótica) para ação principal */
+.btn,.icon-btn,.scard .go{--edge-light:#49ddff}
+.btn.primary,#sheetGradesBtn,.nav.active,.scard .go{--edge-light:#a68cff}
+.btn.danger{--edge-light:#ff7aa2}
+.gf{--edge-light:rgb(var(--c))}
+
+/* fundo da página: azul profundo, SEM faixas/arcos de luz */
+html{background:#01061f}
+body{color:var(--texto);
+  background:radial-gradient(1100px 700px at 50% 40%,rgba(0,24,110,.55),transparent 75%),
+             linear-gradient(180deg,#01072a 0%,#010a36 45%,#01061f 100%)!important;background-attachment:fixed!important}
+.muted,.who small,.filter small,.stat small,.box small,.gf small{color:var(--rotulo)!important}
+
+/* ---------- CARTÕES (IFA v16, valores exatos) ---------- */
+.panel,.home-card,.filter,.stat,.box,.student-card,.scard,.gd-total,.gf,.logo-preview{
+  border-width:0.1rem!important;border-style:solid!important;
+  border-color:color-mix(in srgb,var(--edge-light) 22%,transparent)!important;
+  background:
+    radial-gradient(ellipse at 50% 0%,color-mix(in srgb,var(--edge-light) 9%,transparent),transparent 45%),
+    linear-gradient(145deg,rgb(255 255 255 / 2.5%),var(--v16-glass-fill))!important;
+  background-color:transparent!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+  box-shadow:inset 0 0.055rem 0 rgb(255 255 255 / 18%),inset 0 -0.055rem 0 rgb(0 0 0 / 34%)!important}
+
+/* ---------- BOTÕES: vidro espelhado (IFA .home-rail-control) ---------- */
+.btn,.icon-btn,.nav.active,.scard .go{
+  border-width:0.075rem!important;border-style:solid!important;border-color:rgb(220 248 255 / 25%)!important;
+  background:linear-gradient(132deg,
+      rgb(255 255 255 / 22%) 0%,rgb(255 255 255 / 8%) 18%,rgb(255 255 255 / 2%) 39%,transparent 55%,
+      rgb(94 201 255 / 5%) 78%,rgb(255 255 255 / 12%) 100%)!important;
+  background-color:transparent!important;
+  -webkit-backdrop-filter:saturate(1.14) contrast(1.04)!important;backdrop-filter:saturate(1.14) contrast(1.04)!important;
+  box-shadow:inset 0.09rem 0.09rem 0.12rem rgb(255 255 255 / 40%),inset -0.09rem -0.11rem 0.15rem rgb(0 0 0 / 53%),
+             inset 0 0.48rem 0.68rem -0.6rem rgb(255 255 255 / 34%)!important;
+  color:#ffffff!important;
+  text-shadow:0 0.08rem 0.18rem rgb(0 0 0 / 95%),0 0 0.48rem rgb(0 0 0 / 80%)}
+/* ação principal: mesmo espelho, com leve tinta violeta da luz (no IFA: .home-action-violet) */
+.btn.primary,#sheetGradesBtn,.nav.active,.scard .go{
+  background:radial-gradient(ellipse at 50% 0%,color-mix(in srgb,var(--edge-light) 16%,transparent),transparent 60%),
+    linear-gradient(132deg,rgb(255 255 255 / 22%) 0%,rgb(255 255 255 / 8%) 18%,rgb(255 255 255 / 2%) 39%,transparent 55%,
+      color-mix(in srgb,var(--edge-light) 8%,transparent) 78%,rgb(255 255 255 / 12%) 100%)!important}
+.btn i,.nav.active i,.scard .go i{color:#ffffff!important;filter:drop-shadow(0 0 0.2rem var(--edge-light))}
+.icon-btn{color:#ffffff!important}
+.nav{color:#c9d8ff!important}
+.nav:not(.active){background:transparent!important;border:0.075rem solid transparent!important;box-shadow:none!important}
+.nav:not(.active):hover{border-color:rgb(220 248 255 / 18%)!important}
+.bottom-nav .nav:not(.active)::before,.bottom-nav .nav:not(.active)::after,.nav:not(.active)::before,.nav:not(.active)::after{content:none!important}
+
+/* ---------- LUZ: 4 trechos no centro de cada lado (IFA v16) ---------- */
+.panel:not(dialog),.home-card,.filter,.stat,.box,.student-card,.scard,.gd-total,.gf,.logo-preview,.btn,.icon-btn,.nav.active,.scard .go{position:relative;overflow:visible!important}
+.panel::before,.home-card::before,.filter::before,.stat::before,.box::before,.student-card::before,.scard::before,.gd-total::before,.gf::before,.logo-preview::before,
+.btn::before,.icon-btn::before,.nav.active::before,.scard .go::before{
+  content:""!important;display:block!important;position:absolute!important;z-index:4!important;inset:0!important;
+  width:auto!important;height:auto!important;margin:0!important;border:0!important;border-radius:inherit!important;padding:0!important;opacity:1!important;
+  background-image:
+    linear-gradient(90deg,transparent 0%,color-mix(in srgb,var(--edge-light) 58%,transparent) 22%,#efffff 50%,color-mix(in srgb,var(--edge-light) 68%,transparent) 78%,transparent 100%),
+    linear-gradient(90deg,transparent 0%,color-mix(in srgb,var(--edge-light) 52%,transparent) 22%,#dffcff 50%,color-mix(in srgb,var(--edge-light) 62%,transparent) 78%,transparent 100%),
+    linear-gradient(180deg,transparent 0%,color-mix(in srgb,var(--edge-light) 58%,transparent) 22%,#efffff 50%,color-mix(in srgb,var(--edge-light) 68%,transparent) 78%,transparent 100%),
+    linear-gradient(180deg,transparent 0%,color-mix(in srgb,var(--edge-light) 52%,transparent) 22%,#dffcff 50%,color-mix(in srgb,var(--edge-light) 62%,transparent) 78%,transparent 100%)!important;
+  background-color:transparent!important;background-repeat:no-repeat!important;
+  background-position:center top,center bottom,left center,right center!important;
+  background-size:58% 0.18rem,58% 0.18rem,0.18rem 58%,0.18rem 58%!important;
+  -webkit-mask:none!important;mask:none!important;
+  filter:drop-shadow(0 0 0.16rem var(--edge-light)) drop-shadow(0 0 0.38rem color-mix(in srgb,var(--edge-light) 54%,transparent))!important;
+  mix-blend-mode:screen!important;transform:none!important;pointer-events:none!important}
+.panel::after,.home-card::after,.filter::after,.stat::after,.box::after,.student-card::after,.scard::after,.gd-total::after,.gf::after,.logo-preview::after,
+.btn::after,.icon-btn::after,.nav.active::after,.scard .go::after{
+  content:""!important;display:block!important;position:absolute!important;z-index:3!important;inset:0!important;
+  width:auto!important;height:auto!important;margin:0!important;border:0!important;border-radius:inherit!important;padding:0!important;opacity:0.54!important;
+  background-image:
+    linear-gradient(90deg,transparent 0%,var(--edge-light) 50%,transparent 100%),
+    linear-gradient(90deg,transparent 0%,var(--edge-light) 50%,transparent 100%),
+    linear-gradient(180deg,transparent 0%,var(--edge-light) 50%,transparent 100%),
+    linear-gradient(180deg,transparent 0%,var(--edge-light) 50%,transparent 100%)!important;
+  background-color:transparent!important;background-repeat:no-repeat!important;
+  background-position:center top,center bottom,left center,right center!important;
+  background-size:46% 0.42rem,46% 0.42rem,0.42rem 46%,0.42rem 46%!important;
+  -webkit-mask:none!important;mask:none!important;
+  filter:blur(0.28rem)!important;mix-blend-mode:screen!important;transform:none!important;pointer-events:none!important}
+/* hover/foco: intensifica só os quatro núcleos (IFA) */
+:is(.home-card,.scard,.filter,.btn,.icon-btn,.scard .go):is(:hover,:focus-visible,:active){
+  border-color:color-mix(in srgb,var(--edge-light) 30%,transparent)!important}
+:is(.home-card,.scard,.filter):is(:hover,:focus-visible,:active){
+  background:radial-gradient(ellipse at 50% 0%,color-mix(in srgb,var(--edge-light) 12%,transparent),transparent 48%),
+             linear-gradient(145deg,rgb(255 255 255 / 4%),rgb(0 8 24 / 9%))!important;
+  box-shadow:inset 0 0.065rem 0 rgb(255 255 255 / 25%),inset 0 -0.065rem 0 rgb(0 0 0 / 40%)!important}
+:is(.home-card,.scard,.filter,.btn,.icon-btn,.scard .go):is(:hover,:focus-visible,:active)::before{
+  filter:drop-shadow(0 0 0.22rem var(--edge-light)) drop-shadow(0 0 0.62rem color-mix(in srgb,var(--edge-light) 70%,transparent))!important}
+/* elementos muito pequenos (ícones do topo, lápis): trechos proporcionais */
+.icon-btn::before,.scard .go::before{background-size:58% 0.14rem,58% 0.14rem,0.14rem 58%,0.14rem 58%!important}
+.table-panel{overflow:visible!important}.table-wrap{border-radius:0 0 12px 12px}
+.home-card .hc-row div{border:0.075rem solid rgb(220 248 255 / 16%)!important;background:transparent!important}
+.chip{background:transparent!important;border:0.075rem solid rgb(220 248 255 / 22%)!important;box-shadow:none!important}
+
+/* fundos densos só onde algo passa por baixo (funcional) */
+.sidebar{background:linear-gradient(180deg,rgb(255 255 255 / 2%),rgb(0 8 22 / 9%))!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.topbar{background:linear-gradient(180deg,rgba(5,12,44,.94),rgba(4,10,38,.92))!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.bottom-nav{background:linear-gradient(180deg,rgba(6,14,48,.96),rgba(3,8,30,.98))!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+dialog.panel{background:radial-gradient(ellipse at 50% 0%,color-mix(in srgb,var(--edge-light) 9%,transparent),transparent 45%),linear-gradient(145deg,rgb(255 255 255 / 2.5%),rgb(0 8 24 / 7%)),rgba(5,12,40,.96)!important}
+dialog::backdrop{background:rgba(2,6,22,.72)}
+.avatar{border:1px solid #4f8dff!important;background:radial-gradient(circle at 50% 30%,#1d3f8f,#0b1d4d)!important;box-shadow:0 0 8px rgba(60,120,255,.5)}
+.school-badge{box-shadow:0 0 12px rgba(70,140,255,.45)!important}
+.app-title i,.login-title i{color:#8f7cff;filter:drop-shadow(0 0 8px rgba(130,110,255,.8))}
+.app-title small,.login-title small{color:var(--destaque)}
+.sep{background:linear-gradient(transparent,#4a74d0,transparent)!important}
+.profile{border-left:1px solid rgba(47,110,255,.25)!important}
+.demo-banner{background:rgba(255,194,52,.07)!important;border-bottom:1px solid rgba(255,194,52,.3)!important}
+
+/* ---------- BARRAS FIXAS: linha azul com ponto quente (topo da referência) ---------- */
+.topbar,.bottom-nav{border:0!important}
+.topbar::before,.topbar::after,.bottom-nav::before,.bottom-nav::after{content:"";position:absolute;left:0;right:0;pointer-events:none;
+  background:linear-gradient(90deg,rgba(var(--azul-rgb),.7) 0%,#2f6bff 14%,#7fc0ff 28%,var(--quente) 34%,#5aa0ff 42%,rgba(var(--azul-rgb),.8) 58%,var(--lilas) 76%,rgba(var(--lilas-rgb),.7) 100%)}
+.topbar::before{bottom:0;height:1px}.topbar::after{bottom:-3px;height:7px;filter:blur(5px);opacity:.85}
+.bottom-nav::before{top:0;height:1px}.bottom-nav::after{top:-3px;height:7px;filter:blur(5px);opacity:.85}
+.topbar{box-shadow:0 4px 20px rgba(40,110,255,.30)!important}
+.bottom-nav{box-shadow:0 -4px 18px rgba(40,110,255,.25)!important}
+.sidebar{position:relative;border:0!important;box-shadow:none!important}
+.sidebar::after{content:"";position:absolute;top:0;bottom:0;right:0;width:1px;pointer-events:none;
+  background:linear-gradient(180deg,rgba(var(--azul-rgb),.5) 0%,rgba(var(--azul-rgb),.6) 50%,#5aa0ff 78%,var(--quente) 86%,var(--lilas) 94%,transparent 100%);
+  box-shadow:0 0 6px rgba(70,140,255,.7),0 0 16px rgba(70,140,255,.3)}
+.sep{background:linear-gradient(transparent,#4a74d0,transparent)!important;box-shadow:none}
+.profile{border-left:1px solid rgba(47,110,255,.25)!important}
+.avatar{border:1px solid #4f8dff!important;background:radial-gradient(circle at 50% 30%,#1d3f8f,#0b1d4d)!important;box-shadow:0 0 8px rgba(60,120,255,.5)}
+.school-badge{box-shadow:0 0 12px rgba(70,140,255,.45)!important}
+.app-title i,.login-title i{color:#8f7cff;filter:drop-shadow(0 0 8px rgba(130,110,255,.8))}
+.app-title small,.login-title small{color:var(--destaque)}
+.demo-banner{background:rgba(255,194,52,.07)!important;border-bottom:1px solid rgba(255,194,52,.3)!important}
+
+/* ---------- CAMPOS ---------- */
+input,select,textarea{color:var(--texto)}
+.search,.stack input,.stack textarea,.cat-row input,.grade-fields input{background:rgb(0 8 22 / 34%)!important;border:1px solid var(--azul-fio)!important;border-radius:9px!important;
+  box-shadow:inset 0 1px 0 rgba(140,190,255,.18),inset 0 0 8px rgba(var(--azul-rgb),.10)!important}
+.search{color:#8fb8ff}
+.search input,.filter select{background:transparent!important;border:0!important;box-shadow:none!important}
+.filter>i{color:#8fb3ff}
+.stack input:focus,.grade-fields input:focus,.cat-row input:focus{outline:none;border-color:#7fc0ff!important;box-shadow:0 0 8px rgba(70,150,255,.6),inset 0 0 8px rgba(70,150,255,.2)!important}
+
+/* ---------- TABELA ---------- */
+.table-head{border-bottom:1px solid rgba(47,110,255,.25)!important}
+#gradesTable th,#reportTable th{background:rgba(10,24,72,.92)!important;-webkit-backdrop-filter:none;backdrop-filter:none;color:#dce7ff!important;
+  border-bottom:1px solid rgba(70,120,255,.45)!important;border-left:1px solid rgba(70,120,255,.22)!important;text-shadow:none}
+#gradesTable th.cat{background:linear-gradient(180deg,rgba(var(--c),.66),rgba(var(--c),.30)),rgba(10,24,72,.92)!important;color:#fff!important;
+  box-shadow:inset 0 -1px 0 rgb(var(--c));text-shadow:0 0 6px rgba(var(--c),.8)}
+#gradesTable th.cat i{color:#fff!important;filter:drop-shadow(0 0 4px rgb(var(--c)))}
+td{border-bottom:1px solid rgba(70,120,255,.14)!important;border-left:1px solid rgba(70,120,255,.10)!important}
+td.cat{background:rgba(var(--c),.09)!important}
+#gradesTable td:nth-child(2){background:rgba(6,16,50,.92)!important;-webkit-backdrop-filter:none;backdrop-filter:none}
+#gradesTable th:nth-child(2){background:rgba(10,24,72,.96)!important}
+#gradesTable tbody tr:hover td{background-color:rgba(60,110,255,.10)}
+#gradesTable tbody tr.selected td{background-color:rgba(70,80,255,.24)!important}
+#gradesTable tbody tr.selected td:nth-child(2){box-shadow:inset 3px 0 0 #6d8bff}
+.grade{background:transparent!important;border:1px solid rgba(var(--c),.28)!important;color:color-mix(in srgb,rgb(var(--c)) 70%,#fff)!important;font-weight:600;
+  box-shadow:none!important;text-shadow:0 0 5px rgba(var(--c),.6)}
+.grade:focus{background:rgba(6,14,44,.85)!important;border-color:#7fc0ff!important;color:#fff!important;box-shadow:0 0 8px rgba(70,150,255,.6)!important}
+
+/* ---------- TEXTO (luz leve, como na imagem) ---------- */
+h1,h2,.app-title b,.student-card b,.home-card h3{text-shadow:0 0 8px rgba(110,170,255,.35)}
+.r-tri b,.r-ano,.stat b,.gd-total b,.meta-head span,#goalText,.home-card b,.ring span,#generalPct{text-shadow:0 0 6px rgba(120,180,255,.55)}
+.t-ok{color:var(--ok)!important;text-shadow:0 0 6px rgba(20,230,160,.55)}
+.t-warn{color:var(--warn)!important;text-shadow:0 0 6px rgba(255,194,52,.5)}
+.t-bad{color:var(--bad)!important;text-shadow:0 0 6px rgba(255,61,110,.5)}
+#missingScore{color:var(--bad)!important;text-shadow:0 0 8px rgba(255,61,110,.6)}
+.student-card small{color:var(--destaque)!important}
+.bar-row .vl,.bar-row .pc{color:#e8f0ff!important;text-shadow:none}
+
+/* ---------- INDICADORES ---------- */
+.ring{background:radial-gradient(closest-side,#06123a 78%,transparent 79% 100%),conic-gradient(from 200deg,#22a8ff,#14e6a0 calc(var(--p)*1%),rgba(40,70,160,.35) 0)!important;
+  filter:drop-shadow(0 0 6px rgba(34,190,255,.45));box-shadow:none!important}
+.bar-row .track,.progress,.gb .track{background:rgba(40,70,160,.35)!important;box-shadow:none}
+.bar-row .track span{background:rgb(var(--c))!important;box-shadow:0 0 8px rgba(var(--c),.6)!important}
+.progress span{background:linear-gradient(90deg,#14d39a,#14e6a0)!important;box-shadow:0 0 10px rgba(20,230,160,.5)!important}
+.bar-row .ic,.gf .ic{background:rgb(var(--c))!important;color:#fff!important;box-shadow:0 0 8px rgba(var(--c),.55)!important}
+.chip{background:transparent!important;border:1px solid rgba(70,120,255,.40)!important;box-shadow:none!important}
+.chart polyline[stroke="#38bdf8"]{stroke:#38bdf8;filter:drop-shadow(0 0 4px rgba(56,189,248,.8))}
+.toast{background:rgba(8,20,60,.95)!important;border:1px solid #2f6bff!important;box-shadow:0 0 14px rgba(47,107,255,.5)}
+
+/* ---------- ajustes funcionais ---------- */
+.brands.right{margin-left:6px}
+@media(max-width:760px){.brands.right .sep{display:none}.profile{margin-left:auto}}
+.btn{flex-shrink:0;min-width:max-content}
+.dialog-actions .btn{flex:1 1 auto}
+.gd-total b{white-space:nowrap;font-size:20px}
+@media(max-width:760px){.detail.open{display:block!important;background:#040a26!important;-webkit-backdrop-filter:none;backdrop-filter:none}.detail.open>.panel{margin-bottom:12px}}
+@media print{.topbar::before,.topbar::after,.sidebar::after{display:none}}
+
+/* ---------- LED fino: mesma espessura da linha do cabeçalho (1px + halo curto) ---------- */
+.panel,.home-card,.filter,.stat,.box,.student-card,.scard,.gd-total,.gf,.logo-preview,
+.btn,.icon-btn,.nav.active,.scard .go{border-width:1px!important}
+.panel::before,.home-card::before,.filter::before,.stat::before,.box::before,.student-card::before,.scard::before,.gd-total::before,.gf::before,.logo-preview::before,
+.btn::before,.icon-btn::before,.nav.active::before,.scard .go::before{
+  background-size:58% 1px,58% 1px,1px 58%,1px 58%!important;
+  filter:drop-shadow(0 0 1px var(--edge-light)) drop-shadow(0 0 3px color-mix(in srgb,var(--edge-light) 60%,transparent))!important}
+.panel::after,.home-card::after,.filter::after,.stat::after,.box::after,.student-card::after,.scard::after,.gd-total::after,.gf::after,.logo-preview::after,
+.btn::after,.icon-btn::after,.nav.active::after,.scard .go::after{
+  background-size:46% 5px,46% 5px,5px 46%,5px 46%!important;
+  background-position:center -2px,center calc(100% + 2px),-2px center,calc(100% + 2px) center!important;
+  filter:blur(4px)!important;opacity:.6!important}
+:is(.home-card,.scard,.filter,.btn,.icon-btn,.scard .go):is(:hover,:focus-visible,:active)::before{
+  filter:drop-shadow(0 0 1.5px var(--edge-light)) drop-shadow(0 0 5px color-mix(in srgb,var(--edge-light) 75%,transparent))!important}
+
+/* ==========================================================================
+   AJUSTE FINAL — contornos como na imagem de referência (não como o IFA)
+   • Os 4 trechos de LED saem de quase tudo; ficam só onde a imagem tem luz.
+   • Cores misturadas: azul, índigo/violeta e ciano, cada uma no seu lugar.
+   ========================================================================== */
+/* 1) desliga os trechos de LED do IFA em todos os elementos */
+.panel::before,.home-card::before,.filter::before,.stat::before,.box::before,.student-card::before,.scard::before,.gd-total::before,.gf::before,.logo-preview::before,
+.btn::before,.icon-btn::before,.nav.active::before,.scard .go::before,
+.panel::after,.home-card::after,.filter::after,.stat::after,.box::after,.student-card::after,.scard::after,.gd-total::after,.gf::after,.logo-preview::after,
+.btn::after,.icon-btn::after,.nav.active::after,.scard .go::after{content:none!important;display:none!important}
+
+/* 2) painéis: fio de 1px que muda de cor ao longo do contorno (azul → índigo → ciano) */
+.panel,.home-card,.filter{border:1px solid transparent!important;
+  box-shadow:0 0 10px rgba(40,100,255,.22),0 0 26px rgba(80,70,240,.10),inset 0 1px 0 rgba(150,190,255,.14),inset 0 0 22px rgba(40,90,255,.08)!important}
+.panel::before,.home-card::before,.filter::before{
+  content:""!important;display:block!important;position:absolute!important;inset:-1px!important;padding:1px!important;border-radius:inherit!important;
+  z-index:2!important;pointer-events:none!important;filter:none!important;mix-blend-mode:normal!important;opacity:1!important;
+  background:linear-gradient(var(--ang,125deg),rgba(47,107,255,.85) 0%,rgba(47,107,255,.45) 30%,rgba(110,90,255,.75) 62%,rgba(34,190,255,.55) 100%)!important;
+  background-size:auto!important;background-position:0 0!important;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0)!important;-webkit-mask-composite:xor!important;
+  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)!important}
+.filters .filter:nth-child(1){--ang:110deg}.filters .filter:nth-child(2){--ang:200deg}.filters .filter:nth-child(3){--ang:300deg}
+.detail .panel:nth-child(2){--ang:40deg}.detail .panel:nth-child(3){--ang:160deg}.detail .panel:nth-child(4){--ang:250deg}
+.summary{--ang:20deg}.general{--ang:200deg}.home-card:nth-child(2n){--ang:300deg}
+/* luz só onde a imagem tem: aresta de cima do "Detalhes do Aluno" (violeta, à direita)
+   e aresta de cima da tabela (azul, à esquerda) */
+.detail .panel:first-child::after,.table-panel::after{
+  content:""!important;display:block!important;position:absolute!important;top:-1px!important;height:1px!important;z-index:3!important;
+  pointer-events:none!important;inset:auto!important;padding:0!important;filter:none!important;opacity:1!important;mix-blend-mode:normal!important;
+  box-shadow:0 0 6px 1px var(--luz),0 0 16px 2px var(--luz)}
+.detail .panel:first-child::after{--luz:rgba(140,110,255,.65);top:-1px!important;left:38%!important;right:6%!important;
+  background:linear-gradient(90deg,transparent,#8f7bff 35%,#e6e0ff 70%,#8f7bff 85%,transparent)!important}
+.table-panel::after{--luz:rgba(60,140,255,.6);top:-1px!important;left:4%!important;right:55%!important;
+  background:linear-gradient(90deg,transparent,#3f8cff 30%,#cfe6ff 55%,#3f8cff 75%,transparent)!important}
+
+/* 3) caixas internas: fio azul simples, sem luz */
+.stat,.box,.student-card,.scard,.gd-total,.logo-preview{border:1px solid rgba(70,120,255,.38)!important;
+  box-shadow:inset 0 1px 0 rgba(150,190,255,.10),inset 0 0 14px rgba(40,90,255,.07)!important}
+.box:nth-child(2){border-color:rgba(20,230,160,.30)!important}
+.scard.selected{border-color:rgba(130,110,255,.75)!important;box-shadow:0 0 10px rgba(110,90,255,.35),inset 0 0 14px rgba(110,90,255,.12)!important}
+.gf{border:1px solid rgba(var(--c),.42)!important;box-shadow:inset 0 0 12px rgba(var(--c),.10)!important}
+
+/* 4) botões como na imagem: secundários azul-escuro de vidro; principal azul→violeta vivo */
+.btn,.icon-btn{border:1px solid rgba(70,125,255,.60)!important;
+  background:linear-gradient(132deg,rgba(255,255,255,.10) 0%,rgba(255,255,255,.03) 30%,transparent 55%),rgba(12,28,80,.45)!important;
+  box-shadow:0 0 8px rgba(47,107,255,.30),inset 0 1px 0 rgba(170,200,255,.25),inset 0 0 10px rgba(47,107,255,.12)!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.btn i{color:#7fb6ff!important;filter:none!important}
+.action-row .btn:nth-child(2) i{color:#a99bff!important}.action-row .btn:nth-child(3) i{color:#5fd4ff!important}.action-row .btn:nth-child(4) i{color:#7fe3c8!important}
+.btn:hover,.icon-btn:hover{border-color:#7fa6ff!important;box-shadow:0 0 14px rgba(70,130,255,.55),inset 0 1px 0 rgba(200,220,255,.35),inset 0 0 12px rgba(70,130,255,.2)!important}
+.icon-btn{border-color:transparent!important;background:transparent!important;box-shadow:none!important}
+.icon-btn:hover{border-color:rgba(70,125,255,.6)!important}
+.btn.primary,#sheetGradesBtn,.scard .go{border:1px solid #8ea2ff!important;
+  background:linear-gradient(132deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,.05) 35%,transparent 55%),linear-gradient(90deg,rgba(47,107,255,.82),rgba(91,63,240,.82))!important;
+  box-shadow:0 0 12px rgba(70,90,255,.55),0 0 26px rgba(91,63,240,.25),inset 0 1px 0 rgba(255,255,255,.35)!important}
+.btn.primary i,#sheetGradesBtn i,.scard .go i{color:#fff!important}
+.btn.danger{border-color:rgba(255,61,110,.5)!important}
+
+/* 5) menu: item ativo índigo→azul (como na imagem), demais sem caixa */
+.nav.active{border:1px solid #8e9bff!important;background:linear-gradient(90deg,rgba(74,63,240,.85),rgba(47,91,255,.80))!important;
+  box-shadow:0 0 12px rgba(90,80,255,.6),0 0 28px rgba(90,80,255,.22),inset 0 1px 0 rgba(255,255,255,.3)!important}
+.nav i{color:#7ea4ff}.nav.active i{color:#fff!important;filter:none!important}
+
+/* 6) mistura de tons pela interface */
+.filter>i{color:#5fb8ff!important}
+.filters .filter:nth-child(2)>i{color:#a99bff!important}
+.filters .filter:nth-child(3)>i{color:#5fd4ff!important}
+.app-title i,.login-title i{color:#9b7cff!important;filter:drop-shadow(0 0 8px rgba(140,110,255,.8))!important}
+.student-card small,.app-title small{color:#5fd4ff!important}
+.detail h2,.summary h3,.general h3{color:#e9eeff}
+.sidebar::after{background:linear-gradient(180deg,rgba(47,107,255,.35) 0%,rgba(47,107,255,.5) 45%,#5a7dff 70%,#9b7cff 84%,#5fd4ff 92%,transparent 100%)!important}
+.avatar{border-color:#6f8dff!important}
+
+/* ==========================================================================
+   VIDRO ESPELHADO DO IFA EM TUDO + LUZ NOS BOTÕES
+   Painéis grandes: regra .home-access-rail do IFA (reflexo 18%→0, relevo interno).
+   Caixas internas e botões: regra .home-rail-control do IFA (reflexo 22%→0).
+   Botões: filete de luz de 1px no topo (centro quase branco) + halo, como a
+   linha do cabeçalho; base com luz fraca. Contornos coloridos da v14 mantidos.
+   ========================================================================== */
+/* painéis grandes — .home-access-rail (IFA) */
+.panel,.home-card,.filter{
+  background:linear-gradient(132deg,
+      rgb(255 255 255 / 18%) 0%,rgb(255 255 255 / 7%) 17%,rgb(255 255 255 / 1.5%) 38%,transparent 54%,
+      rgb(91 190 255 / 4%) 78%,rgb(255 255 255 / 10%) 100%)!important;
+  background-color:transparent!important;
+  -webkit-backdrop-filter:saturate(1.12) contrast(1.03)!important;backdrop-filter:saturate(1.12) contrast(1.03)!important;
+  box-shadow:inset 0.09rem 0.09rem 0.13rem rgb(255 255 255 / 34%),inset -0.09rem -0.11rem 0.16rem rgb(0 0 0 / 48%),
+             inset 0 0.55rem 0.8rem -0.72rem rgb(255 255 255 / 30%),0 0.48rem 1.1rem rgb(0 0 0 / 19%),
+             0 0 10px rgba(40,100,255,.22),0 0 26px rgba(80,70,240,.10)!important}
+dialog.panel{background:linear-gradient(132deg,rgb(255 255 255 / 18%) 0%,rgb(255 255 255 / 7%) 17%,rgb(255 255 255 / 1.5%) 38%,transparent 54%,rgb(91 190 255 / 4%) 78%,rgb(255 255 255 / 10%) 100%),rgba(5,12,40,.95)!important}
+/* caixas internas — .home-rail-control (IFA) */
+.stat,.box,.student-card,.scard,.gd-total,.gf,.logo-preview,.home-card .hc-row div{
+  background:linear-gradient(132deg,
+      rgb(255 255 255 / 22%) 0%,rgb(255 255 255 / 8%) 18%,rgb(255 255 255 / 2%) 39%,transparent 55%,
+      rgb(94 201 255 / 5%) 78%,rgb(255 255 255 / 12%) 100%)!important;
+  background-color:transparent!important;
+  -webkit-backdrop-filter:saturate(1.14) contrast(1.04)!important;backdrop-filter:saturate(1.14) contrast(1.04)!important;
+  box-shadow:inset 0.09rem 0.09rem 0.12rem rgb(255 255 255 / 40%),inset -0.09rem -0.11rem 0.15rem rgb(0 0 0 / 53%),
+             inset 0 0.48rem 0.68rem -0.6rem rgb(255 255 255 / 34%)!important}
+.gf{background:linear-gradient(132deg,rgb(255 255 255 / 22%) 0%,rgb(255 255 255 / 8%) 18%,rgb(255 255 255 / 2%) 39%,transparent 55%,rgba(var(--c),.08) 78%,rgb(255 255 255 / 12%) 100%)!important}
+.scard.selected{box-shadow:inset 0.09rem 0.09rem 0.12rem rgb(255 255 255 / 40%),inset -0.09rem -0.11rem 0.15rem rgb(0 0 0 / 53%),0 0 12px rgba(110,90,255,.45)!important}
+
+/* botões — .home-rail-control (IFA) + halo colorido */
+.btn{--luz-a:#3f8cff;--luz-b:#dff0ff;--halo:47,107,255;
+  background:linear-gradient(132deg,
+      rgb(255 255 255 / 22%) 0%,rgb(255 255 255 / 8%) 18%,rgb(255 255 255 / 2%) 39%,transparent 55%,
+      rgb(94 201 255 / 5%) 78%,rgb(255 255 255 / 12%) 100%)!important;
+  background-color:transparent!important;
+  -webkit-backdrop-filter:saturate(1.14) contrast(1.04)!important;backdrop-filter:saturate(1.14) contrast(1.04)!important;
+  border:1px solid rgba(var(--halo),.55)!important;
+  box-shadow:inset 0.09rem 0.09rem 0.12rem rgb(255 255 255 / 40%),inset -0.09rem -0.11rem 0.15rem rgb(0 0 0 / 53%),
+             inset 0 0.48rem 0.68rem -0.6rem rgb(255 255 255 / 34%),
+             0 0 8px rgba(var(--halo),.45),0 0 22px rgba(var(--halo),.18)!important;
+  text-shadow:0 0.08rem 0.18rem rgb(0 0 0 / 90%)}
+/* ação principal: mesmo espelho sobre tinta azul→violeta */
+.btn.primary,#sheetGradesBtn{--luz-a:#9b8bff;--luz-b:#f1edff;--halo:110,90,255;border-color:#8ea2ff!important;
+  background:linear-gradient(132deg,rgb(255 255 255 / 22%) 0%,rgb(255 255 255 / 8%) 18%,rgb(255 255 255 / 2%) 39%,transparent 55%,rgb(255 255 255 / 12%) 100%),
+             linear-gradient(90deg,rgba(47,107,255,.62),rgba(91,63,240,.62))!important}
+.action-row .btn:nth-child(2){--luz-a:#a99bff;--halo:130,110,255}
+.action-row .btn:nth-child(3){--luz-a:#5fd4ff;--halo:40,190,255}
+.action-row .btn:nth-child(4){--luz-a:#5fe3c0;--halo:30,200,170}
+.btn.danger{--luz-a:#ff6f96;--halo:255,61,110}
+/* luz do botão: filete de 1px no topo (como a linha do cabeçalho) + halo; base mais fraca */
+.btn::before,.btn::after{content:""!important;display:block!important;position:absolute!important;pointer-events:none!important;
+  inset:auto!important;left:10%!important;right:10%!important;padding:0!important;border-radius:2px!important;mix-blend-mode:screen!important;opacity:1!important;
+  -webkit-mask:none!important;mask:none!important;background-size:auto!important;background-position:0 0!important;
+  background:linear-gradient(90deg,transparent 0%,var(--luz-a) 25%,var(--luz-b) 50%,var(--luz-a) 75%,transparent 100%)!important}
+.btn::before{top:-1px!important;height:1px!important;z-index:3!important;filter:drop-shadow(0 0 2px var(--luz-a)) drop-shadow(0 0 5px var(--luz-a))!important}
+.btn::after{bottom:-1px!important;height:1px!important;z-index:3!important;left:25%!important;right:25%!important;opacity:.55!important;filter:drop-shadow(0 0 3px var(--luz-a))!important}
+.btn:hover{border-color:rgba(var(--halo),.9)!important;
+  box-shadow:inset 0.09rem 0.09rem 0.12rem rgb(255 255 255 / 50%),inset -0.09rem -0.11rem 0.15rem rgb(0 0 0 / 53%),
+             inset 0 0.48rem 0.68rem -0.6rem rgb(255 255 255 / 40%),0 0 12px rgba(var(--halo),.7),0 0 30px rgba(var(--halo),.3)!important}
+.btn:hover::before{left:4%!important;right:4%!important;filter:drop-shadow(0 0 3px var(--luz-a)) drop-shadow(0 0 9px var(--luz-a))!important}
+.btn:hover::after{opacity:.9!important}
+/* lápis dos cartões de aluno e ícones do topo: espelho + luz */
+.scard .go,.icon-btn{position:relative}
+.scard .go{border:1px solid #8ea2ff!important;
+  background:linear-gradient(132deg,rgb(255 255 255 / 22%) 0%,rgb(255 255 255 / 8%) 18%,transparent 55%,rgb(255 255 255 / 12%) 100%),linear-gradient(90deg,rgba(47,107,255,.6),rgba(91,63,240,.6))!important;
+  box-shadow:inset 0.09rem 0.09rem 0.12rem rgb(255 255 255 / 40%),inset -0.09rem -0.11rem 0.15rem rgb(0 0 0 / 53%),0 0 10px rgba(110,90,255,.5)!important}
+.icon-btn{border:1px solid rgb(220 248 255 / 22%)!important;
+  background:linear-gradient(132deg,rgb(255 255 255 / 22%) 0%,rgb(255 255 255 / 8%) 18%,transparent 55%,rgb(255 255 255 / 12%) 100%)!important;
+  box-shadow:inset 0.09rem 0.09rem 0.12rem rgb(255 255 255 / 40%),inset -0.09rem -0.11rem 0.15rem rgb(0 0 0 / 53%),0 0 8px rgba(47,107,255,.4)!important}
+/* item ativo do menu: espelho sobre índigo→azul, com luz */
+.nav.active{background:linear-gradient(132deg,rgb(255 255 255 / 22%) 0%,rgb(255 255 255 / 8%) 18%,transparent 55%,rgb(255 255 255 / 12%) 100%),
+                       linear-gradient(90deg,rgba(74,63,240,.7),rgba(47,91,255,.62))!important;
+  box-shadow:inset 0.09rem 0.09rem 0.12rem rgb(255 255 255 / 40%),inset -0.09rem -0.11rem 0.15rem rgb(0 0 0 / 53%),
+             0 0 12px rgba(90,80,255,.6),0 0 28px rgba(90,80,255,.22)!important}
+/* campos de digitação: vidro escuro com relevo espelhado */
+.search,.stack input,.stack textarea,.cat-row input,.grade-fields input{
+  background:linear-gradient(132deg,rgb(255 255 255 / 10%) 0%,rgb(255 255 255 / 3%) 25%,transparent 50%),rgb(0 8 22 / 30%)!important;
+  box-shadow:inset 0.06rem 0.06rem 0.1rem rgb(255 255 255 / 28%),inset -0.06rem -0.08rem 0.12rem rgb(0 0 0 / 50%)!important}
+.btn{overflow:visible!important}
+.btn::before{left:6%!important;right:6%!important;height:1.5px!important;top:-1px!important;
+  filter:drop-shadow(0 0 2px var(--luz-a)) drop-shadow(0 0 6px var(--luz-a)) drop-shadow(0 0 12px var(--luz-a))!important}
+.btn::after{opacity:.75!important;filter:drop-shadow(0 0 3px var(--luz-a)) drop-shadow(0 0 7px var(--luz-a))!important}
+
+/* ==========================================================================
+   TRANSPARÊNCIA IGUAL À IMAGEM DO IFA (botão "Ouvir página" e cartões)
+   Medido: interior do botão ≈ fundo atrás (vidro limpo), reflexo suave só
+   na metade de cima, borda fina azul-clara, luz ciano-branca no centro do
+   topo, da base e das laterais. Sem película branca, sem tinta sólida.
+   ========================================================================== */
+/* BOTÕES */
+.btn,.icon-btn,.scard .go,.nav.active{
+  --edge-light:#49ddff;
+  background:linear-gradient(180deg,rgb(255 255 255 / 10%) 0%,rgb(255 255 255 / 4%) 42%,transparent 50%),rgb(0 10 30 / 18%)!important;
+  background-color:transparent!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+  border:1px solid rgb(190 228 255 / 42%)!important;
+  box-shadow:inset 0 1px 0 rgb(255 255 255 / 30%),inset 0 -1px 0 rgb(0 0 0 / 45%),0 0 10px color-mix(in srgb,var(--edge-light) 22%,transparent)!important;
+  color:#fff!important;text-shadow:0 1px 3px rgb(0 0 0 / 95%),0 0 8px rgb(0 0 0 / 70%)}
+.btn.primary,#sheetGradesBtn,.scard .go,.nav.active{--edge-light:#a68cff;border-color:rgb(200 185 255 / 55%)!important}
+.action-row .btn:nth-child(2){--edge-light:#a99bff}.action-row .btn:nth-child(3){--edge-light:#5fd4ff}.action-row .btn:nth-child(4){--edge-light:#5fe3c0}
+.btn.danger{--edge-light:#ff6f96;border-color:rgb(255 150 180 / 45%)!important}
+.btn i,.icon-btn i,.scard .go i,.nav.active i{color:#fff!important;filter:drop-shadow(0 0 3px var(--edge-light))!important}
+/* luz: centro do topo, da base e das laterais (1px, ciano-branco), como na imagem */
+.btn::before,.icon-btn::before,.scard .go::before,.nav.active::before{
+  content:""!important;display:block!important;position:absolute!important;inset:-1px!important;z-index:3!important;
+  left:-1px!important;right:-1px!important;top:-1px!important;bottom:-1px!important;width:auto!important;height:auto!important;
+  padding:0!important;border-radius:inherit!important;opacity:1!important;pointer-events:none!important;mix-blend-mode:screen!important;
+  -webkit-mask:none!important;mask:none!important;
+  background:
+    linear-gradient(90deg,transparent 0%,var(--edge-light) 25%,#effeff 50%,var(--edge-light) 75%,transparent 100%) center top / 56% 1px no-repeat,
+    linear-gradient(90deg,transparent 0%,var(--edge-light) 25%,#effeff 50%,var(--edge-light) 75%,transparent 100%) center bottom / 56% 1px no-repeat,
+    linear-gradient(180deg,transparent 0%,var(--edge-light) 30%,#effeff 50%,var(--edge-light) 70%,transparent 100%) left center / 1px 60% no-repeat,
+    linear-gradient(180deg,transparent 0%,var(--edge-light) 30%,#effeff 50%,var(--edge-light) 70%,transparent 100%) right center / 1px 60% no-repeat!important;
+  filter:drop-shadow(0 0 2px var(--edge-light)) drop-shadow(0 0 6px var(--edge-light))!important}
+.btn::after,.icon-btn::after,.scard .go::after,.nav.active::after{content:none!important;display:none!important}
+.btn:hover,.icon-btn:hover,.scard .go:hover{border-color:rgb(220 240 255 / 70%)!important;
+  background:linear-gradient(180deg,rgb(255 255 255 / 14%) 0%,rgb(255 255 255 / 5%) 42%,transparent 50%),rgb(0 10 30 / 18%)!important;
+  box-shadow:inset 0 1px 0 rgb(255 255 255 / 40%),inset 0 -1px 0 rgb(0 0 0 / 45%),0 0 16px color-mix(in srgb,var(--edge-light) 45%,transparent)!important}
+.btn:hover::before,.icon-btn:hover::before,.scard .go:hover::before{filter:drop-shadow(0 0 3px var(--edge-light)) drop-shadow(0 0 10px var(--edge-light))!important}
+
+/* CARTÕES E PAINÉIS: vidro limpo com faixa diagonal de reflexo (como os cartões da imagem) */
+.panel,.home-card,.filter{
+  background:linear-gradient(118deg,rgb(255 255 255 / 7%) 0%,rgb(255 255 255 / 2%) 22%,transparent 38%,transparent 60%,rgb(255 255 255 / 4.5%) 68%,rgb(255 255 255 / 1%) 76%,transparent 84%),rgb(0 8 24 / 10%)!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+  box-shadow:inset 0 1px 0 rgb(255 255 255 / 26%),inset 0 -1px 0 rgb(0 0 0 / 45%),0 0 10px rgba(40,100,255,.20),0 0 26px rgba(80,70,240,.08)!important}
+dialog.panel{background:linear-gradient(118deg,rgb(255 255 255 / 7%) 0%,rgb(255 255 255 / 2%) 22%,transparent 38%,transparent 60%,rgb(255 255 255 / 4.5%) 68%,transparent 84%),rgba(5,12,40,.95)!important}
+.stat,.box,.student-card,.scard,.gd-total,.gf,.logo-preview,.home-card .hc-row div{
+  background:linear-gradient(118deg,rgb(255 255 255 / 6%) 0%,rgb(255 255 255 / 1.5%) 30%,transparent 45%),rgb(0 8 24 / 8%)!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+  box-shadow:inset 0 1px 0 rgb(255 255 255 / 20%),inset 0 -1px 0 rgb(0 0 0 / 40%)!important}
+.gf{background:linear-gradient(118deg,rgb(255 255 255 / 6%) 0%,transparent 45%),rgba(var(--c),.06)!important}
+.scard.selected{box-shadow:inset 0 1px 0 rgb(255 255 255 / 25%),0 0 12px rgba(110,90,255,.45)!important}
+.search,.stack input,.stack textarea,.cat-row input,.grade-fields input{
+  background:linear-gradient(180deg,rgb(255 255 255 / 5%) 0%,transparent 50%),rgb(0 8 22 / 26%)!important;
+  box-shadow:inset 0 1px 0 rgb(255 255 255 / 18%),inset 0 -1px 0 rgb(0 0 0 / 40%)!important}
+/* botões principais também em vidro limpo (regras antigas com seletor mais forte ainda pintavam azul) */
+.btn.primary,#sheetGradesBtn,#gdNext,.scard .go,.bottom-nav .nav.active,.sidebar .nav.active{
+  background:linear-gradient(180deg,rgb(255 255 255 / 10%) 0%,rgb(255 255 255 / 4%) 42%,transparent 50%),rgb(30 10 80 / 18%)!important}
+.btn.primary:hover,#sheetGradesBtn:hover,#gdNext:hover,.scard .go:hover{
+  background:linear-gradient(180deg,rgb(255 255 255 / 14%) 0%,rgb(255 255 255 / 5%) 42%,transparent 50%),rgb(30 10 80 / 20%)!important}
+
+/* ==========================================================================
+   COMPLETA OS BOTÕES E CARTÕES + LETRAS NEON "MEIO ARCO-ÍRIS"
+   ========================================================================== */
+/* 1) itens do menu (lateral e inferior) e chips viram botões de vidro com luz */
+.nav,.chip{--edge-light:#5fb8ff;position:relative;
+  background:linear-gradient(180deg,rgb(255 255 255 / 8%) 0%,rgb(255 255 255 / 3%) 42%,transparent 50%),rgb(0 10 30 / 14%)!important;
+  border:1px solid rgb(190 228 255 / 30%)!important;
+  box-shadow:inset 0 1px 0 rgb(255 255 255 / 24%),inset 0 -1px 0 rgb(0 0 0 / 40%),0 0 8px color-mix(in srgb,var(--edge-light) 18%,transparent)!important}
+.nav.active{--edge-light:#a68cff;border-color:rgb(200 185 255 / 60%)!important;
+  box-shadow:inset 0 1px 0 rgb(255 255 255 / 34%),inset 0 -1px 0 rgb(0 0 0 / 45%),0 0 14px color-mix(in srgb,var(--edge-light) 45%,transparent)!important}
+.bottom-nav .nav:not(.active){background:transparent!important;border-color:rgb(190 228 255 / 16%)!important;box-shadow:none!important}
+.sidebar .nav{margin-bottom:10px}
+.chip{border-radius:20px!important}
+.chip::before,.chip::after{content:none!important}
+
+/* 2) luz de 1px no centro dos quatro lados — agora também em cartões, menu e caixas */
+.nav::before,.stat::after,.box::after,.student-card::after,.scard::after,.gd-total::after,.gf::after,.home-card .hc-row div::after,
+.panel::after,.home-card::after,.filter::after,.icon-btn::before,.sheet-close::before{
+  content:""!important;display:block!important;position:absolute!important;z-index:3!important;
+  top:-1px!important;left:-1px!important;right:-1px!important;bottom:-1px!important;inset:-1px!important;width:auto!important;height:auto!important;
+  padding:0!important;border-radius:inherit!important;opacity:1!important;pointer-events:none!important;mix-blend-mode:screen!important;
+  -webkit-mask:none!important;mask:none!important;box-shadow:none!important;
+  background:
+    linear-gradient(90deg,transparent 0%,var(--edge-light) 25%,#effeff 50%,var(--edge-light) 75%,transparent 100%) center top / 50% 1px no-repeat,
+    linear-gradient(90deg,transparent 0%,var(--edge-light) 25%,#effeff 50%,var(--edge-light) 75%,transparent 100%) center bottom / 50% 1px no-repeat,
+    linear-gradient(180deg,transparent 0%,var(--edge-light) 30%,#effeff 50%,var(--edge-light) 70%,transparent 100%) left center / 1px 55% no-repeat,
+    linear-gradient(180deg,transparent 0%,var(--edge-light) 30%,#effeff 50%,var(--edge-light) 70%,transparent 100%) right center / 1px 55% no-repeat!important;
+  filter:drop-shadow(0 0 2px var(--edge-light)) drop-shadow(0 0 5px var(--edge-light))!important}
+.nav::after{content:none!important}
+.bottom-nav .nav:not(.active)::before{opacity:.45!important}
+.home-card .hc-row div{position:relative}
+/* cores das luzes dos cartões: misturadas como na imagem */
+.panel,.home-card,.filter,.stat,.box,.student-card,.scard,.gd-total,.home-card .hc-row div{--edge-light:#49ddff}
+.filters .filter:nth-child(2),.detail .panel:nth-child(1),.stat:nth-child(2),.scard:nth-child(3n+2),.home-card:nth-child(2),.hc-row div:nth-child(2),.general{--edge-light:#a68cff}
+.filters .filter:nth-child(3),.detail .panel:nth-child(3),.stat:nth-child(3),.scard:nth-child(3n),.home-card:nth-child(3),.hc-row div:nth-child(3){--edge-light:#55eed7}
+.detail .panel:nth-child(4),.stat:nth-child(4),.hc-row div:nth-child(4),.box:nth-child(2){--edge-light:#ff7ad9}
+.gf{--edge-light:rgb(var(--c))}
+.panel:not(dialog),.home-card,.filter,.stat,.box,.student-card,.scard,.gd-total{overflow:visible!important}
+
+/* 3) LETRAS NEON — títulos e números em gradiente "meio arco-íris" */
+:root{--arco:linear-gradient(90deg,#5ef3ff 0%,#5aa8ff 26%,#a07bff 52%,#ff6fd8 76%,#ffd36e 100%)}
+h1,h2,.app-title b,.login-title b,.home-card h3,.student-card b,#studentName,.page-head h1,.table-head h2,.meta-head h2,
+.ring span,.stat b,.gd-total b,#generalPct,.home-card .hc-row b:not(.t-ok):not(.t-bad),#totalScore{
+  background:var(--arco)!important;-webkit-background-clip:text!important;background-clip:text!important;
+  -webkit-text-fill-color:transparent!important;color:transparent!important;
+  filter:drop-shadow(0 0 2px rgba(120,200,255,.55)) drop-shadow(0 0 8px rgba(160,110,255,.45))!important;text-shadow:none!important}
+h2 small,h2 span,.table-head h2 span{-webkit-text-fill-color:currentColor}
+#studentCount{-webkit-text-fill-color:transparent!important}
+/* números de situação: neon na própria cor */
+.t-ok{color:#5effc4!important;text-shadow:0 0 2px #fff,0 0 6px #14e6a0,0 0 14px rgba(20,230,160,.6)!important}
+.t-warn{color:#ffe08a!important;text-shadow:0 0 2px #fff,0 0 6px #ffc234,0 0 14px rgba(255,194,52,.55)!important}
+.t-bad,#missingScore{color:#ff8fb0!important;text-shadow:0 0 2px #fff,0 0 6px #ff3d6e,0 0 14px rgba(255,61,110,.6)!important}
+/* demais textos: brilho neon suave (sem prejudicar leitura) */
+.btn,.nav,.filter select,.who b,td.l,.scard b,.gf b,.bar-row .nm,.box small,.chip{text-shadow:0 0 1px rgba(255,255,255,.6),0 0 6px rgba(110,190,255,.55),0 0 12px rgba(140,110,255,.25)!important}
+.r-tri b,.r-ano{color:#fff!important;text-shadow:0 0 2px #fff,0 0 7px rgba(94,243,255,.7),0 0 14px rgba(160,123,255,.4)!important}
+.grade{text-shadow:0 0 2px rgba(255,255,255,.7),0 0 6px rgb(var(--c)),0 0 12px rgba(var(--c),.6)!important}
+.bar-row .vl,.bar-row .pc{text-shadow:0 0 6px rgba(var(--c),.8)!important}
+.app-title small,.student-card small{text-shadow:0 0 6px rgba(94,212,255,.6)}
+@media print{h1,h2,.ring span,.stat b{-webkit-text-fill-color:#000!important;color:#000!important;background:none!important;filter:none!important}}
+.sidebar .nav:not(.active){
+  background:linear-gradient(180deg,rgb(255 255 255 / 8%) 0%,rgb(255 255 255 / 3%) 42%,transparent 50%),rgb(0 10 30 / 14%)!important;
+  border:1px solid rgb(190 228 255 / 30%)!important;
+  box-shadow:inset 0 1px 0 rgb(255 255 255 / 24%),inset 0 -1px 0 rgb(0 0 0 / 40%),0 0 8px rgba(95,184,255,.18)!important}
+.sidebar .nav:not(.active)::before{content:""!important;display:block!important}
+.sidebar .nav:nth-child(3){--edge-light:#55eed7}.sidebar .nav:nth-child(4){--edge-light:#a68cff}
+
+/* ===== v18: avaliações cadastráveis, lançamento por soma, detalhes no celular ===== */
+/* células: o valor atual aparece como placeholder; o que se digita é SOMADO */
+.grade::placeholder{color:color-mix(in srgb,rgb(var(--c)) 70%,#fff);opacity:1;font-weight:600}
+.grade:not(.has)::placeholder{color:rgba(160,180,220,.45);font-weight:400}
+.grade:focus::placeholder{opacity:.45}
+.grade.flash,.gf.flash{animation:pisca .5s ease-out}
+@keyframes pisca{0%{box-shadow:0 0 0 2px rgba(94,255,196,.9),0 0 14px rgba(94,255,196,.8)}100%{box-shadow:none}}
+#gradesTable th small{display:block}
+.no-aval{display:grid;gap:8px;justify-items:start;padding:12px 4px}
+.card-list .no-aval{padding:12px}
+/* diálogo de notas */
+.gd-hint{margin:0;font-size:12.5px;line-height:1.45;color:#b9cbef;padding:8px 10px;border:1px dashed rgba(120,170,255,.35);border-radius:10px}
+.gf{display:grid!important;grid-template-columns:34px 1fr 92px 36px!important;align-items:center;gap:10px}
+.gf-txt b{display:block;font-size:14.5px}.gf-txt small{display:block;font-size:11.5px;line-height:1.35}
+.gf-atual{display:block;font-size:13px;margin-top:3px;color:#dfe8ff}
+.gf-atual strong{font-size:17px;color:color-mix(in srgb,rgb(var(--c)) 65%,#fff);text-shadow:0 0 6px rgba(var(--c),.8)}
+.gf input{text-align:center;font-size:17px!important;padding:10px 6px!important;margin:0!important}
+.gf-clear{width:34px;height:34px}
+/* diálogo de avaliações */
+.av-list{display:grid;gap:8px;max-height:38vh;overflow:auto;padding:2px}
+.av-item{position:relative;display:grid;grid-template-columns:34px 1fr auto auto;gap:8px;align-items:center;padding:8px 10px;border-radius:12px;border:1px solid rgba(var(--c),.45);background:rgba(var(--c),.06)}
+.av-item .ic{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:rgb(var(--c));color:#fff;box-shadow:0 0 8px rgba(var(--c),.55)}
+.av-item .ic i{width:19px;height:19px}
+.av-txt b{display:block}.av-txt small{color:#b9cbef;font-size:12px}
+.av-form{border-top:1px solid rgba(120,170,255,.25);padding-top:10px}
+.av-grid{display:grid;grid-template-columns:1fr 120px;gap:10px}
+.av-form select,#avTipo{display:block;width:100%;margin-top:6px;padding:11px 12px;border-radius:9px;border:1px solid rgba(70,125,255,.5);background:rgba(0,8,22,.5);color:#eef3ff;font-size:15px}
+#avTipo option{background:#0a1a45}
+.av-subs{display:grid;gap:6px;margin-top:6px}
+.av-sub{display:flex;align-items:center;gap:8px;font-size:14px;color:#dfe8ff!important;padding:6px 8px;border:1px solid rgba(139,92,246,.4);border-radius:9px}
+.av-sub input{width:18px;height:18px;margin:0;accent-color:#8b5cf6}
+.rec-info{grid-column:2/-1;font-size:11.5px;color:#c4b5fd;margin-top:-2px}
+/* celular: detalhes do aluno aparecem na própria página, abaixo da lista */
+@media(max-width:760px){
+  .detail{display:grid!important;grid-template-columns:1fr!important;position:static!important;gap:12px;margin-top:14px}
+  .detail.open{position:static!important}
+  .sheet-close{display:inline-flex!important}
+  .gf{grid-template-columns:34px 1fr 76px 34px!important;gap:8px}
+  .av-item{grid-template-columns:34px 1fr auto}
+  .av-item [data-av-del]{grid-column:3}
+  .action-row #avalBtn{display:inline-flex}
+}
+@media(min-width:761px){.sheet-close{display:none!important}.action-row #avalBtn{display:none}}
+.chart{min-height:150px}.chart svg{display:block;width:100%;height:auto;min-height:140px}
+
+/* ==========================================================================
+   DESEMPENHO — mesmo visual, sem os efeitos que travavam a rolagem
+   Causa medida: filter:drop-shadow + mix-blend-mode em ~60 pseudo-elementos,
+   backdrop-filter em dezenas de caixas, fundo "fixed" (repinta a tela inteira
+   a cada rolagem) e títulos em gradiente com filter. Cada um obriga o navegador
+   a redesenhar camadas fora da tela a cada quadro.
+   ========================================================================== */
+/* fundo fixo vira uma camada própria (composta pela GPU, não repintada) */
+body{background:#01061f!important;background-attachment:scroll!important}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(1100px 700px at 50% 40%,rgba(0,24,110,.55),transparent 75%),linear-gradient(180deg,#01072a 0%,#010a36 45%,#01061f 100%)}
+/* sem backdrop-filter (o fundo já é transparente; ele só custava processamento) */
+*,*::before,*::after{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+/* luzes das bordas: o brilho passa a ser desenhado no próprio gradiente (sem filter/blend) */
+.btn::before,.icon-btn::before,.scard .go::before,.nav.active::before,.nav::before,
+.stat::after,.box::after,.student-card::after,.scard::after,.gd-total::after,.gf::after,.home-card .hc-row div::after,
+.panel::after,.home-card::after,.filter::after,.sheet-close::before{
+  filter:none!important;mix-blend-mode:normal!important;
+  background:
+    linear-gradient(90deg,transparent 0%,color-mix(in srgb,var(--edge-light) 70%,transparent) 25%,#effeff 50%,color-mix(in srgb,var(--edge-light) 70%,transparent) 75%,transparent 100%) center top / 54% 1px no-repeat,
+    linear-gradient(90deg,transparent 0%,color-mix(in srgb,var(--edge-light) 70%,transparent) 25%,#effeff 50%,color-mix(in srgb,var(--edge-light) 70%,transparent) 75%,transparent 100%) center bottom / 54% 1px no-repeat,
+    linear-gradient(180deg,transparent 0%,color-mix(in srgb,var(--edge-light) 70%,transparent) 30%,#effeff 50%,color-mix(in srgb,var(--edge-light) 70%,transparent) 70%,transparent 100%) left center / 1px 58% no-repeat,
+    linear-gradient(180deg,transparent 0%,color-mix(in srgb,var(--edge-light) 70%,transparent) 30%,#effeff 50%,color-mix(in srgb,var(--edge-light) 70%,transparent) 70%,transparent 100%) right center / 1px 58% no-repeat,
+    /* halo suave junto à linha (substitui o drop-shadow) */
+    radial-gradient(50% 3px at 50% 0,color-mix(in srgb,var(--edge-light) 45%,transparent),transparent) center top / 60% 6px no-repeat,
+    radial-gradient(50% 3px at 50% 100%,color-mix(in srgb,var(--edge-light) 35%,transparent),transparent) center bottom / 60% 6px no-repeat!important}
+.btn:hover::before,.icon-btn:hover::before,.scard .go:hover::before,:is(.home-card,.scard,.filter,.btn,.icon-btn,.scard .go):is(:hover,:focus-visible,:active)::before{filter:none!important}
+.detail .panel:first-child::after,.table-panel::after{filter:none!important}
+.topbar::after,.bottom-nav::after{filter:none!important;height:4px!important;opacity:.5!important}
+/* títulos em gradiente: brilho por text-shadow (barato) em vez de filter */
+h1,h2,.app-title b,.login-title b,.home-card h3,.student-card b,#studentName,.page-head h1,.table-head h2,.meta-head h2,
+.ring span,.stat b,.gd-total b,#generalPct,.home-card .hc-row b:not(.t-ok):not(.t-bad),#totalScore{
+  filter:none!important;text-shadow:0 0 10px rgba(130,150,255,.45)!important}
+/* ícones, anel e gráfico: sem filtros em cascata */
+.btn i,.icon-btn i,.scard .go i,.nav.active i,.filter>i,.app-title i,.login-title i,th.cat i,#gradesTable th.cat i,.ring,.chart polyline{filter:none!important}
+.ring{box-shadow:0 0 14px rgba(34,190,255,.35)!important}
+/* sombras de texto: uma camada só nas células da tabela (são centenas) */
+.grade{text-shadow:0 0 5px rgba(var(--c),.7)!important}
+td.l,.btn,.nav,.chip,.scard b,.gf b,.bar-row .nm,.box small,.filter select,.who b{text-shadow:0 0 6px rgba(110,190,255,.45)!important}
+.t-ok,.t-warn,.t-bad,#missingScore{text-shadow:0 0 6px currentColor!important}
+.r-tri b,.r-ano{text-shadow:0 0 6px rgba(94,243,255,.55)!important}
+/* celular: menos sombras externas empilhadas nos cartões da lista */
+@media(max-width:760px){
+  .scard,.chip,.hc-row div{box-shadow:inset 0 1px 0 rgb(255 255 255 / 18%)!important}
+  .panel,.home-card,.filter{box-shadow:inset 0 1px 0 rgb(255 255 255 / 22%),0 0 10px rgba(40,100,255,.18)!important}
+}
+/* isola a repintura de cada cartão da lista e dos painéis fora da tela */
+.scard,.stat,.gf{contain:layout style}
+.summary-row,.detail>.panel:nth-child(n+2){content-visibility:auto;contain-intrinsic-size:auto 320px}
+
+/* ===== v20: modos de lançamento, apagar com "Desfazer", confirmação própria ===== */
+.modo{display:inline-flex;gap:0;border:1px solid rgb(190 228 255 / 35%);border-radius:10px;overflow:hidden;background:rgb(0 10 30 / 25%);flex-shrink:0}
+.modo-btn{appearance:none;border:0;background:transparent;color:#cfe0ff;font:inherit;font-size:14px;font-weight:600;padding:9px 12px;cursor:pointer;white-space:nowrap;
+  text-shadow:0 0 6px rgba(110,190,255,.45);border-right:1px solid rgb(190 228 255 / 20%)}
+.modo-btn:last-child{border-right:0}
+.modo-btn.on[data-modo="add"]{background:rgba(20,230,160,.20);color:#7dffd0;box-shadow:inset 0 -2px 0 #14e6a0}
+.modo-btn.on[data-modo="sub"]{background:rgba(255,61,110,.20);color:#ff9ab4;box-shadow:inset 0 -2px 0 #ff3d6e}
+.modo-btn.on[data-modo="set"]{background:rgba(110,140,255,.22);color:#c6d2ff;box-shadow:inset 0 -2px 0 #7f9cff}
+dialog .modo{display:flex;width:100%}
+dialog .modo-btn{flex:1;padding:12px 6px;font-size:15px}
+.modo-tabela{margin-left:4px}
+body[data-modo="sub"] .grade:focus,body[data-modo="sub"] #gdFields input{border-color:#ff3d6e!important}
+body[data-modo="set"] .grade:focus,body[data-modo="set"] #gdFields input{border-color:#7f9cff!important}
+.gd-hint{margin:2px 0 0}
+.toast{display:flex;align-items:center;gap:12px}
+.toast.acao{pointer-events:auto}
+.toast-btn{appearance:none;border:1px solid rgba(127,200,255,.7);background:rgba(47,107,255,.25);color:#fff;font:inherit;font-weight:700;padding:7px 12px;border-radius:8px;cursor:pointer}
+.ask-msg{margin:0;font-size:16px;line-height:1.45}
+#askDialog{width:min(420px,92vw)}
+@media(max-width:760px){.modo-tabela{display:none}.gf-clear{width:40px;height:40px}}
+@media(min-width:761px) and (max-width:1280px){.modo-tabela .modo-btn{padding:8px 8px;font-size:13px}}
+.gf-undo{appearance:none;margin-left:6px;border:1px solid rgba(127,200,255,.6);background:rgba(47,107,255,.22);color:#fff;font:inherit;font-size:12.5px;font-weight:700;padding:4px 9px;border-radius:7px;cursor:pointer}
+@media(max-width:760px){.action-row #editStudentBtn{display:inline-flex!important}}
+
+/* ===== v21: janela de notas — moldura fixa, conteúdo rola por dentro ===== */
+/* antes a própria <dialog> rolava e a moldura (desenhada por ::before) ficava parada
+   no meio do conteúdo, parecendo um cartão sobreposto */
+#gradesDialog{overflow:hidden!important;padding:0!important;display:flex;flex-direction:column;max-height:min(92vh,92dvh)}
+#gradesDialog[open]{display:flex}
+#gradesForm{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:20px;max-height:min(92vh,92dvh);flex:1 1 auto;min-height:0}
+#gradesForm .dialog-actions{position:sticky;bottom:-20px;margin:6px -20px -20px;padding:12px 20px 16px;z-index:5;
+  background:linear-gradient(180deg,rgba(5,12,40,.0),rgba(5,12,40,.96) 30%)}
+#gradesDialog .gf{contain:layout paint}
+/* celular: rolagem leve dentro da janela (sem halos empilhados nas linhas) */
+@media(max-width:760px){
+  #gradesDialog{width:96vw;max-width:96vw}
+  #gradesForm{padding:14px}
+  #gradesForm .dialog-actions{margin:6px -14px -14px;padding:10px 14px 14px;bottom:-14px}
+  #gradesDialog .gf::after{display:none!important}
+  #gradesDialog .gf{box-shadow:none!important}
+  #gradesDialog .gf-atual strong,#gradesDialog .gf b{text-shadow:none!important}
+}
+/* a janela rola por dentro: os itens não podem encolher (antes a barra Somar/Retirar/Definir sumia) */
+#gradesForm{display:flex!important;flex-direction:column;gap:10px}
+#gradesForm>*,#gdFields>*{flex-shrink:0}
+#gdFields{display:flex!important;flex-direction:column;gap:10px}
+#gradesDialog .modo{min-height:46px}
+/* rodapé fixo da janela com fundo sólido e linha separadora (não parece mais um cartão por cima) */
+#gradesForm .dialog-actions{background:#050c28!important;border-top:1px solid rgba(120,170,255,.35);box-shadow:0 -8px 16px rgba(2,6,20,.85)}
+
+/* ===== v22 ===== */
+/* janela de notas: um único botão */
+#gradesForm .dialog-actions{justify-content:stretch}
+.gd-salvar{flex:1 1 100%!important;width:100%;padding:13px 16px!important;font-size:16px!important}
+/* registrando automaticamente (celular): borda pulsando enquanto espera */
+.gf.registrando input{border-color:#5ef3ff!important;animation:aguarda 1.5s linear}
+@keyframes aguarda{0%{box-shadow:inset 0 -2px 0 rgba(94,243,255,.9)}100%{box-shadow:inset 0 -2px 0 rgba(94,243,255,0)}}
+/* celular: detalhes do aluno só aparecem ao tocar no aluno (tela própria), não mais no fim da lista */
+@media(max-width:760px){
+  .detail{display:none!important}
+  body.ver-aluno .detail{display:grid!important;margin-top:0}
+  body.ver-aluno #sec-turmas .filters,body.ver-aluno #classContent,body.ver-aluno #emptyState{display:none!important}
+  .sheet-close{font-size:14px!important;padding:9px 12px!important}
+}
+#gradesDialog:not([open]){display:none!important}
+
+/* ===== v23 ===== */
+/* celular: detalhes do aluno voltam a aparecer na página, abaixo do resumo da turma */
+@media(max-width:760px){
+  .detail{display:grid!important;margin-top:14px}
+  body.ver-aluno #sec-turmas .filters,body.ver-aluno #classContent{display:revert!important}
+}
+/* rodapé da janela de notas: Próximo campo + Salvar */
+#gradesForm .dialog-actions{display:grid!important;grid-template-columns:1fr 1fr;gap:10px}
+.gd-proximo,.gd-salvar{width:100%;padding:13px 10px!important;font-size:15.5px!important;min-width:0!important}
+.gd-proximo{--edge-light:#5ef3ff;border-color:rgba(94,243,255,.6)!important;color:#c9fbff!important}
+/* teclado aberto: a janela ocupa só a parte visível da tela (acima do teclado) */
+#gradesDialog{max-height:calc(var(--vvh,100dvh) - 16px)!important}
+#gradesForm{max-height:calc(var(--vvh,100dvh) - 16px)!important}
+/* com teclado aberto, esconde o cabeçalho e a dica para sobrar espaço para os campos */
+html.teclado-aberto #gradesForm .dialog-title,html.teclado-aberto #gdHint{display:none}
+html.teclado-aberto #gradesForm .modo-btn{padding:8px 4px;font-size:14px}
+#gdFields .gf{scroll-margin:70px 0 90px}
+
+/* ===== v24: notas por avaliação, importação, autopreenchimento, lançamento leve no celular ===== */
+th.clicavel{cursor:pointer}
+th.clicavel:hover{filter:brightness(1.25)}
+.bk-top{display:grid;gap:6px}
+.bk-top h2{margin:0}
+.bk-sel{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center}
+.bk-sel select{width:100%;padding:11px 12px;border-radius:9px;border:1px solid rgba(70,125,255,.55);background:rgba(0,8,22,.5);color:#eef3ff;font-size:16px}
+.bk-sel select option{background:#0a1a45}
+.bk-sel .btn{min-width:44px!important;font-size:20px;padding:8px 12px!important}
+.bk-row .n-ord{background:rgba(var(--c),.25)!important;color:#fff;font-weight:700;font-size:14px;box-shadow:none!important}
+.av-modelos{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.av-modelos small{flex-basis:100%}
+.av-auto{min-height:1em;color:#8fe8ff!important}
+.av-copy{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;padding-top:10px;border-top:1px solid rgba(120,170,255,.2)}
+.av-copy select,.import-box select{display:block;width:100%;margin-top:6px;padding:11px 12px;border-radius:9px;border:1px solid rgba(70,125,255,.5);background:rgba(0,8,22,.5);color:#eef3ff;font-size:15px}
+.av-copy select option,.import-box select option{background:#0a1a45}
+.import-box{display:grid;gap:8px;padding:10px;border:1px dashed rgba(120,170,255,.35);border-radius:10px}
+.chk{display:flex!important;align-items:center;gap:8px;color:#dfe8ff!important;font-size:14px!important}
+.chk input{width:18px!important;height:18px;margin:0!important;accent-color:#5aa8ff;display:inline-block!important}
+#bulkDialog{overflow:hidden!important;padding:0!important;display:flex;flex-direction:column;max-height:calc(var(--vvh,100dvh) - 16px)!important;width:min(560px,96vw)}
+#bulkDialog:not([open]){display:none!important}
+#bulkForm{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:20px;display:flex!important;flex-direction:column;gap:10px;max-height:calc(var(--vvh,100dvh) - 16px)!important;flex:1 1 auto;min-height:0}
+#bulkForm>*,#bkList>*{flex-shrink:0}
+#bkList{display:flex!important;flex-direction:column;gap:8px}
+#bulkForm .dialog-actions{position:sticky;bottom:-20px;margin:6px -20px -20px;padding:12px 20px 16px;z-index:5;display:grid!important;grid-template-columns:1fr 1fr;gap:10px;
+  background:#050c28!important;border-top:1px solid rgba(120,170,255,.35);box-shadow:0 -8px 16px rgba(2,6,20,.85)}
+#bulkDialog .modo{display:flex;width:100%;min-height:46px}
+.bk-row{grid-template-columns:34px 1fr 92px 36px!important}
+
+/* celular: lançamento em tela cheia; o app fica escondido por trás (o teclado não recalcula a página toda) */
+@media(max-width:760px){
+  html.lancando #appView{display:none!important}
+  html.lancando body::before{display:none}
+  html.lancando body{background:#040a26!important}
+  dialog.lancamento[open]{position:fixed!important;inset:auto 0 auto 0!important;top:var(--vvtop,0px)!important;margin:0!important;
+    width:100vw!important;max-width:100vw!important;height:var(--vvh,100dvh)!important;max-height:var(--vvh,100dvh)!important;border-radius:0!important;border-width:0!important}
+  dialog.lancamento .lanc-form{max-height:var(--vvh,100dvh)!important;height:100%;padding:12px 12px 0!important}
+  dialog.lancamento .dialog-actions{bottom:0!important;margin:6px -12px 0!important;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px))!important}
+  dialog.lancamento::before,dialog.lancamento::after{display:none!important}
+  dialog.lancamento .gf::after,dialog.lancamento .gf::before{display:none!important}
+  dialog.lancamento .gf{box-shadow:none!important}
+  dialog.lancamento .gf-txt b,dialog.lancamento .gf-atual strong{text-shadow:none!important}
+  .bk-row{grid-template-columns:30px 1fr 76px 36px!important;gap:8px}
+  html.teclado-aberto dialog.lancamento .bk-top h2,html.teclado-aberto #bkHint,html.teclado-aberto #gdHint,html.teclado-aberto #gradesForm .dialog-title{display:none}
+  .av-copy{grid-template-columns:1fr}
+}
+/* cabeçalho da lista quebra linha em vez de invadir o painel de detalhes */
+.table-head{flex-wrap:wrap;row-gap:10px}
+.table-head .search{flex:1 1 220px;min-width:180px;max-width:none;margin-left:0}
+.table-head .modo-tabela{order:2}
+.table-head #addStudent{order:3;margin-left:auto}
+.turma-main{min-width:0;overflow:visible}
+.turma-main>*{min-width:0;max-width:100%}
+/* todas as janelas: a moldura fica parada e o conteúdo rola por dentro (sem "cartão cortado") */
+dialog.panel:not(.lancamento){overflow:hidden!important;padding:0!important;max-height:calc(var(--vvh,100dvh) - 24px)!important}
+dialog.panel:not(.lancamento)>*{max-height:calc(var(--vvh,100dvh) - 24px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:20px}
+@media(max-width:760px){dialog.panel:not(.lancamento)>*{padding:16px}}
+/* v25 */
+.scard.destaque{animation:destaque 1.2s ease-out}
+@keyframes destaque{0%{box-shadow:0 0 0 2px #5ef3ff,0 0 18px rgba(94,243,255,.8)}100%{box-shadow:none}}
+.voltar-fim{width:100%;padding:13px!important;font-size:15px!important}
+#sec-relatorios .filters.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto}
+@media(max-width:760px){#sec-relatorios .filters.two{grid-template-columns:1fr 1fr}#sec-relatorios .filter-actions{grid-column:1/-1}}
+
+/* ===== v26 ===== */
+/* quadro da recuperação: provas, recuperação e nota final */
+.rec-box{grid-column:1/-1;display:grid;gap:4px;margin:6px 0 2px 38px;padding:8px 10px;border-radius:10px;border:1px solid rgba(139,92,246,.40);background:rgba(139,92,246,.08)}
+.rec-l{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:13px;color:#cfd9f5}
+.rec-l span{min-width:0}
+.rec-l b{white-space:nowrap;font-size:14px;color:#fff;text-shadow:none!important}
+.rec-l b small{font-weight:400;color:#a9b8de;font-size:11.5px}
+.rec-final{border-top:1px solid rgba(139,92,246,.35);padding-top:5px;margin-top:2px}
+.rec-final b{color:#c4b5fd}
+.rec-final.subiu b{color:#5effc4}
+@media(max-width:760px){.rec-box{margin-left:0}.rec-l{flex-wrap:wrap}.rec-l b{white-space:normal}}
+
+/* sem "caixa" de foco ao tocar/clicar em seletores e botões (parecia erro de programação) */
+html{-webkit-tap-highlight-color:transparent}
+select:focus,select:focus-visible,button:focus,.btn:focus,.nav:focus,.modo-btn:focus,.filter:focus-within select{outline:none!important}
+:focus:not(:focus-visible){outline:none!important}
+.filter select:focus-visible{outline:none!important}
+/* quem usa teclado (Tab) ainda vê onde está: o cartão inteiro acende, sem caixa por cima */
+.filter:focus-within{border-color:rgba(94,243,255,.55)!important;box-shadow:0 0 12px rgba(94,243,255,.25)!important}
+.btn:focus-visible,.nav:focus-visible,.modo-btn:focus-visible{outline:none!important;box-shadow:0 0 0 1px rgba(94,243,255,.8),0 0 14px rgba(94,243,255,.45)!important}
+
+/* relatórios no celular: seletores em largura total (o "Resumo anual" não fica cortado) */
+@media(max-width:760px){
+  #sec-relatorios .filters.two{grid-template-columns:1fr!important}
+  #sec-relatorios .filter-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  #sec-relatorios .filter-actions .btn{min-width:0!important;padding:11px 6px!important}
+}
+.rec-l{display:grid!important;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;column-gap:10px}
+.rec-l b{white-space:nowrap!important;text-align:right}
+.rec-l em{grid-column:1/-1;font-style:normal;font-size:12px;color:#a9b8de}
+.rec-final.subiu em{color:#5effc4}
+@media(max-width:760px){.rec-l{flex-wrap:nowrap}}
+
+/* ===== v27: instalar o app ===== */
+.install-banner{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid rgba(94,243,255,.30);
+  background:linear-gradient(90deg,rgba(47,107,255,.16),rgba(139,92,246,.14))}
+.install-banner span{flex:1;min-width:0}
+.install-banner b{display:block;font-size:14.5px}
+.install-banner small{display:block;color:#b9cbef;font-size:12.5px}
+.ib-ico{width:42px;height:42px;border-radius:10px;flex:none;box-shadow:0 0 12px rgba(94,243,255,.35)}
+.ib-ico.lg{width:64px;height:64px;border-radius:15px}
+.install-row{display:flex;align-items:center;gap:16px}
+.install-row .btn{flex:1}
+.passos{margin:4px 0;padding-left:22px;display:grid;gap:10px;font-size:15px;line-height:1.45}
+.passos i[data-i]{vertical-align:-3px;color:#5ef3ff;width:1.15em;height:1.15em}
+#installDialog .dialog-title h2{margin:0}
+@media(max-width:760px){.install-banner{padding:10px 12px}.install-banner small{display:none}}

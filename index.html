@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
+  <meta name="theme-color" content="#040a26">
+  <meta name="description" content="Diário de Classe — notas e desempenho. Os dados ficam somente no aparelho do professor.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" href="favicon-64.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-title" content="Diário de Classe">
+  <link rel="stylesheet" href="styles.css">
+  <title>Diário de Classe — Notas e Desempenho</title>
+</head>
+<body>
+  <!-- ===== Primeiro acesso / PIN ===== -->
+  <div id="loginView" class="login-view hidden">
+    <div class="login-card panel">
+      <div class="brands center"><span class="school-badge"><img class="school-logo" alt="Colégio Estadual Olavo Bilac"></span><span class="sep"></span><img class="parana-logo" src="logo-parana.png" alt="Governo do Estado do Paraná — Secretaria da Educação"></div>
+      <div class="login-title"><i data-i="cap"></i><div><b>Gestão de Notas e Desempenho</b><small>Acompanhamento e evolução dos alunos</small></div></div>
+
+      <form id="setupForm" class="stack hidden">
+        <p class="muted">Primeiro acesso neste aparelho. Seus dados ficam somente aqui.</p>
+        <label>Seu nome<input id="setupNome" required placeholder="Prof. Nome Sobrenome" autocomplete="name"></label>
+        <label>Disciplina principal<input id="setupDisc" required placeholder="Física"></label>
+        <label>Escola<input id="setupEscola" required value="Colégio Estadual Olavo Bilac"></label>
+        <button class="btn primary" type="submit">Começar</button>
+        <button id="demoBtn" class="btn" type="button">Explorar com dados de exemplo</button>
+      </form>
+
+      <form id="pinForm" class="stack hidden">
+        <p class="muted">Digite seu PIN para abrir o diário.</p>
+        <label>PIN<input id="pinInput" type="password" inputmode="numeric" autocomplete="current-password" required minlength="4"></label>
+        <button class="btn primary" type="submit">Abrir</button>
+        <small id="pinError" class="t-bad"></small>
+      </form>
+      <small class="login-note">Sem conta e sem servidor: as notas não saem deste aparelho, a não ser que você exporte um backup.</small>
+    </div>
+  </div>
+
+  <!-- ===== App ===== -->
+  <div id="appView" class="app hidden">
+    <header class="topbar">
+      <div class="brands"><span class="school-badge"><img class="school-logo" alt="Colégio Estadual Olavo Bilac"></span></div>
+      <div class="app-title"><i data-i="cap"></i><div><b>Gestão de Notas e Desempenho</b><small>Acompanhamento e evolução dos alunos</small></div></div>
+      <div class="profile">
+        <span class="avatar"><i data-i="user"></i></span>
+        <div class="who"><b id="teacherName">Professor</b><small id="teacherDisc"></small></div>
+        <button class="icon-btn" data-go="config" aria-label="Configurações"><i data-i="gear"></i></button>
+        <button class="icon-btn hidden" data-instalar title="Instalar o app" aria-label="Instalar o app"><i data-i="install"></i></button>
+        <button class="icon-btn" id="lockBtn" aria-label="Bloquear"><i data-i="lock"></i></button>
+      </div>
+      <div class="brands right"><span class="sep"></span><img class="parana-logo" src="logo-parana.png" alt="Governo do Estado do Paraná — Secretaria da Educação"></div>
+    </header>
+
+    <div id="installBanner" class="install-banner hidden"><img src="icon-192.png" alt="" class="ib-ico"><span><b>Instale o Diário de Classe</b><small>Fica na tela inicial como os outros apps e funciona sem internet.</small></span><button class="btn primary sm" data-instalar>Instalar</button><button class="icon-btn" id="installClose" aria-label="Agora não"><i data-i="x"></i></button></div>
+    <div id="demoBanner" class="demo-banner hidden">Você está vendo dados de exemplo. <button id="clearDemo" class="btn sm">Apagar exemplo e começar</button></div>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <nav>
+          <button class="nav" data-section="inicio"><i data-i="home"></i><span>Início</span></button>
+          <button class="nav" data-section="turmas"><i data-i="users"></i><span>Turmas</span></button>
+          <button class="nav" data-section="relatorios"><i data-i="chart"></i><span>Relatórios</span></button>
+          <button class="nav" data-section="config"><i data-i="gear"></i><span>Configurações</span></button>
+        </nav>
+        <p class="side-quote">“Educação é a chave para um futuro melhor.”</p>
+        <div class="side-brands"><span class="school-badge sm"><img class="school-logo" alt=""></span><img class="parana-logo sm" src="logo-parana.png" alt=""></div>
+      </aside>
+
+      <main class="main">
+        <!-- ===== INÍCIO ===== -->
+        <section id="sec-inicio" class="section hidden">
+          <div class="page-head"><div><h1>Olá, <span id="helloName">professor</span></h1><p class="muted">Suas turmas neste aparelho.</p></div><button class="btn primary" id="homeNewClass"><i data-i="plus"></i>Nova turma</button></div>
+          <div id="homeCards" class="home-grid"></div>
+        </section>
+
+        <!-- ===== TURMAS ===== -->
+        <section id="sec-turmas" class="section">
+          <div class="turma-grid">
+            <div class="turma-main">
+              <div class="filters">
+                <label class="filter panel"><i data-i="users"></i><span><small>Turma</small><select id="classSelect" aria-label="Turma"></select></span></label>
+                <label class="filter panel"><i data-i="book"></i><span><small>Disciplina</small><select id="discSelect" aria-label="Disciplina"></select></span></label>
+                <label class="filter panel"><i data-i="calendar"></i><span><small>Trimestre</small><select id="termSelect" aria-label="Trimestre"><option value="1">1º Trimestre</option><option value="2">2º Trimestre</option><option value="3">3º Trimestre</option></select></span></label>
+                <div class="filter-tools"><button class="btn sm" id="avalBtn2"><i data-i="clipboard"></i>Avaliações</button><button class="btn sm" id="editClass2"><i data-i="gear"></i>Editar turma</button><button class="btn sm" id="newClass2"><i data-i="plus"></i>Nova turma</button></div>
+              </div>
+
+              <div id="emptyState" class="panel empty hidden">
+                <h2>Crie sua primeira turma</h2>
+                <p class="muted">Uma turma por componente: “2º A — Física” e “2º A — Robótica” são turmas diferentes.</p>
+                <button class="btn primary" id="emptyNewClass"><i data-i="plus"></i>Nova turma</button>
+              </div>
+
+              <div id="classContent">
+                <div class="panel table-panel">
+                  <div class="table-head">
+                    <h2>Alunos <span id="studentCount">(0)</span></h2>
+                    <label class="search"><i data-i="search"></i><input id="search" placeholder="Buscar aluno..." aria-label="Buscar aluno"></label>
+                    <div class="modo modo-tabela" role="radiogroup" aria-label="Modo de lançamento"><button type="button" class="modo-btn on" data-modo="add" role="radio" aria-checked="true">+ Somar</button><button type="button" class="modo-btn" data-modo="sub" role="radio" aria-checked="false">− Retirar</button><button type="button" class="modo-btn" data-modo="set" role="radio" aria-checked="false">= Definir</button></div>
+                    <button id="addStudent" class="btn primary"><i data-i="plus"></i>Adicionar Aluno</button>
+                  </div>
+                  <div class="table-wrap"><table id="gradesTable"><thead></thead><tbody></tbody></table></div>
+                  <div id="cardList" class="card-list"></div>
+                </div>
+
+                <div class="action-row">
+                  <button class="btn" id="avalBtn"><i data-i="clipboard"></i>Avaliações</button>
+                  <button class="btn" id="bulkBtn"><i data-i="users"></i>Notas por avaliação</button>
+                  <button class="btn" id="gradesBtn"><i data-i="pencil"></i>Notas do aluno</button>
+                  <button class="btn" id="editStudentBtn"><i data-i="user"></i>Editar Aluno</button>
+                  <button class="btn" id="printBtn"><i data-i="printer"></i>Imprimir Relatório</button>
+                  <button class="btn" id="pdfBtn"><i data-i="download"></i>Relatório PDF</button>
+                  <button class="btn" id="exportBtn"><i data-i="download"></i>Exportar Excel</button>
+                  <button class="btn" id="editClass"><i data-i="gear"></i>Editar Turma</button>
+                  <button class="btn" id="newClass"><i data-i="plus"></i>Nova Turma</button>
+                </div>
+
+                <div class="summary-row">
+                  <div class="panel summary">
+                    <h3>Resumo da Turma</h3>
+                    <div class="stat-grid" id="classStats"></div>
+                  </div>
+                  <div class="panel general">
+                    <h3>Desempenho Geral</h3>
+                    <div class="general-body"><div id="generalBars" class="general-bars"></div><div class="ring sm" id="generalRing"><span id="generalPct">0%</span><small>Aprovados</small></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Detalhes -->
+            <aside class="detail" id="detailPanel" aria-label="Detalhes do aluno">
+              <div class="panel">
+                <div class="detail-top"><h2>Detalhes do Aluno</h2><button class="btn sm sheet-close" id="closeSheet">↑ Voltar aos alunos</button></div>
+                <div class="student-card"><span class="avatar big"><i data-i="user"></i></span><div><b id="studentName">Nenhum aluno</b><small id="studentMeta"></small></div></div>
+                <div class="score-summary">
+                  <div class="ring" id="ring"><span id="totalScore">0,0</span><small>Nota Total</small></div>
+                  <div class="score-boxes">
+                    <div class="box"><small>Falta para passar</small><strong id="missingScore">–</strong><small id="missingHint">(é necessário 180)</small></div>
+                    <div class="box" id="statusBox"><i data-i="up"></i><span id="statusText"></span></div>
+                  </div>
+                </div>
+                <button class="btn primary full" id="sheetGradesBtn"><i data-i="pencil"></i>Inserir notas do trimestre</button>
+              </div>
+              <div class="panel">
+                <h2>Desempenho por Avaliação <small class="muted" id="termLabel"></small></h2>
+                <div id="categoryBars"></div>
+              </div>
+              <div class="panel">
+                <h2>Evolução da Nota Total</h2>
+                <div class="chart" id="lineChart"></div>
+              </div>
+              <div class="panel">
+                <div class="meta-head"><h2>Meta para Aprovação</h2><span id="progressText">0 pontos</span></div>
+                <div class="progress"><span id="approvalProgress"></span></div>
+                <div class="meta-foot"><span id="metaFootLeft" class="t-ok"></span><span id="goalText">180 pontos</span></div>
+              </div>
+              <button type="button" class="btn sheet-close voltar-fim" data-voltar>↑ Voltar aos alunos</button>
+            </aside>
+          </div>
+        </section>
+
+        <!-- ===== RELATÓRIOS ===== -->
+        <section id="sec-relatorios" class="section hidden">
+          <div class="filters two">
+            <label class="filter panel"><i data-i="users"></i><span><small>Turma</small><select id="reportClass" aria-label="Turma"></select></span></label>
+            <label class="filter panel"><i data-i="calendar"></i><span><small>Período</small><select id="reportPeriodo" aria-label="Período"><option value="0">Resumo anual</option><option value="1">1º Trimestre</option><option value="2">2º Trimestre</option><option value="3">3º Trimestre</option></select></span></label>
+            <div class="filter-actions"><button class="btn primary" id="reportPdf"><i data-i="download"></i>PDF</button><button class="btn" id="reportPrint"><i data-i="printer"></i>Imprimir</button><button class="btn" id="reportCsv"><i data-i="download"></i>Excel</button></div>
+          </div>
+          <div class="stat-grid wide" id="reportStats"></div>
+          <div class="panel table-panel"><div class="table-wrap"><table id="reportTable"><thead></thead><tbody></tbody></table></div></div>
+        </section>
+
+        <!-- ===== CONFIGURAÇÕES ===== -->
+        <section id="sec-config" class="section hidden">
+          <div class="config-grid">
+            <div class="panel card">
+              <h2>Perfil</h2>
+              <form id="profileForm" class="stack">
+                <label>Nome<input id="cfgNome" required></label>
+                <label>Disciplina principal<input id="cfgDisc" required></label>
+                <label>Escola<input id="cfgEscola" required></label>
+                <label>Pontos para aprovação no ano<input id="cfgGoal" type="number" min="1" step="1" required></label>
+                <button class="btn primary">Salvar perfil</button>
+              </form>
+            </div>
+            <div class="panel card">
+              <h2>Logo da escola</h2>
+              <p class="muted">Aparece no cabeçalho e nos relatórios impressos.</p>
+              <div class="logo-preview"><span class="school-badge lg"><img class="school-logo" alt="Logo atual"></span></div>
+              <div class="stack">
+                <label class="btn file-btn">Trocar imagem<input id="logoInput" type="file" accept="image/*"></label>
+                <button class="btn" id="logoReset">Voltar à logo padrão</button>
+              </div>
+            </div>
+            <div class="panel card">
+              <h2>Backup</h2>
+              <p class="muted">Os dados existem só neste aparelho. Exporte um backup toda semana e guarde no seu Drive. Para usar em outro aparelho, importe o arquivo lá.</p>
+              <div class="stack">
+                <button class="btn primary" id="backupExport"><i data-i="download"></i>Exportar backup (.json)</button>
+                <label class="btn file-btn">Importar backup<input id="backupImport" type="file" accept="application/json,.json"></label>
+                <small id="lastBackup" class="muted"></small>
+              </div>
+            </div>
+            <div class="panel card">
+              <h2>PIN de bloqueio</h2>
+              <p class="muted">Impede que outra pessoa abra o diário neste aparelho. Não substitui o bloqueio de tela do celular.</p>
+              <form id="pinSetForm" class="stack">
+                <label>Novo PIN (mín. 4 dígitos)<input id="pinNew" type="password" inputmode="numeric" minlength="4" autocomplete="new-password"></label>
+                <button class="btn primary">Definir PIN</button>
+                <button class="btn" type="button" id="pinRemove">Remover PIN</button>
+                <small id="pinStatus" class="muted"></small>
+              </form>
+            </div>
+            <div class="panel card" id="installCard">
+              <h2>Instalar o aplicativo</h2>
+              <p class="muted" id="installStatus">Coloca o Diário de Classe na tela inicial, com ícone próprio, abrindo em tela cheia e funcionando sem internet.</p>
+              <div class="install-row"><img src="icon-192.png" alt="Ícone do Diário de Classe" class="ib-ico lg"><button class="btn primary" data-instalar><i data-i="install"></i>Instalar app</button></div>
+            </div>
+            <div class="panel card">
+              <h2>Armazenamento</h2>
+              <p id="storageStatus" class="muted">Verificando…</p>
+              <button class="btn danger" id="wipeAll">Apagar todos os dados deste aparelho</button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <nav class="bottom-nav">
+      <button class="nav" data-section="inicio"><i data-i="home"></i><span>Início</span></button>
+      <button class="nav" data-section="turmas"><i data-i="users"></i><span>Turmas</span></button>
+      <button class="nav" data-section="relatorios"><i data-i="chart"></i><span>Relatórios</span></button>
+      <button class="nav" data-section="config"><i data-i="gear"></i><span>Ajustes</span></button>
+    </nav>
+  </div>
+
+  <!-- Diálogo: inserir notas -->
+  <dialog id="gradesDialog" class="panel lancamento" tabindex="-1">
+    <form id="gradesForm" class="stack lanc-form" novalidate>
+      <div class="dialog-title"><span class="avatar"><i data-i="user"></i></span><div><h2 id="gdName">Aluno</h2><small class="muted" id="gdMeta"></small></div></div>
+      <div class="modo" role="radiogroup" aria-label="Modo de lançamento"><button type="button" class="modo-btn on" data-modo="add" role="radio" aria-checked="true">+ Somar</button><button type="button" class="modo-btn" data-modo="sub" role="radio" aria-checked="false">− Retirar</button><button type="button" class="modo-btn" data-modo="set" role="radio" aria-checked="false">= Definir</button></div>
+      <p class="gd-hint" id="gdHint"></p>
+      <div id="gdFields" class="grade-fields"></div>
+      <div class="gd-total"><span>Nota do trimestre</span><b id="gdTotal">0,0</b></div>
+      <div class="dialog-actions">
+        <button type="button" class="btn gd-proximo" id="gdNextField">Próximo campo ↓</button>
+        <button class="btn primary gd-salvar" id="gdSave"><i data-i="up"></i>Salvar e voltar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Diálogo: notas por avaliação (todos os alunos) -->
+  <dialog id="bulkDialog" class="panel lancamento" tabindex="-1">
+    <form id="bulkForm" class="stack lanc-form" novalidate>
+      <div class="bk-top">
+        <h2>Notas por avaliação</h2>
+        <small class="muted" id="bkMeta"></small>
+        <div class="bk-sel"><button type="button" class="btn sm" id="bkPrevAval" aria-label="Avaliação anterior">‹</button>
+          <select id="bkAval" aria-label="Avaliação"></select>
+          <button type="button" class="btn sm" id="bkNextAval" aria-label="Próxima avaliação">›</button></div>
+      </div>
+      <div class="modo" role="radiogroup" aria-label="Modo de lançamento"><button type="button" class="modo-btn on" data-modo="add" role="radio" aria-checked="true">+ Somar</button><button type="button" class="modo-btn" data-modo="sub" role="radio" aria-checked="false">− Retirar</button><button type="button" class="modo-btn" data-modo="set" role="radio" aria-checked="false">= Definir</button></div>
+      <p class="gd-hint" id="bkHint"></p>
+      <div id="bkList" class="grade-fields"></div>
+      <div class="dialog-actions">
+        <button type="button" class="btn gd-proximo" id="bkNextField">Primeiro aluno ↓</button>
+        <button class="btn primary gd-salvar" id="bkSave"><i data-i="up"></i>Salvar e voltar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Diálogo: editar aluno -->
+  <dialog id="studentEditDialog" class="panel">
+    <form id="studentEditForm" class="stack">
+      <h2>Editar aluno</h2>
+      <label>Nome<input id="seName" required></label>
+      <div class="dialog-actions"><button type="button" class="btn danger" id="seRemove">Remover aluno</button><span class="spacer"></span><button type="button" class="btn" data-close>Cancelar</button><button class="btn primary">Salvar</button></div>
+    </form>
+  </dialog>
+
+  <!-- Diálogo: turma -->
+  <dialog id="classDialog" class="panel">
+    <form id="classForm" class="stack">
+      <h2 id="classDialogTitle">Nova turma</h2>
+      <label>Nome da turma<input id="className" required placeholder="2º A"></label>
+      <label>Disciplina<input id="classDisc" required placeholder="Física"></label>
+      <div id="classImportWrap" class="import-box">
+        <label>Aproveitar outra turma (opcional)<select id="classImport"><option value="">— começar vazia —</option></select></label>
+        <label class="chk"><input type="checkbox" id="impAlunos" checked> Importar os alunos</label>
+        <label class="chk"><input type="checkbox" id="impAvals" checked> Importar as avaliações (mesmos tipos e pontos, sem notas)</label>
+      </div>
+      <small class="muted">As avaliações são cadastradas por trimestre, no botão “Avaliações”.</small>
+      <div class="dialog-actions">
+        <button type="button" class="btn danger" id="deleteClass">Excluir turma</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn" data-close>Cancelar</button>
+        <button class="btn primary">Salvar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Diálogo: avaliações do trimestre -->
+  <dialog id="avalDialog" class="panel">
+    <div class="stack">
+      <h2 id="avTitle">Avaliações</h2>
+      <div id="avList" class="av-list"></div>
+      <small class="muted" id="avTotal"></small>
+      <form id="avForm" class="stack av-form">
+        <h3 id="avFormTitle">Nova avaliação</h3>
+        <div class="av-modelos" id="avModelos"></div>
+        <div class="av-grid">
+          <label>Tipo<select id="avTipo"></select></label>
+          <label>Pontos<input id="avMax" type="number" min="0.5" step="0.5" required placeholder="ex.: 30"></label>
+        </div>
+        <label>Nome<input id="avNome" required placeholder="ex.: Prova 1" list="avNomesLista" autocomplete="off"></label><datalist id="avNomesLista"></datalist>
+        <small class="muted av-auto" id="avAutoInfo"></small>
+        <div id="avSubsWrap" class="hidden"><small class="muted">Esta recuperação substitui (fica a maior nota):</small><div id="avSubs" class="av-subs"></div></div>
+        <div class="dialog-actions"><button type="button" class="btn" id="avCancelEdit">Limpar</button><span class="spacer"></span><button class="btn primary" id="avSave"><i data-i="plus"></i>Adicionar</button></div>
+      </form>
+      <div class="av-copy"><label>Copiar avaliações de<select id="avCopyFrom"></select></label><button type="button" class="btn" id="avCopy">Copiar</button></div>
+      <div class="dialog-actions"><span class="spacer"></span><button type="button" class="btn primary" data-close>Concluir</button></div>
+    </div>
+  </dialog>
+
+  <!-- Diálogo: adicionar alunos -->
+  <dialog id="studentDialog" class="panel">
+    <form id="studentForm" class="stack">
+      <h2>Adicionar alunos</h2>
+      <label>Um nome por linha (pode colar a lista do RCO)<textarea id="studentNames" rows="8" placeholder="Ana Silva&#10;Bruno Costa"></textarea></label>
+      <div class="av-copy"><label>Ou importar alunos de outra turma<select id="studentImportFrom"></select></label><button type="button" class="btn" id="studentImportBtn">Importar</button></div>
+      <div class="dialog-actions"><span class="spacer"></span><button type="button" class="btn" data-close>Cancelar</button><button class="btn primary">Adicionar</button></div>
+    </form>
+  </dialog>
+
+  <!-- Como instalar (quando o navegador não oferece o botão automático) -->
+  <dialog id="installDialog" class="panel">
+    <div class="stack">
+      <div class="dialog-title"><img src="icon-192.png" alt="" class="ib-ico"><div><h2>Instalar o Diário de Classe</h2><small class="muted">Leva menos de 10 segundos.</small></div></div>
+      <ol class="passos" id="installPassos"></ol>
+      <p class="muted" id="installNota"></p>
+      <div class="dialog-actions"><span class="spacer"></span><button type="button" class="btn primary" data-close>Entendi</button></div>
+    </div>
+  </dialog>
+
+  <!-- Confirmação (substitui o confirm() do navegador, que é bloqueado em alguns visualizadores) -->
+  <dialog id="askDialog" class="panel">
+    <form method="dialog" class="stack">
+      <p id="askMsg" class="ask-msg"></p>
+      <div class="dialog-actions"><span class="spacer"></span><button class="btn" value="no">Cancelar</button><button class="btn primary" id="askOk" value="yes">Confirmar</button></div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"><span id="toastMsg"></span><button type="button" id="toastBtn" class="toast-btn hidden"></button></div>
+  <div id="printArea"></div>
+<script src="app.js"></script>
+</body>
+</html>
