@@ -1,0 +1,19 @@
+{
+  "name": "Diário de Classe — Notas e Desempenho",
+  "short_name": "Diário de Classe",
+  "description": "Notas e desempenho dos alunos. Os dados ficam somente no aparelho do professor.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#040a26",
+  "theme_color": "#040a26",
+  "lang": "pt-BR",
+  "categories": ["education", "productivity"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
