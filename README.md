@@ -13,11 +13,17 @@ Coloque a logo em `logo-escola.png` antes de publicar.
 Sem esse arquivo, o app mostra o nome da escola cadastrado no perfil.
 
 ## Instalar (cada professor, uma vez)
-O app mostra um convite "Instale o Diário de Classe" e um botão de instalar no topo
-(e em Ajustes). No Android e no PC o botão instala direto; no iPhone ele mostra o
-passo a passo do Safari (Compartilhar → Adicionar à Tela de Início).
-Depois de instalado: ícone próprio na tela inicial, abre em tela cheia, funciona offline.
-Os dados de cada professor ficam só no aparelho dele.
+Ao abrir o link, o app mostra sozinho o convite "Instale o Diário de Classe". Um toque em
+"Instalar agora" abre a confirmação do próprio navegador (Android/PC). No iPhone o convite
+mostra o passo a passo do Safari (Compartilhar → Adicionar à Tela de Início), porque a Apple
+não permite instalar por botão. O convite só aparece quando a instalação realmente funciona.
+Depois de instalado: ícone próprio, tela cheia, funciona offline.
+
+## Verificar a publicação
+Abra `SEU-SITE/diagnostico.html`: a página confere o manifesto, os ícones, a versão publicada
+e se o navegador liberou a instalação, e aponta o que estiver errado.
+Dica: envie os arquivos pelo site do GitHub (Add file → Upload files) e abra o link no
+Chrome/Safari, não dentro do WhatsApp ou Instagram.
 
 ## Funcionalidades
 - Primeiro acesso com perfil; modo de exemplo; PIN opcional.
