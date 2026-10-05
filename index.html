@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
   <meta name="theme-color" content="#040a26">
-  <meta name="app-versao" content="31">
+  <meta name="app-versao" content="33">
+  <meta name="app-data" content="2026-10-05">
   <meta name="description" content="Diário de Classe — notas e desempenho. Os dados ficam somente no aparelho do professor.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -38,6 +39,7 @@
         <small id="pinError" class="t-bad"></small>
       </form>
       <small class="login-note">Sem conta e sem servidor: as notas não saem deste aparelho, a não ser que você exporte um backup.</small>
+      <footer class="rodape rodape-login"></footer>
     </div>
   </div>
 
@@ -50,6 +52,7 @@
         <span class="avatar"><i data-i="user"></i></span>
         <div class="who"><b id="teacherName">Professor</b><small id="teacherDisc"></small></div>
         <button class="icon-btn" data-go="config" aria-label="Configurações"><i data-i="gear"></i></button>
+        <button class="icon-btn" id="helpBtn" aria-label="Tutorial" title="Tutorial"><i data-i="help"></i></button>
         <button class="icon-btn" id="lockBtn" aria-label="Bloquear"><i data-i="lock"></i></button>
       </div>
       <div class="brands right"><span class="sep"></span><img class="parana-logo" src="logo-parana.png" alt="Governo do Estado do Paraná — Secretaria da Educação"></div>
@@ -64,6 +67,8 @@
           <button class="nav" data-section="turmas"><i data-i="users"></i><span>Turmas</span></button>
           <button class="nav" data-section="relatorios"><i data-i="chart"></i><span>Relatórios</span></button>
           <button class="nav" data-section="config"><i data-i="gear"></i><span>Configurações</span></button>
+          <button class="nav" data-section="contato"><i data-i="mail"></i><span>Contato</span></button>
+          <button class="nav" data-section="tutorial"><i data-i="help"></i><span>Tutorial</span></button>
         </nav>
         <p class="side-quote">“Educação é a chave para um futuro melhor.”</p>
         <div class="side-brands"><span class="school-badge sm"><img class="school-logo" alt=""></span><img class="parana-logo sm" src="logo-parana.png" alt=""></div>
@@ -149,8 +154,10 @@
                 <div id="categoryBars"></div>
               </div>
               <div class="panel">
-                <h2>Evolução da Nota Total</h2>
+                <h2>Evolução por Trimestre</h2>
+                <p class="muted chart-sub" id="chartSub"></p>
                 <div class="chart" id="lineChart"></div>
+                <div id="chartInfo"></div>
               </div>
               <div class="panel">
                 <div class="meta-head"><h2>Meta para Aprovação</h2><span id="progressText">0 pontos</span></div>
@@ -226,6 +233,106 @@
             </div>
           </div>
         </section>
+
+        <!-- ===== CONTATO ===== -->
+        <section id="sec-contato" class="section hidden">
+          <div class="page-head"><div><h1>Contato</h1><p class="muted">Dúvidas, sugestões ou problemas? Fale com o desenvolvedor.</p></div></div>
+          <div class="contato-grid">
+            <form id="contatoForm" class="panel card stack" novalidate>
+              <label>Seu nome<input id="ctNome" required autocomplete="name" maxlength="80" placeholder="Nome e sobrenome"></label>
+              <label>Seu e-mail (para eu responder)<input id="ctEmail" type="email" required autocomplete="email" inputmode="email" maxlength="120" placeholder="nome@exemplo.com"></label>
+              <label>Assunto<select id="ctAssunto"><option>Dúvida</option><option>Sugestão</option><option>Problema ou erro</option><option>Elogio</option><option>Outro</option></select></label>
+              <label>Mensagem<textarea id="ctMsg" rows="6" required maxlength="2000" placeholder="Escreva aqui a sua mensagem…"></textarea></label>
+              <small class="muted ct-cont"><span id="ctContador">0</span>/2000</small>
+              <input type="text" id="ctGotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+              <p class="muted ct-aviso">Ao enviar, seu nome, e-mail e mensagem seguem para o desenvolvedor, junto com a versão do app e o tipo de aparelho, para ajudar a resolver problemas. <b>Não escreva nomes nem notas de alunos.</b></p>
+              <button class="btn primary" id="ctEnviar"><i data-i="mail"></i>Enviar mensagem</button>
+              <small id="ctStatus" class="ct-status" role="status" aria-live="polite"></small>
+            </form>
+            <aside class="panel card ct-dev">
+              <h2>Desenvolvedor</h2>
+              <p><b>Robert Simão dos Santos</b></p>
+              <p class="muted">As mensagens chegam direto ao desenvolvedor e são respondidas pelo e-mail que você informar.</p>
+              <p class="muted ct-versao" id="ctVersao"></p>
+            </aside>
+          </div>
+        </section>
+
+        <!-- ===== TUTORIAL ===== -->
+        <section id="sec-tutorial" class="section hidden">
+          <div class="page-head"><div><h1>Tutorial</h1><p class="muted">Tudo o que você precisa para usar o Diário de Classe, passo a passo. Toque em um tema para abrir.</p></div></div>
+          <div class="tuto">
+            <details open><summary><i data-i="home"></i>1. Primeiros passos</summary>
+              <ol>
+                <li>Abra o link no <b>Chrome</b> (Android e computador) ou no <b>Safari</b> (iPhone) e toque em <b>Instalar agora</b>. O app vira um ícone na tela inicial e funciona sem internet. No iPhone: Compartilhar → Adicionar à Tela de Início.</li>
+                <li>Na primeira vez, informe seu nome, a disciplina e a escola.</li>
+                <li>Em <b>Ajustes</b> você define os pontos para aprovação no ano (padrão 180), pode trocar a logo da escola e criar um <b>PIN</b> de bloqueio.</li>
+                <li><b>Seus dados ficam só neste aparelho.</b> Não há servidor nem conta. Por isso, faça backup (veja o tema 7).</li>
+              </ol>
+            </details>
+            <details><summary><i data-i="users"></i>2. Turmas e alunos</summary>
+              <ol>
+                <li>Toque em <b>Nova turma</b>. Cada disciplina é uma turma: “2º A — Física” e “2º A — Robótica” são turmas diferentes.</li>
+                <li>Se você já tem outra turma com os mesmos alunos e o mesmo método de avaliar, escolha <b>Aproveitar outra turma</b> e marque importar alunos e/ou avaliações (as notas não vêm).</li>
+                <li><b>Adicionar Aluno</b>: cole a lista do RCO, um nome por linha. Números de chamada são removidos e nomes repetidos são ignorados. Também dá para importar os alunos de outra turma.</li>
+                <li><b>Editar Aluno</b> troca o nome ou remove o aluno.</li>
+              </ol>
+            </details>
+            <details><summary><i data-i="clipboard"></i>3. Cadastrar as avaliações</summary>
+              <ol>
+                <li>As avaliações são cadastradas <b>por trimestre</b> (escolha o trimestre no topo) no botão <b>Avaliações</b>. Nenhuma nota existe até você cadastrar a avaliação e lançar.</li>
+                <li><b>Uma a uma:</b> escolha o tipo, o nome e os pontos. Se o tipo não estiver na lista, escolha <b>Outro (digitar o nome)</b> e escreva o seu (ex.: Seminário).</li>
+                <li><b>Várias de uma vez:</b> toque em <b>Montar várias avaliações de uma vez</b>, comece por um modelo ou em branco, edite tipo, nome e pontos e crie tudo na ordem montada. Você pode acrescentar ao que já existe ou substituir.</li>
+                <li><b>Mudar a ordem:</b> segure e arraste a alça <b>⋮⋮</b> da avaliação (no celular, coloque o dedo na alça e arraste). Também dá para usar as setas ↑ ↓.</li>
+                <li><b>Recuperação substitutiva:</b> ao cadastrar uma recuperação, marque quais avaliações ela substitui. Vale a <b>maior nota</b> entre o grupo e a recuperação, e a recuperação não soma ao total do trimestre.</li>
+              </ol>
+            </details>
+            <details><summary><i data-i="pencil"></i>4. Lançar as notas</summary>
+              <ol>
+                <li><b>Notas por avaliação:</b> mostra todos os alunos de uma avaliação. Troque de avaliação no topo e preencha a turma inteira sem abrir aluno por aluno.</li>
+                <li><b>Notas do aluno:</b> mostra todas as avaliações de um aluno só.</li>
+                <li><b>+ Somar, − Retirar, = Definir:</b> escolha o modo no topo. Exemplo numa prova de 30: digite 10 e Enter, depois 5 e Enter, e a nota fica 15. Para corrigir, use <b>= Definir</b> ou apague no <b>✕</b> (há “Desfazer”).</li>
+                <li><b>No computador:</b> digite e tecle <b>Enter</b>; o cursor desce para o próximo aluno. <b>No celular:</b> basta digitar, a nota é registrada sozinha em 1,5 segundo, ou toque em <b>Próximo</b>.</li>
+                <li>Toque em <b>Salvar e voltar</b> ao terminar. No computador também dá para digitar direto nas células da tabela.</li>
+              </ol>
+            </details>
+            <details><summary><i data-i="chart"></i>5. Entender os números e o gráfico</summary>
+              <ul>
+                <li><b>Nota do trimestre:</b> soma das avaliações do trimestre (a recuperação não soma: ela só substitui se for maior).</li>
+                <li><b>Total do ano:</b> soma dos três trimestres. <b>Falta p/ 180</b> é quanto ainda falta para a meta.</li>
+                <li><b>Situação:</b> <b>Aprovado</b> (meta atingida); <b>No caminho</b> (precisa de até a média por trimestre restante, 60 pontos na meta de 180); <b>Em risco</b> (precisa de mais que isso); <b>Inalcançável</b> (não dá mais para chegar com o que resta); <b>Abaixo da meta</b> (ano encerrado sem atingir).</li>
+                <li><b>Gráfico “Evolução por Trimestre”:</b> o eixo de baixo é o trimestre (1º, 2º, 3º) e o eixo da esquerda são os pontos feitos naquele trimestre. As barras são as notas do aluno; a linha amarela tracejada é a média necessária por trimestre para chegar à meta. Abaixo do gráfico aparece quanto o aluno <b>melhorou (▲) ou piorou (▼)</b> em porcentagem em relação ao trimestre anterior.</li>
+              </ul>
+            </details>
+            <details><summary><i data-i="printer"></i>6. Relatórios, PDF e Excel</summary>
+              <ol>
+                <li>Na aba <b>Relatórios</b>, escolha a turma e o período (resumo anual ou um trimestre) e toque em <b>PDF</b>, <b>Imprimir</b> ou <b>Excel</b>.</li>
+                <li>Na tela da turma também há <b>Relatório PDF</b> e <b>Exportar Excel</b> do trimestre aberto.</li>
+                <li>No celular, o PDF abre a tela de compartilhar: salve em Arquivos/Drive ou envie por WhatsApp e e-mail. No computador o arquivo é baixado.</li>
+                <li>O app é material de apoio: o registro oficial continua sendo o RCO.</li>
+              </ol>
+            </details>
+            <details><summary><i data-i="download"></i>7. Backup, outro aparelho e atualizações</summary>
+              <ol>
+                <li><b>Backup:</b> em Ajustes, <b>Exportar backup (.json)</b>. Faça toda semana e guarde no seu Drive.</li>
+                <li><b>Trocar de aparelho:</b> exporte o backup no antigo, instale o app no novo e use <b>Importar backup</b>. Importar substitui os dados do aparelho.</li>
+                <li><b>Desinstalar o app ou limpar os dados do navegador pode apagar suas notas.</b> Faça o backup antes.</li>
+                <li><b>Atualizações:</b> quando houver versão nova, aparece “Nova versão disponível — Atualizar”. Toque e pronto; não precisa reinstalar e as notas ficam guardadas.</li>
+              </ol>
+            </details>
+            <details><summary><i data-i="book"></i>8. Dúvidas frequentes</summary>
+              <dl>
+                <dt>As notas sumiram.</dt><dd>No iPhone, o app instalado na tela inicial e o Safari guardam dados separados. Abra sempre pelo ícone. Se limpou os dados do navegador, importe o último backup.</dd>
+                <dt>Não aparece o botão de instalar.</dt><dd>Abra o link no Chrome ou no Safari (não dentro do WhatsApp ou Instagram). No iPhone use Compartilhar → Adicionar à Tela de Início.</dd>
+                <dt>Digitei a nota errada.</dt><dd>Use <b>= Definir</b> com o valor certo, ou apague no <b>✕</b> e lance de novo.</dd>
+                <dt>O aluno tirou mais que o valor da avaliação.</dt><dd>O app limita ao máximo cadastrado e avisa.</dd>
+                <dt>Quero mudar os pontos de uma avaliação.</dt><dd>Em Avaliações, toque em <b>Editar</b>. Notas acima do novo máximo são ajustadas.</dd>
+                <dt>Preciso falar com o desenvolvedor.</dt><dd>Use a aba <b>Contato</b>.</dd>
+              </dl>
+            </details>
+          </div>
+        </section>
+      <footer class="rodape"></footer>
       </main>
     </div>
 
@@ -234,6 +341,7 @@
       <button class="nav" data-section="turmas"><i data-i="users"></i><span>Turmas</span></button>
       <button class="nav" data-section="relatorios"><i data-i="chart"></i><span>Relatórios</span></button>
       <button class="nav" data-section="config"><i data-i="gear"></i><span>Ajustes</span></button>
+      <button class="nav" data-section="contato"><i data-i="mail"></i><span>Contato</span></button>
     </nav>
   </div>
 
@@ -315,6 +423,7 @@
           <label>Tipo<select id="avTipo"></select></label>
           <label>Pontos<input id="avMax" type="number" min="0.5" step="0.5" required placeholder="ex.: 30"></label>
         </div>
+        <div id="avTipoNomeWrap" class="hidden"><label>Qual tipo de avaliação?<input id="avTipoNome" maxlength="30" placeholder="ex.: Seminário, Simulado, Debate" list="avTiposLista" autocomplete="off"></label><datalist id="avTiposLista"></datalist></div>
         <label>Nome<input id="avNome" required placeholder="ex.: Prova 1" list="avNomesLista" autocomplete="off"></label><datalist id="avNomesLista"></datalist>
         <small class="muted av-auto" id="avAutoInfo"></small>
         <div id="avSubsWrap" class="hidden"><small class="muted">Esta recuperação substitui (fica a maior nota):</small><div id="avSubs" class="av-subs"></div></div>

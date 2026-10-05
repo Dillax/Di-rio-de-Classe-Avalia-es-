@@ -35,6 +35,9 @@ const ICONS = {
   share: '<path d="M12 3v12M8 7l4-4 4 4"/><path d="M5 11v8a2 2 0 002 2h10a2 2 0 002-2v-8"/>',
   menu: '<circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/>',
   plusbox: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/>',
+  grip: '<circle cx="9" cy="6" r="1.6" fill="currentColor"/><circle cx="15" cy="6" r="1.6" fill="currentColor"/><circle cx="9" cy="12" r="1.6" fill="currentColor"/><circle cx="15" cy="12" r="1.6" fill="currentColor"/><circle cx="9" cy="18" r="1.6" fill="currentColor"/><circle cx="15" cy="18" r="1.6" fill="currentColor"/>',
+  help: '<circle cx="12" cy="12" r="9"/><path d="M9.4 9.3a2.7 2.7 0 015.2.9c0 1.8-2.6 2.2-2.6 4M12 17.3v.1"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
   trophy: '<path d="M7 4h10v5a5 5 0 01-10 0z"/><path d="M7 6H3.5a3.5 3.5 0 004 4M17 6h3.5a3.5 3.5 0 01-4 4M9.5 20h5M12 14v6"/>'
 };
 const icon = n => `<i data-i="${n}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n] || ""}</svg></i>`;
@@ -95,10 +98,11 @@ const TIPOS = {
   prova:       { nome: "Prova",            c: "244,63,94",  i: "star" },
   visto:       { nome: "Visto de caderno", c: "14,165,233", i: "notebook" },
   plataforma:  { nome: "Plataforma",       c: "20,184,166", i: "cloud" },
-  outra:       { nome: "Outra",            c: "96,165,250", i: "pencil" },
+  outra:       { nome: "Outro",            c: "96,165,250", i: "pencil" },
   recuperacao: { nome: "Recuperação",      c: "139,92,246", i: "refresh" }
 };
-const tipoOf = v => TIPOS[v.tipo] || TIPOS.outra;
+const tipoOf = v => (v.tipo === "outra" && v.tipoNome) ? { ...TIPOS.outra, nome: v.tipoNome } : (TIPOS[v.tipo] || TIPOS.outra);
+const rotuloTipo = k => k === "outra" ? "Outro (digitar o nome)" : TIPOS[k].nome;
 const isRec = v => v.tipo === "recuperacao";
 
 /* ---------- Cálculos ----------
@@ -252,7 +256,7 @@ function enter() {
 $("#setupForm").onsubmit = async e => {
   e.preventDefault();
   S.perfil = { nome: $("#setupNome").value.trim(), disciplina: $("#setupDisc").value.trim(), escola: $("#setupEscola").value.trim() };
-  await saveNow(); enter(); toast("Pronto. Agora crie sua primeira turma.");
+  await saveNow(); enter(); toast("Bem-vindo! Quer ver o tutorial rápido?", "Ver tutorial", () => go("tutorial"), 12000);
 };
 $("#demoBtn").onclick = async () => { S = demoData(); await saveNow(); ui.turmaId = S.turmas[0].id; enter(); };
 $("#pinForm").onsubmit = async e => { e.preventDefault(); if (await sha256($("#pinInput").value) === S.pinHash) { $("#pinError").textContent = ""; enter(); } else { $("#pinError").textContent = "PIN incorreto."; $("#pinInput").select(); } };
@@ -272,7 +276,7 @@ function renderAll() {
   $("#teacherName").textContent = p.nome || "Professor"; $("#teacherDisc").textContent = p.disciplina || "";
   $("#helloName").textContent = (p.nome || "professor").replace(/^(Prof\.?\s*(Me\.|Dr\.|Dra\.|Ma\.)?\s*)/i, "").split(" ")[0] || "professor";
   $("#demoBanner").classList.toggle("hidden", !S.demo);
-  ({ inicio: renderHome, turmas: renderTurmas, relatorios: renderReport, config: renderConfig })[ui.section]?.();
+  ({ inicio: renderHome, turmas: renderTurmas, relatorios: renderReport, config: renderConfig, contato: renderContato })[ui.section]?.();
 }
 
 /* ---------- Início ---------- */
@@ -289,7 +293,7 @@ function renderHome() {
     const s = classSummary(t, ui.term);
     return `<button class="panel home-card" data-id="${t.id}"><h3>${esc(t.nome)} — ${esc(t.disciplina)}</h3>
       <div class="hc-row"><div><small>Alunos</small><b>${s.n}</b></div><div><small>Média ${ui.term}º trim.</small><b>${fmt(s.media)}</b></div><div><small>Aprovados</small><b class="t-ok">${s.ok}</b></div><div><small>Em risco</small><b class="t-bad">${s.bad}</b></div></div></button>`;
-  }).join("") || `<div class="panel empty"><h2>Nenhuma turma ainda</h2><p class="muted">Crie a primeira e cole a lista de alunos.</p></div>`;
+  }).join("") || `<div class="panel empty"><h2>Nenhuma turma ainda</h2><p class="muted">Crie a primeira e cole a lista de alunos.</p><button type="button" class="btn" data-go-tutorial>Ver tutorial</button></div>`;
   $$("#homeCards .home-card").forEach(c => c.onclick = () => { ui.turmaId = c.dataset.id; ui.alunoId = null; go("turmas"); });
 }
 $("#homeNewClass").onclick = () => openClassDialog(null);
@@ -376,8 +380,9 @@ function renderClassStats() {
   $("#generalPct").textContent = pct + "%"; $("#generalRing").style.setProperty("--p", pct);
 }
 $("#gradesTable tbody").addEventListener("click", e => {
-  const tr = e.target.closest("tr[data-id]"); if (!tr || ui.alunoId === tr.dataset.id) return;
-  ui.alunoId = tr.dataset.id; $$("#gradesTable tbody tr").forEach(r => r.classList.toggle("selected", r === tr)); renderDetail();
+  const tr = e.target.closest("tr[data-id]"); if (!tr) return;
+  if (ui.alunoId !== tr.dataset.id) { ui.alunoId = tr.dataset.id; $$("#gradesTable tbody tr").forEach(r => r.classList.toggle("selected", r === tr)); renderDetail(); }
+  if (e.target.closest("td.l, td:first-child")) openSheet();      /* tocar no nome leva até o desempenho do aluno */
 });
 $("#gradesTable tbody").addEventListener("dblclick", e => { if (e.target.closest("td.l")) openGrades(); });
 function lancarNaCelula(inp) {
@@ -405,7 +410,7 @@ $("#gradesTable tbody").addEventListener("keydown", e => {
 function renderDetail() {
   const t = turma(), a = aluno();
   $("#sheetGradesBtn").disabled = $("#gradesBtn").disabled = $("#editStudentBtn").disabled = !a;
-  if (!a) { $("#studentName").textContent = "Nenhum aluno"; $("#studentMeta").textContent = ""; $("#categoryBars").innerHTML = ""; $("#lineChart").innerHTML = ""; return; }
+  if (!a) { $("#studentName").textContent = "Nenhum aluno"; $("#studentMeta").textContent = ""; $("#categoryBars").innerHTML = ""; $("#lineChart").innerHTML = ""; $("#chartInfo").innerHTML = ""; return; }
   const meta = S.config.meta, an = annual(t, a), k = ui.term;
   $("#studentName").textContent = a.nome;
   $("#studentMeta").textContent = `${t.nome}  |  ${t.disciplina}  |  ${k}º Trimestre`;
@@ -440,26 +445,10 @@ function renderDetail() {
     }
     return `<div class="bar-row" style="--c:${tp.c}"><span class="ic">${icon(tp.i)}</span><span class="nm">${esc(v.nome)}</span><span class="vl">${fmt(n)} / ${fmt(v.max)}</span><span class="pc">${Math.round(p)}%</span><div class="track"><span style="width:${p}%"></span></div>${extra}</div>`;
   }).join("") : `<p class="muted">Nenhuma avaliação cadastrada neste trimestre.</p>`;
-  $("#lineChart").innerHTML = chartSVG(t, an.tots);
+  const gr = graficoTrimestres(t, a, an); $("#lineChart").innerHTML = gr.svg; $("#chartInfo").innerHTML = gr.info; $("#chartSub").textContent = gr.sub;
   $("#approvalProgress").style.width = Math.min(100, an.soma / meta * 100) + "%";
   $("#progressText").textContent = fmt(an.soma) + " pontos"; $("#goalText").textContent = meta + " pontos";
   $("#metaFootLeft").innerHTML = an.falta ? `<span class="t-bad">Faltam ${fmt(an.falta)} pontos</span>` : "↑ Meta atingida";
-}
-/* Evolução acumulada da nota total, com a linha de ritmo da meta */
-function chartSVG(t, tots) {
-  const W = 340, H = 160, pl = 34, pr = 14, pt = 16, pb = 24, meta = S.config.meta;
-  const top = Math.max(meta, TERMS.reduce((s, k) => s + maxPrev(t, k), 0));
-  const x = i => pl + (i + 1) * (W - pl - pr) / 3.4, y = v => pt + (H - pt - pb) * (1 - v / top);
-  let acc = 0; const cum = tots.map(v => v == null ? null : (acc += v));
-  let g = "";
-  for (let s = 0; s <= 4; s++) { const v = top * s / 4; g += `<line x1="${pl}" x2="${W - pr}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(83,129,200,.22)"/><text x="${pl - 6}" y="${y(v) + 3}" text-anchor="end" font-size="9.5" fill="#8fa8d8">${Math.round(v)}</text>`; }
-  const pace = [1, 2, 3].map(i => `${x(i - 1)},${y(meta * i / 3)}`).join(" ");
-  g += `<polyline points="${pl},${y(0)} ${pace}" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4 4" opacity=".85"/><text x="${x(2)}" y="${y(meta) - 6}" text-anchor="end" font-size="9.5" fill="#fbbf24">ritmo da meta</text>`;
-  const pts = cum.map((v, i) => v == null ? null : [x(i), y(v)]).filter(Boolean);
-  const line = pts.length ? `<polyline points="${pl},${y(0)} ${pts.map(p => p.join(",")).join(" ")}" fill="none" stroke="#38bdf8" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>` : `<text x="${W / 2}" y="${H / 2}" text-anchor="middle" font-size="11" fill="#8fa8d8">Sem notas lançadas ainda</text>`;
-  const dots = cum.map((v, i) => v == null ? "" : `<line x1="${x(i)}" x2="${x(i)}" y1="${y(v)}" y2="${y(0)}" stroke="rgba(56,189,248,.3)"/><circle cx="${x(i)}" cy="${y(v)}" r="4.5" fill="#e0f2fe" stroke="#38bdf8" stroke-width="2"/><text x="${x(i)}" y="${y(v) - 9}" text-anchor="middle" font-size="11" fill="#eaf2ff">${fmt(v)}</text>`).join("");
-  const labels = [0, 1, 2].map(i => `<text x="${x(i)}" y="${H - 6}" text-anchor="middle" font-size="10.5" fill="#a9c0e8">T${i + 1}</text>`).join("");
-  return `<svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Evolução acumulada da nota total">${g}${line}${dots}${labels}</svg>`;
 }
 /* no celular os detalhes ficam logo abaixo da lista; tocar no aluno rola até eles */
 /* celular: os detalhes abrem como uma tela própria (a lista some) e "Voltar aos alunos" retorna */
@@ -472,7 +461,16 @@ function rolarAte(el, posicao = 0.33) {
   if (Math.abs(window.scrollY - y) > 4) { (document.scrollingElement || document.documentElement).scrollTop = y; document.body.scrollTop = y; }
   if (Math.abs(window.scrollY - y) > 4) el.scrollIntoView({ block: posicao < 0.1 ? "start" : "center" });
 }
-function openSheet() { if (isMobile()) rolarAte($("#detailPanel"), 0.02); }
+/* PC: o painel lateral rola por dentro até "Desempenho por Avaliação". Celular/tablet: a página rola até os detalhes. */
+function openSheet() {
+  const d = $("#detailPanel"); if (!d || d.classList.contains("hidden")) return;
+  if (getComputedStyle(d).position === "sticky") {
+    const alvo = $("#categoryBars")?.closest(".panel"); if (!alvo) return;
+    const y = Math.max(0, alvo.getBoundingClientRect().top - d.getBoundingClientRect().top + d.scrollTop - 4);
+    d.scrollTo({ top: y, behavior: "smooth" }); setTimeout(() => { if (Math.abs(d.scrollTop - y) > 6) d.scrollTop = y; }, 450);
+    alvo.classList.add("destaque"); setTimeout(() => alvo.classList.remove("destaque"), 1200);
+  } else rolarAte(d, 0.02);
+}
 function closeSheet() {
   if (ui.section !== "turmas") return;
   const card = ui.alunoId && $(`.scard[data-id="${ui.alunoId}"]`);
@@ -669,7 +667,7 @@ $("#reportCsv").onclick = () => exportCsv(S.turmas.find(x => x.id === ui.reportI
 
 /* ---------- Diálogo: avaliações do trimestre ---------- */
 let avEditId = null;
-$("#avTipo").innerHTML = Object.entries(TIPOS).map(([k, v]) => `<option value="${k}">${v.nome}</option>`).join("");
+$("#avTipo").innerHTML = Object.keys(TIPOS).map(k => `<option value="${k}">${rotuloTipo(k)}</option>`).join("");
 function openAvalDialog() {
   const t = turma(); if (!t) return toast("Crie uma turma primeiro.");
   avEditId = null; resetAvForm(); renderAvList();
@@ -680,8 +678,8 @@ function renderAvList() {
   $("#avTitle").textContent = `Avaliações — ${t.nome} · ${t.disciplina} · ${k}º trimestre`;
   $("#avList").innerHTML = lista.length ? lista.map((v, i) => {
     const tp = tipoOf(v), sub = isRec(v) ? ` · substitui ${esc(normais(t, k).filter(x => (v.subs || []).includes(x.id)).map(x => x.nome).join(" + ") || "—")}` : "";
-    return `<div class="av-item" style="--c:${tp.c}"><span class="ic">${icon(tp.i)}</span><span class="av-txt"><b>${esc(v.nome)}</b><small>${esc(tp.nome)} · ${fmt(v.max)} pontos${sub}</small></span>
-      <span class="av-acts"><button type="button" class="icon-btn" data-av-mv="-1" data-id="${v.id}" ${i === 0 ? "disabled" : ""} aria-label="Subir ${esc(v.nome)}">${icon("up")}</button><button type="button" class="icon-btn" data-av-mv="1" data-id="${v.id}" ${i === lista.length - 1 ? "disabled" : ""} aria-label="Descer ${esc(v.nome)}">${icon("down")}</button>
+    return `<div class="av-item" data-id="${v.id}" style="--c:${tp.c}"><span class="ic">${icon(tp.i)}</span><span class="av-txt"><b>${esc(v.nome)}</b><small>${esc(tp.nome)} · ${fmt(v.max)} pontos${sub}</small></span>
+      <span class="av-acts"><button type="button" class="icon-btn grip" aria-label="Segure e arraste para mudar a ordem de ${esc(v.nome)}" title="Segure e arraste para mudar a ordem">${icon("grip")}</button><button type="button" class="icon-btn" data-av-mv="-1" data-id="${v.id}" ${i === 0 ? "disabled" : ""} aria-label="Subir ${esc(v.nome)}">${icon("up")}</button><button type="button" class="icon-btn" data-av-mv="1" data-id="${v.id}" ${i === lista.length - 1 ? "disabled" : ""} aria-label="Descer ${esc(v.nome)}">${icon("down")}</button>
       <button type="button" class="btn sm" data-av-edit="${v.id}">${icon("pencil")}Editar</button><button type="button" class="btn sm danger" data-av-del="${v.id}" aria-label="Excluir ${esc(v.nome)}">${icon("x")}</button></span></div>`;
   }).join("") : `<p class="muted">Nenhuma avaliação neste trimestre. Cadastre abaixo — nenhuma nota é definida até você criar a avaliação.</p>`;
   const tm = termMax(t, k);
@@ -702,10 +700,12 @@ function renderSubs(selecionadas) {
 }
 function resetAvForm() {
   maxAuto = false; if ($("#avAutoInfo")) $("#avAutoInfo").textContent = "";
-  avEditId = null; $("#avTipo").value = "prova"; $("#avNome").value = ""; $("#avMax").value = "";
+  avEditId = null; $("#avTipo").value = "prova"; $("#avNome").value = ""; $("#avMax").value = ""; $("#avTipoNome").value = ""; mostrarTipoNome();
   $("#avFormTitle").textContent = "Nova avaliação"; $("#avSave").innerHTML = icon("plus") + "Adicionar";
   $("#avSubsWrap").classList.add("hidden"); renderSubs([]);
 }
+function mostrarTipoNome() { $("#avTipoNomeWrap").classList.toggle("hidden", $("#avTipo").value !== "outra"); }
+$("#avTipo").addEventListener("change", () => { mostrarTipoNome(); if ($("#avTipo").value === "outra") $("#avTipoNome").focus(); });
 $("#avTipo").onchange = () => {
   const rec = $("#avTipo").value === "recuperacao"; $("#avSubsWrap").classList.toggle("hidden", !rec);
   if (!$("#avNome").value.trim() || Object.values(TIPOS).some(x => $("#avNome").value.startsWith(x.nome))) {
@@ -717,17 +717,18 @@ $("#avTipo").onchange = () => {
 $("#avCancelEdit").onclick = resetAvForm;
 $("#avForm").onsubmit = e => {
   e.preventDefault();
-  const t = turma(), k = ui.term, tipo = $("#avTipo").value, nome = $("#avNome").value.trim(), max = Number(String($("#avMax").value).replace(",", "."));
+  const t = turma(), k = ui.term, tipo = $("#avTipo").value, nome = $("#avNome").value.trim(), max = Number(String($("#avMax").value).replace(",", ".")), tipoNome = tipo === "outra" ? $("#avTipoNome").value.trim().slice(0, 30) : "";
+  if (tipo === "outra" && !tipoNome) return toast("Digite o nome do tipo de avaliação (ex.: Seminário).");
   if (!nome || !(max > 0)) return toast("Informe o nome e os pontos da avaliação.");
   const subs = tipo === "recuperacao" ? $$("#avSubs input:checked").map(x => x.value) : undefined;
   if (tipo === "recuperacao" && !subs.length) return toast("Marque qual(is) avaliação(ões) a recuperação substitui.");
   if (avEditId) {
     const v = avals(t, k).find(x => x.id === avEditId);
-    Object.assign(v, { tipo, nome, max }); if (subs) v.subs = subs; else delete v.subs;
+    Object.assign(v, { tipo, nome, max }); if (subs) v.subs = subs; else delete v.subs; if (tipoNome) v.tipoNome = tipoNome; else delete v.tipoNome;
     t.alunos.forEach(a => { if (a.notas[v.id] > max) a.notas[v.id] = max; });
     toast("Avaliação atualizada.");
   } else {
-    const v = { id: uid(), tipo, nome, max }; if (subs) v.subs = subs;
+    const v = { id: uid(), tipo, nome, max }; if (subs) v.subs = subs; if (tipoNome) v.tipoNome = tipoNome;
     t.avals[k].push(v); toast("Avaliação cadastrada. As notas começam vazias.");
   }
   save(); resetAvForm(); renderAvList(); refreshTurma();
@@ -741,7 +742,7 @@ $("#avList").addEventListener("click", async e => {
   }
   if (ed) {
     const v = avals(t, k).find(x => x.id === ed.dataset.avEdit); avEditId = v.id;
-    $("#avTipo").value = v.tipo; $("#avNome").value = v.nome; $("#avMax").value = v.max;
+    $("#avTipo").value = v.tipo; $("#avNome").value = v.nome; $("#avMax").value = v.max; $("#avTipoNome").value = v.tipoNome || ""; mostrarTipoNome();
     $("#avFormTitle").textContent = "Editar avaliação"; $("#avSave").innerHTML = icon("pencil") + "Salvar alteração";
     $("#avSubsWrap").classList.toggle("hidden", !isRec(v)); renderSubs(v.subs || []); $("#avNome").focus();
   }
@@ -792,6 +793,8 @@ function avaliacoesUsadas() {
   return mapa;
 }
 function atualizarListaNomes() {
+  const tn = new Set(); S.turmas.forEach(x => TERMS.forEach(kk => avals(x, kk).forEach(v => { if (v.tipoNome) tn.add(v.tipoNome); })));
+  $("#avTiposLista").innerHTML = [...tn].map(n => `<option value="${esc(n)}">`).join("");
   $("#avNomesLista").innerHTML = [...avaliacoesUsadas().values()].map(({ v }) => `<option value="${esc(v.nome)}">${esc(tipoOf(v).nome)} · ${fmt(v.max)} pts</option>`).join("");
 }
 let maxAuto = false;
@@ -799,7 +802,7 @@ $("#avNome").addEventListener("input", () => {
   if (avEditId) return;
   const achado = avaliacoesUsadas().get($("#avNome").value.trim().toLowerCase());
   if (achado && $("#avTipo").value !== "recuperacao") {
-    $("#avTipo").value = achado.v.tipo;
+    $("#avTipo").value = achado.v.tipo; $("#avTipoNome").value = achado.v.tipoNome || ""; mostrarTipoNome();
     if (!$("#avMax").value || maxAuto) { $("#avMax").value = achado.v.max; maxAuto = true; }
     $("#avAutoInfo").textContent = `Preenchido como em ${achado.onde}: ${tipoOf(achado.v).nome}, ${fmt(achado.v.max)} pontos.`;
   } else $("#avAutoInfo").textContent = "";
@@ -1252,17 +1255,19 @@ document.addEventListener("pointerdown", e => {
    ========================================================================== */
 let bld = [];
 const TIPOS_ORDEM = Object.keys(TIPOS);
-const NOME_AUTO = /^(Atividade|Trabalho|Prova|Visto de caderno|Plataforma|Outra|Recuperação) \d+$/;
+const NOME_AUTO = /^(Atividade|Trabalho|Prova|Visto de caderno|Plataforma|Outro|Outra|Recuperação) \d+$/;
 const bldExistentes = () => avals(turma(), ui.term);
 const bldModo = () => (bldExistentes().length ? ($("input[name=bldModo]:checked")?.value || "add") : "add");
 const bldNum = v => Number(String(v).replace(",", ".")) || 0;
 function pontosSugeridos(tipo) { let u = null; S.turmas.forEach(x => TERMS.forEach(kk => avals(x, kk).forEach(v => { if (v.tipo === tipo) u = v; }))); return u ? u.max : ""; }
 function bldNomeAuto(tipo, i) {
-  const antes = bldModo() === "add" ? bldExistentes().filter(v => v.tipo === tipo).length : 0;
-  return `${TIPOS[tipo].nome} ${antes + bld.slice(0, i + 1).filter(r => r.tipo === tipo).length}`;
+  const tn = tipo === "outra" ? (bld[i]?.tipoNome || "").trim() : "";
+  const mesmo = v => v.tipo === tipo && (tipo !== "outra" || (v.tipoNome || "").trim() === tn);   /* "Outro" conta por nome do tipo */
+  const antes = bldModo() === "add" ? bldExistentes().filter(mesmo).length : 0;
+  return `${tipo === "outra" ? (tn || "Outro") : TIPOS[tipo].nome} ${antes + bld.slice(0, i + 1).filter(mesmo).length}`;
 }
 function bldRenumerar() { bld.forEach((r, i) => { if (r.autoNome) r.nome = bldNomeAuto(r.tipo, i); }); }
-const bldNovaLinha = tipo => ({ id: uid(), tipo, nome: "", max: tipo === "recuperacao" ? "" : pontosSugeridos(tipo), subs: [], autoNome: true, autoMax: true });
+const bldNovaLinha = tipo => ({ id: uid(), tipo, nome: "", max: tipo === "recuperacao" ? "" : pontosSugeridos(tipo), subs: [], tipoNome: "", autoNome: true, autoMax: true });
 function bldSomaSubs(r) { return r.subs.reduce((s, id) => s + bldNum((bld.find(y => y.id === id) || bldExistentes().find(y => y.id === id) || {}).max), 0); }
 function bldOpcoesSubs(r, i) {
   const outras = new Set(bld.filter(x => x !== r && x.tipo === "recuperacao").flatMap(x => x.subs));
@@ -1280,11 +1285,11 @@ function linhaBld(r, i) {
     const itens = [...existentes.map(v => chk(v, "já cadastrada")), ...doRascunho.map(v => chk(v, ""))];
     subs = `<div class="bld-subs"><small class="muted">Substitui (fica a maior nota):</small>${itens.join("") || `<small class="muted">Coloque acima desta linha as avaliações que ela vai substituir.</small>`}</div>`;
   }
-  return `<div class="bld-row" data-i="${i}" style="--c:${tp.c}">
+  return `<div class="bld-row" data-i="${i}" data-id="${r.id}" style="--c:${tp.c}">
     <div class="bld-top"><span class="bld-n">${i + 1}</span>
-      <select class="bld-tipo" data-f="tipo" aria-label="Tipo da linha ${i + 1}">${TIPOS_ORDEM.map(k => `<option value="${k}" ${k === r.tipo ? "selected" : ""}>${TIPOS[k].nome}</option>`).join("")}</select>
-      <span class="bld-mov"><button type="button" class="icon-btn" data-mv="-1" ${i === 0 ? "disabled" : ""} aria-label="Subir linha ${i + 1}">${icon("up")}</button><button type="button" class="icon-btn" data-mv="1" ${i === bld.length - 1 ? "disabled" : ""} aria-label="Descer linha ${i + 1}">${icon("down")}</button><button type="button" class="icon-btn" data-del aria-label="Remover linha ${i + 1}">${icon("x")}</button></span></div>
-    <div class="bld-campos"><input class="bld-nome" data-f="nome" value="${esc(r.nome)}" placeholder="Nome (ex.: Prova 1)" aria-label="Nome da linha ${i + 1}" autocomplete="off"><input class="bld-max" data-f="max" inputmode="decimal" value="${esc(r.max)}" placeholder="Pontos" aria-label="Pontos da linha ${i + 1}"></div>${subs}</div>`;
+      <select class="bld-tipo" data-f="tipo" aria-label="Tipo da linha ${i + 1}">${TIPOS_ORDEM.map(k => `<option value="${k}" ${k === r.tipo ? "selected" : ""}>${rotuloTipo(k)}</option>`).join("")}</select>
+      <span class="bld-mov"><button type="button" class="icon-btn grip" aria-label="Segure e arraste para mudar a ordem da linha ${i + 1}" title="Segure e arraste para mudar a ordem">${icon("grip")}</button><button type="button" class="icon-btn" data-mv="-1" ${i === 0 ? "disabled" : ""} aria-label="Subir linha ${i + 1}">${icon("up")}</button><button type="button" class="icon-btn" data-mv="1" ${i === bld.length - 1 ? "disabled" : ""} aria-label="Descer linha ${i + 1}">${icon("down")}</button><button type="button" class="icon-btn" data-del aria-label="Remover linha ${i + 1}">${icon("x")}</button></span></div>
+    <div class="bld-campos"><input class="bld-nome" data-f="nome" value="${esc(r.nome)}" placeholder="Nome (ex.: Prova 1)" aria-label="Nome da linha ${i + 1}" autocomplete="off"><input class="bld-max" data-f="max" inputmode="decimal" value="${esc(r.max)}" placeholder="Pontos" aria-label="Pontos da linha ${i + 1}"></div>${r.tipo === "outra" ? `<input class="bld-tn" data-f="tipoNome" value="${esc(r.tipoNome || "")}" placeholder="Qual tipo? (ex.: Seminário)" maxlength="30" list="avTiposLista" autocomplete="off" aria-label="Nome do tipo da linha ${i + 1}">` : ""}${subs}</div>`;
 }
 function bldTotal() {
   const base = bldModo() === "add" ? termMax(turma(), ui.term) : 0, novo = bld.filter(r => r.tipo !== "recuperacao").reduce((s, r) => s + bldNum(r.max), 0), tot = base + novo, n = bld.length;
@@ -1301,7 +1306,7 @@ function renderBuilder() {
   bldTotal();
 }
 $("#bldModelos").innerHTML = `<small class="muted">Começar por:</small>` + MODELOS.map((m, i) => `<button type="button" class="btn sm" data-bm="${i}">${esc(m.nome)}</button>`).join("") + `<button type="button" class="btn sm" data-bm="zero">Em branco</button>`;
-$("#bldAddTipo").innerHTML = TIPOS_ORDEM.map(k => `<option value="${k}">${TIPOS[k].nome}</option>`).join(""); $("#bldAddTipo").value = "prova";
+$("#bldAddTipo").innerHTML = TIPOS_ORDEM.map(k => `<option value="${k}">${rotuloTipo(k)}</option>`).join(""); $("#bldAddTipo").value = "prova";
 $("#bldOpen").onclick = () => { if (!turma()) return toast("Crie uma turma primeiro."); bld = []; renderBuilder(); $("#bldDialog").showModal(); };
 $("#bldModelos").addEventListener("click", async e => {
   const b = e.target.closest("[data-bm]"); if (!b) return;
@@ -1319,11 +1324,12 @@ $("#bldList").addEventListener("input", e => {
   const row = e.target.closest(".bld-row"), r = row && bld[+row.dataset.i]; if (!r) return;
   if (e.target.dataset.f === "nome") { r.nome = e.target.value; r.autoNome = false; }
   if (e.target.dataset.f === "max") { r.max = e.target.value; r.autoMax = false; bldTotal(); }
+  if (e.target.dataset.f === "tipoNome") { r.tipoNome = e.target.value; if (r.autoNome) { r.nome = bldNomeAuto(r.tipo, +row.dataset.i); row.querySelector(".bld-nome").value = r.nome; } }
 });
 $("#bldList").addEventListener("change", e => {
   const row = e.target.closest(".bld-row"), i = row ? +row.dataset.i : -1, r = bld[i]; if (!r) return;
   if (e.target.dataset.f === "tipo") {
-    const era = r.tipo; r.tipo = e.target.value; r.subs = [];
+    const era = r.tipo; r.tipo = e.target.value; r.subs = []; if (r.tipo !== "outra") r.tipoNome = "";
     if (r.tipo === "recuperacao") { if (r.autoMax) r.max = ""; }
     else if (r.autoMax || era === "recuperacao") { r.max = pontosSugeridos(r.tipo); r.autoMax = true; }
     if (!r.nome.trim() || NOME_AUTO.test(r.nome)) r.autoNome = true;
@@ -1344,12 +1350,13 @@ $("#bldModoWrap").addEventListener("change", renderBuilder);
 $("#bldCreate").onclick = async () => {
   const t = turma(), k = ui.term, ex = bldExistentes(), modo = bldModo();
   for (const [i, r] of bld.entries()) {
+    if (r.tipo === "outra" && !(r.tipoNome || "").trim()) return toast(`Linha ${i + 1}: digite o nome do tipo (ex.: Seminário).`);
     if (!r.nome.trim()) return toast(`Linha ${i + 1}: informe o nome.`);
     if (!(bldNum(r.max) > 0)) return toast(`Linha ${i + 1} (${r.nome}): informe os pontos.`);
   }
   const validos = new Set([...bld.map(r => r.id), ...(modo === "add" ? ex.map(v => v.id) : [])]), novas = [];
   for (const [i, r] of bld.entries()) {
-    const v = { id: r.id, tipo: r.tipo, nome: r.nome.trim(), max: bldNum(r.max) };
+    const v = { id: r.id, tipo: r.tipo, nome: r.nome.trim(), max: bldNum(r.max) }; if (r.tipo === "outra") v.tipoNome = r.tipoNome.trim().slice(0, 30);
     if (r.tipo === "recuperacao") { v.subs = r.subs.filter(id => validos.has(id)); if (!v.subs.length) return toast(`Linha ${i + 1} (${v.nome}): marque o que a recuperação substitui.`); }
     novas.push(v);
   }
@@ -1357,3 +1364,187 @@ $("#bldCreate").onclick = async () => {
   else { t.avals[k] = [...ex, ...novas]; save(); renderAvList(); refreshTurma(); toast(`${novas.length} avaliação(ões) criada(s) na ordem montada. As notas começam vazias.`); }
   $("#bldDialog").close();
 };
+
+
+/* ==========================================================================
+   RODAPÉ (autoria, direitos autorais e versão) E CONTATO
+   ========================================================================== */
+const APP_VERSAO = document.querySelector('meta[name="app-versao"]')?.content || "?";
+const APP_DATA = document.querySelector('meta[name="app-data"]')?.content || "";
+const ANO_INICIAL = 2026;
+function montarRodape() {
+  const ano = new Date().getFullYear(), anos = ano > ANO_INICIAL ? `${ANO_INICIAL}–${ano}` : `${ANO_INICIAL}`;
+  const data = APP_DATA ? new Date(APP_DATA + "T12:00:00").toLocaleDateString("pt-BR") : "";
+  $$(".rodape").forEach(f => {
+    const links = f.classList.contains("rodape-login") ? "" : `<p class="rd-links"><button type="button" class="link" data-go-tutorial>Tutorial</button> · <button type="button" class="link" data-go-contato>Contato</button></p>`;
+    f.innerHTML = `<p class="rd-dev">Desenvolvido por <b>Robert Simão dos Santos</b></p>
+      <p class="rd-copy"><span aria-hidden="true">©</span><span class="sr-only">Copyright</span> ${anos} Robert Simão dos Santos. Todos os direitos reservados.</p>
+      <p class="rd-lei">Programa de computador protegido pela legislação de direitos autorais (Leis nº 9.609/1998 e nº 9.610/1998). Marcas e brasões de terceiros pertencem aos seus titulares.</p>
+      ${links}<p class="rd-ver">Diário de Classe · Versão ${esc(APP_VERSAO)}${data ? ` · ${data}` : ""}</p>`;
+  });
+  if ($("#ctVersao")) $("#ctVersao").textContent = `Diário de Classe · Versão ${APP_VERSAO}${data ? " · " + data : ""}`;
+}
+montarRodape();
+
+/* Contato: as mensagens vão para a mesma caixa de entrada do site Quanta (serviço Formspree) */
+const CONTATO_URL = "https://formspree.io/f/xnjkyayk";
+const CHAVE_ULTIMO_ENVIO = "diario-contato-ultimo";
+const emailValido = e => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);
+function renderContato() {
+  if (!$("#ctNome").value && S?.perfil?.nome) $("#ctNome").value = S.perfil.nome.replace(/^(Prof\.?\s*(Me\.|Dr\.|Dra\.|Ma\.)?\s*)/i, "").trim();
+  $("#ctContador").textContent = $("#ctMsg").value.length;
+}
+function statusContato(txt, tipo) { const s = $("#ctStatus"); s.textContent = txt; s.className = "ct-status " + (tipo || ""); }
+$("#ctMsg").addEventListener("input", () => { $("#ctContador").textContent = $("#ctMsg").value.length; });
+$("#contatoForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const nome = $("#ctNome").value.trim(), email = $("#ctEmail").value.trim(), assunto = $("#ctAssunto").value, msg = $("#ctMsg").value.trim();
+  if (nome.length < 2) return statusContato("Informe o seu nome.", "erro");
+  if (!emailValido(email)) return statusContato("Informe um e-mail válido para eu poder responder.", "erro");
+  if (msg.length < 10) return statusContato("Escreva uma mensagem com pelo menos 10 letras.", "erro");
+  if ($("#ctGotcha").value) { statusContato("Mensagem enviada. Obrigado!", "ok"); return; }          /* robô: finge que enviou */
+  let ultimo = 0; try { ultimo = +localStorage.getItem(CHAVE_ULTIMO_ENVIO) || 0; } catch {}
+  if (Date.now() - ultimo < 60000) return statusContato("Aguarde um minuto para enviar outra mensagem.", "erro");
+  if (!navigator.onLine) return statusContato("Você está sem internet. Sua mensagem continua aqui: toque em Enviar quando estiver online.", "erro");
+  const btn = $("#ctEnviar"); btn.disabled = true; statusContato("Enviando…", "");
+  const aparelho = /iphone|ipad|ipod/i.test(navigator.userAgent) ? "iPhone/iPad" : /android/i.test(navigator.userAgent) ? "Android" : "Computador";
+  try {
+    const r = await fetch(CONTATO_URL, {
+      method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({ name: nome, email, _replyto: email, _subject: `[Diário de Classe] ${assunto} — ${nome}`, assunto, message: msg,
+        app: `Diário de Classe, versão ${APP_VERSAO}${APP_DATA ? " (" + APP_DATA + ")" : ""}`, instalado: appInstalado() ? "sim" : "não", aparelho, navegador: navigator.userAgent.slice(0, 220) })
+    });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    try { localStorage.setItem(CHAVE_ULTIMO_ENVIO, String(Date.now())); } catch {}
+    $("#ctMsg").value = ""; $("#ctContador").textContent = "0";
+    statusContato("Mensagem enviada! Obrigado. Responderei pelo e-mail informado.", "ok"); toast("Mensagem enviada. Obrigado!");
+  } catch (err) {
+    statusContato("Não foi possível enviar agora (sem internet ou serviço indisponível). A sua mensagem continua aqui: toque em Enviar para tentar de novo.", "erro");
+  } finally { btn.disabled = false; }
+});
+document.addEventListener("click", e => { const a = e.target.closest("[data-go-contato]"); if (a) go("contato"); });
+
+
+/* ==========================================================================
+   GRÁFICO "EVOLUÇÃO POR TRIMESTRE"
+   Barras = pontos que o aluno fez em cada trimestre; linha amarela = média necessária
+   por trimestre (meta ÷ 3). Abaixo: legenda e quanto subiu/desceu em relação ao anterior.
+   ========================================================================== */
+const fmtPct = n => n.toFixed(1).replace(".", ",") + "%";
+function graficoTrimestres(t, a, an) {
+  const meta = S.config.meta, ref = meta / 3, W = 340, H = 218, pl = 46, pr = 12, pt = 22, pb = 54;
+  let top = Math.max(...TERMS.map(k => maxPrev(t, k)), ref * 1.15); top = Math.ceil(top / 20) * 20;
+  const cw = (W - pl - pr) / 3, x = i => pl + cw * (i + 0.5), y = v => pt + (H - pt - pb) * (1 - v / top), notas = an.tots, cy = (pt + H - pb) / 2;
+  let g = `<defs><linearGradient id="gbarra" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#38bdf8" stop-opacity=".95"/><stop offset="1" stop-color="#3b82f6" stop-opacity=".35"/></linearGradient></defs>`;
+  for (let s = 0; s <= 4; s++) { const v = top * s / 4; g += `<line x1="${pl}" x2="${W - pr}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(120,160,230,.22)"/><text x="${pl - 6}" y="${y(v) + 3.5}" text-anchor="end" font-size="10" fill="#9fb4e8">${Math.round(v)}</text>`; }
+  g += `<text transform="rotate(-90 11 ${cy})" x="11" y="${cy}" text-anchor="middle" font-size="10.5" fill="#cfdcff">Pontos no trimestre</text>`;
+  g += `<text x="${(pl + W - pr) / 2}" y="${H - 6}" text-anchor="middle" font-size="10.5" fill="#cfdcff">Trimestre</text>`;
+  const pts = []; let barras = "", rotulos = "";
+  notas.forEach((v, i) => {
+    rotulos += `<text x="${x(i)}" y="${H - pb + 16}" text-anchor="middle" font-size="11" fill="#e6eeff">${i + 1}º tri.</text>`;
+    if (v == null) { rotulos += `<text x="${x(i)}" y="${y(0) - 8}" text-anchor="middle" font-size="10" fill="#7d93bf">sem notas</text>`; return; }
+    const bw = Math.min(46, cw * 0.55); pts.push([x(i), y(v)]);
+    barras += `<rect x="${x(i) - bw / 2}" y="${y(v)}" width="${bw}" height="${Math.max(1, y(0) - y(v))}" rx="4" fill="url(#gbarra)" stroke="#38bdf8" stroke-width="1"/>`;
+    rotulos += `<text x="${x(i)}" y="${y(v) - 7}" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">${fmt(v)}</text>`;
+  });
+  const linha = pts.length > 1 ? `<polyline points="${pts.map(p => p.join(",")).join(" ")}" fill="none" stroke="#e0f2fe" stroke-width="1.6" stroke-linejoin="round"/>` : "";
+  const pontos = pts.map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="3.6" fill="#e0f2fe" stroke="#38bdf8" stroke-width="1.6"/>`).join("");
+  const refl = `<line x1="${pl}" x2="${W - pr}" y1="${y(ref)}" y2="${y(ref)}" stroke="#fbbf24" stroke-width="1.6" stroke-dasharray="5 4"/><text x="${W - pr}" y="${y(ref) - 4}" text-anchor="end" font-size="10" fill="#fbbf24">média p/ aprovar: ${fmt(ref)}</text>`;
+  const resumo = notas.map((v, i) => `${i + 1}º trimestre: ${v == null ? "sem notas" : fmt(v) + " pontos"}`).join("; ");
+  const svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Pontos do aluno em cada trimestre. ${resumo}. Média necessária por trimestre: ${fmt(ref)}.">${g}${barras}${refl}${linha}${pontos}${rotulos}</svg>`;
+  const linhas = notas.map((v, i) => {
+    let j = i - 1; while (j >= 0 && notas[j] == null) j--;
+    let txt = "", cls = "";
+    if (v == null) txt = "sem notas lançadas";
+    else if (j < 0) txt = i === 0 ? "primeiro trimestre" : "sem trimestre anterior para comparar";
+    else {
+      const dif = v - notas[j], pct = notas[j] > 0 ? Math.abs(dif) / notas[j] * 100 : null, de = `em relação ao ${j + 1}º trimestre`;
+      if (Math.abs(dif) < 0.05) txt = `= igual ${de}`;
+      else { cls = dif > 0 ? "sobe" : "desce"; txt = `${dif > 0 ? "▲ melhorou" : "▼ piorou"} ${pct == null ? "" : fmtPct(pct) + " "}(${dif > 0 ? "+" : "−"}${fmt(Math.abs(dif))} pts) ${de}`; }
+    }
+    return `<div class="cv"><span class="cv-k">${i + 1}º trimestre</span><b>${v == null ? "—" : fmt(v)}${v == null ? "" : " <small>pts</small>"}</b><span class="cv-v ${cls}">${txt}</span></div>`;
+  }).join("");
+  const info = `<div class="chart-legend"><span><i class="lg-barra"></i>Pontos do aluno no trimestre</span><span><i class="lg-meta"></i>Média necessária por trimestre (${fmt(ref)})</span></div>
+    <div class="chart-var">${linhas}</div><p class="muted chart-nota">Total acumulado no ano: <b>${fmt(an.soma)}</b> de ${meta} pontos.</p>`;
+  return { svg, info, sub: `Pontos que o aluno fez em cada trimestre, comparados com a média necessária para chegar a ${meta}.` };
+}
+
+/* ==========================================================================
+   ARRASTAR PARA REORDENAR
+   Mouse: clicar, segurar e arrastar (ou arrastar pela alça ⋮⋮).
+   Celular: dedo na alça ⋮⋮ e arrastar (ou segurar o item por ~0,4 s e arrastar).
+   ========================================================================== */
+let ARRASTANDO = false;
+document.addEventListener("touchmove", e => { if (ARRASTANDO) e.preventDefault(); }, { passive: false });
+function ativarArrasto(cont, { item, alca, aoSoltar }) {
+  let a = null;
+  const itensDe = () => [...cont.querySelectorAll(item)];
+  const vizinho = (it, dir) => { let n = dir > 0 ? it.nextElementSibling : it.previousElementSibling; while (n && !n.matches(item)) n = dir > 0 ? n.nextElementSibling : n.previousElementSibling; return n; };
+  const rolavel = el => { for (let p = el.parentElement; p; p = p.parentElement) { const o = getComputedStyle(p).overflowY; if ((o === "auto" || o === "scroll") && p.scrollHeight > p.clientHeight + 2) return p; } return null; };
+  function flip(s, mudar) {
+    const t0 = s.getBoundingClientRect().top; mudar(); const t1 = s.getBoundingClientRect().top;
+    s.style.transition = "none"; s.style.transform = `translateY(${t0 - t1}px)`; s.getBoundingClientRect();
+    s.style.transition = "transform .16s ease"; s.style.transform = ""; setTimeout(() => { s.style.transition = ""; }, 220);
+  }
+  function atualizar() {
+    const it = a.it, topo = a.y - a.grab; let guarda = 0, moveu = true;
+    while (moveu && guarda++ < 30) {
+      moveu = false; it.style.transform = "";
+      const r = it.getBoundingClientRect(), centro = topo + r.height / 2, prox = vizinho(it, 1), ant = vizinho(it, -1);
+      if (prox) { const pr = prox.getBoundingClientRect(); if (centro > pr.top + pr.height / 2) { flip(prox, () => prox.after(it)); moveu = true; continue; } }
+      if (ant) { const ar = ant.getBoundingClientRect(); if (centro < ar.top + ar.height / 2) { flip(ant, () => ant.before(it)); moveu = true; } }
+    }
+    it.style.transform = ""; const r2 = it.getBoundingClientRect(); it.style.transform = `translateY(${topo - r2.top}px)`;
+  }
+  function loop() {
+    if (!a || !a.ativo) return;
+    const rect = a.sc ? a.sc.getBoundingClientRect() : { top: 0, bottom: innerHeight }, zona = 64; let v = 0;
+    if (a.y < rect.top + zona) v = -(1 - Math.max(0, a.y - rect.top) / zona) * 14; else if (a.y > rect.bottom - zona) v = (1 - Math.max(0, rect.bottom - a.y) / zona) * 14;
+    if (v) { if (a.sc) a.sc.scrollTop += v; else window.scrollBy(0, v); atualizar(); }
+    a.raf = requestAnimationFrame(loop);
+  }
+  function iniciar() {
+    if (!a || a.ativo) return; clearTimeout(a.timer);
+    a.ativo = true; ARRASTANDO = true; a.grab = a.y - a.it.getBoundingClientRect().top;
+    a.it.classList.add("arrastando"); cont.classList.add("em-arrasto"); document.body.classList.add("sem-selecao");
+    a.sc = rolavel(cont); navigator.vibrate?.(12); atualizar(); a.raf = requestAnimationFrame(loop);
+  }
+  function limpar() {
+    if (!a) return false; clearTimeout(a.timer); cancelAnimationFrame(a.raf);
+    document.removeEventListener("pointermove", mover); document.removeEventListener("pointerup", soltar); document.removeEventListener("pointercancel", soltar);
+    const ativo = a.ativo; a.it.classList.remove("arrastando"); a.it.style.transform = ""; cont.classList.remove("em-arrasto"); document.body.classList.remove("sem-selecao");
+    ARRASTANDO = false; a = null; return ativo;
+  }
+  function mover(e) {
+    if (!a || e.pointerId !== a.id) return; a.y = e.clientY;
+    if (!a.ativo) {
+      const d = Math.hypot(e.clientX - a.x0, e.clientY - a.y0);
+      if (a.viaAlca) { if (d > 4) iniciar(); } else if (d > 9) { limpar(); return; }
+    }
+    if (a && a.ativo) { e.preventDefault(); atualizar(); }
+  }
+  function soltar(e) { if (!a || e.pointerId !== a.id) return; if (limpar()) aoSoltar(itensDe().map(x => x.dataset.id)); }
+  cont.addEventListener("pointerdown", e => {
+    if (a || (e.pointerType === "mouse" && e.button !== 0)) return;
+    const it = e.target.closest(item); if (!it || !cont.contains(it)) return;
+    const viaAlca = !!e.target.closest(alca);
+    if (!viaAlca && e.target.closest("input,select,textarea,a,label,button")) return;
+    a = { it, viaAlca, id: e.pointerId, x0: e.clientX, y0: e.clientY, y: e.clientY, ativo: false };
+    if (!viaAlca) a.timer = setTimeout(iniciar, e.pointerType === "mouse" ? 260 : 380);
+    document.addEventListener("pointermove", mover, { passive: false }); document.addEventListener("pointerup", soltar); document.addEventListener("pointercancel", soltar);
+  });
+  cont.addEventListener("contextmenu", e => { if (e.target.closest(item) && !e.target.closest("input,textarea,select")) e.preventDefault(); });
+}
+ativarArrasto($("#avList"), { item: ".av-item", alca: ".grip", aoSoltar: ids => {
+  const t = turma(), k = ui.term, atual = avals(t, k).map(v => v.id); if (ids.join() === atual.join()) return;
+  const m = new Map(avals(t, k).map(v => [v.id, v])); t.avals[k] = ids.map(id => m.get(id)).filter(Boolean);
+  save(); renderAvList(); refreshTurma(); toast("Ordem das avaliações atualizada.");
+} });
+ativarArrasto($("#bldList"), { item: ".bld-row", alca: ".grip", aoSoltar: ids => {
+  if (ids.join() === bld.map(r => r.id).join()) return;
+  const m = new Map(bld.map(r => [r.id, r])); bld = ids.map(id => m.get(id)).filter(Boolean); renderBuilder();
+} });
+
+/* ---------- Tutorial ---------- */
+$("#helpBtn").onclick = () => go("tutorial");
+document.addEventListener("click", e => { if (e.target.closest("[data-go-tutorial]")) go("tutorial"); });

@@ -28,7 +28,8 @@ Chrome/Safari, não dentro do WhatsApp ou Instagram.
 ## Funcionalidades
 - Primeiro acesso com perfil; modo de exemplo; PIN opcional.
 - Turmas por componente. Nova turma pode importar alunos e avaliações de outra turma.
-- Avaliações cadastradas pelo professor, por trimestre (tipo, nome, pontos).
+- Avaliações cadastradas pelo professor, por trimestre (tipo, nome, pontos), uma a uma ou
+  montando a lista inteira de uma vez (editável: tipo, nome, pontos, ordem e recuperações).
   Modelos prontos, autopreenchimento por nome já usado e cópia de outra turma/trimestre.
 - Recuperação substitutiva: vale a maior entre o grupo substituído e a recuperação.
 - Lançamento de notas:
@@ -37,6 +38,11 @@ Chrome/Safari, não dentro do WhatsApp ou Instagram.
   - Modos Somar / Retirar / Definir; ✕ apaga com Desfazer.
   - PC: Enter registra. Celular: registra sozinho ao parar de digitar.
   - Celular: janela em tela cheia acima do teclado (o app fica escondido por trás).
+- Reordenar avaliações arrastando (alça ⋮⋮ ou segurar e arrastar) ou pelas setas; tipo “Outro” digitável.
+- Gráfico “Evolução por Trimestre” com legenda e variação (%) em relação ao trimestre anterior.
+- Tutorial dentro do app (botão ? no cabeçalho, menu lateral e rodapé).
+- Aba Contato: formulário que envia a mensagem ao desenvolvedor (Formspree, mesma caixa do site Quanta).
+- Rodapé com autoria, direitos autorais e versão do aplicativo (lidos de `app-versao` e `app-data` no index.html).
 - Relatório para impressão, CSV (Excel), backup JSON, funciona offline.
 
 ## Atualizar o app

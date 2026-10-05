@@ -1164,3 +1164,79 @@ body:has(#installSheet:not(.hidden)) .toast{bottom:calc(235px + env(safe-area-in
   .bld-campos{grid-template-columns:1fr 84px}
   .bld-add{grid-template-columns:1fr 70px auto}
 }
+
+/* ===== v32: rodapé (autoria, direitos autorais, versão) e contato ===== */
+.rodape{margin:22px auto 6px;padding:14px 12px 4px;max-width:760px;text-align:center;border-top:1px solid rgba(120,170,255,.22);color:#9fb4e8;font-size:12.5px;line-height:1.5}
+.rodape p{margin:2px 0}
+.rd-dev{font-size:13.5px;color:#dfe8ff}
+.rd-dev b{color:#fff}
+.rd-copy{color:#cfdcff}
+.rd-copy span[aria-hidden]{font-size:15px;margin-right:2px}
+.rd-lei{font-size:11.5px;color:#8197c4}
+.rd-ver{margin-top:6px!important;font-size:11.5px;letter-spacing:.2px;color:#7f93bd}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.rodape-login{margin-top:10px;padding-top:12px}
+.contato-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:14px;align-items:start}
+.hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;opacity:0}
+.stack select,#ctAssunto{display:block;width:100%;margin-top:6px;padding:11px 12px;border-radius:10px;border:1px solid rgba(70,125,255,.5);background:rgba(0,8,22,.5);color:#eef3ff;font-size:15px}
+#ctAssunto option{background:#0a1a45}
+#ctMsg{min-height:130px}
+.ct-cont{text-align:right;margin-top:-6px}
+.ct-aviso{font-size:12.5px;line-height:1.45;margin:0}
+.ct-status{min-height:1.3em;font-size:13.5px;line-height:1.4}
+.ct-status.ok{color:#5effc4}.ct-status.erro{color:#ff9ab4}
+.ct-dev p{margin:6px 0}
+.ct-versao{font-size:12.5px}
+.bottom-nav{grid-template-columns:repeat(5,1fr)!important}
+@media(max-width:760px){
+  .contato-grid{grid-template-columns:1fr}
+  .bottom-nav .nav{padding-left:0!important;padding-right:0!important;font-size:11px!important}
+  .bottom-nav .nav span{font-size:11px!important}
+  .rodape{margin-top:18px}
+}
+
+/* ===== v33: arrastar, tipo digitável, gráfico com legenda, tutorial, rolagem do painel no PC ===== */
+/* PC: painel de detalhes com rolagem própria (tocar no aluno leva ao desempenho) */
+@media(min-width:1101px){
+  .detail{max-height:calc(100vh - 104px);overflow-y:auto;overscroll-behavior:contain;padding:3px 7px 3px 3px;scrollbar-width:thin;scrollbar-color:rgba(94,243,255,.45) transparent}
+}
+.panel.destaque{animation:destaque 1.2s ease-out}
+/* alça e arrasto */
+.grip{touch-action:none;cursor:grab;color:#9fc2ff}
+.grip:active{cursor:grabbing}
+.av-item,.bld-top,.bld-n{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.arrastando{position:relative;z-index:80;cursor:grabbing;opacity:.97;box-shadow:0 14px 34px rgba(0,0,0,.65),0 0 0 2px rgba(94,243,255,.8),0 0 24px rgba(94,243,255,.45)!important;transition:none!important}
+.em-arrasto{cursor:grabbing}
+.sem-selecao,.sem-selecao *{user-select:none!important;-webkit-user-select:none!important}
+.av-item,.bld-row{transition:box-shadow .15s}
+.bld-tn{display:block;width:100%;min-width:0;padding:10px;border-radius:9px;border:1px solid rgba(70,125,255,.5);background:rgba(0,8,22,.5);color:#eef3ff;font-size:15px}
+@media(max-width:760px){.av-acts .grip{margin-right:auto}}
+/* gráfico */
+.chart-sub{margin:-4px 0 8px;font-size:12.5px;line-height:1.4}
+.chart-legend{display:grid;gap:5px;margin:8px 0 10px;font-size:12.5px;color:#cfdcff}
+.chart-legend span{display:flex;align-items:center;gap:8px}
+.lg-barra{display:inline-block;width:16px;height:10px;border-radius:3px;background:linear-gradient(180deg,#38bdf8,rgba(59,130,246,.45));border:1px solid #38bdf8;flex:none}
+.lg-meta{display:inline-block;width:16px;height:0;border-top:2px dashed #fbbf24;flex:none}
+.chart-var{display:grid;gap:6px}
+.cv{display:grid;grid-template-columns:96px auto 1fr;gap:4px 10px;align-items:baseline;padding:7px 10px;border:1px solid rgba(70,125,255,.3);border-radius:10px;background:rgba(10,24,72,.35)}
+.cv-k{font-size:12.5px;color:#9fb4e8}
+.cv b{font-size:15px;color:#fff}.cv b small{font-weight:400;color:#9fb4e8}
+.cv-v{font-size:12.5px;color:#b9cbef;line-height:1.35}
+.cv-v.sobe{color:#5effc4}.cv-v.desce{color:#ff8fae}
+.chart-nota{margin:8px 0 0;font-size:12.5px}
+@media(max-width:760px){.cv{grid-template-columns:auto 1fr}.cv-v{grid-column:1/-1}}
+/* tutorial */
+.tuto{display:grid;gap:10px;max-width:860px}
+.tuto details{border:1px solid rgba(70,125,255,.4);border-radius:14px;background:rgba(10,24,72,.35);padding:0}
+.tuto summary{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;font-weight:650;font-size:16px;list-style:none}
+.tuto summary::-webkit-details-marker{display:none}
+.tuto summary i{color:#5ef3ff;width:1.3em;height:1.3em}
+.tuto summary::after{content:"＋";margin-left:auto;color:#9fc2ff;font-size:18px}
+.tuto details[open] summary::after{content:"－"}
+.tuto details[open]{border-color:rgba(94,243,255,.55)}
+.tuto ol,.tuto ul,.tuto dl{margin:0;padding:0 18px 14px 36px;display:grid;gap:9px;font-size:14.5px;line-height:1.55;color:#dfe8ff}
+.tuto dl{padding-left:18px}
+.tuto dt{font-weight:650;color:#fff}.tuto dd{margin:0 0 6px;color:#c4d3f2}
+.tuto b{color:#fff}
+.link{appearance:none;background:none;border:0;padding:0;font:inherit;color:#7fc8ff;text-decoration:underline;cursor:pointer}
+.rd-links{margin:6px 0 0!important;font-size:13px}
