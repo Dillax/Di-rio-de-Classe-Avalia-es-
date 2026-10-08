@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
   <meta name="theme-color" content="#040a26">
-  <meta name="app-versao" content="33">
-  <meta name="app-data" content="2026-10-05">
+  <meta name="app-versao" content="34">
+  <meta name="app-data" content="2026-10-08">
   <meta name="description" content="Diário de Classe — notas e desempenho. Os dados ficam somente no aparelho do professor.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -117,6 +117,7 @@
                   <button class="btn" id="editStudentBtn"><i data-i="user"></i>Editar Aluno</button>
                   <button class="btn" id="printBtn"><i data-i="printer"></i>Imprimir Relatório</button>
                   <button class="btn" id="pdfBtn"><i data-i="download"></i>Relatório PDF</button>
+                  <button class="btn" id="rcoBtn"><i data-i="upload"></i>Importar do RCO (PDF)</button>
                   <button class="btn" id="exportBtn"><i data-i="download"></i>Exportar Excel</button>
                   <button class="btn" id="editClass"><i data-i="gear"></i>Editar Turma</button>
                   <button class="btn" id="newClass"><i data-i="plus"></i>Nova Turma</button>
@@ -320,7 +321,17 @@
                 <li><b>Atualizações:</b> quando houver versão nova, aparece “Nova versão disponível — Atualizar”. Toque e pronto; não precisa reinstalar e as notas ficam guardadas.</li>
               </ol>
             </details>
-            <details><summary><i data-i="book"></i>8. Dúvidas frequentes</summary>
+            <details><summary><i data-i="upload"></i>8. Importar notas do RCO (PDF)</summary>
+              <ol>
+                <li>No RCO, baixe o PDF <b>“Resultado Final do Registro de Classe”</b> da turma. No app, abra a turma e toque em <b>Importar do RCO (PDF)</b>.</li>
+                <li>Escolha o arquivo. Ele é lido <b>no seu aparelho</b>; nada é enviado a servidor algum.</li>
+                <li>Marque os trimestres e diga <b>quantos pontos</b> vale cada um. A média do RCO vira pontos: média ÷ 10 × pontos (7,0 num trimestre de 100 = 70).</li>
+                <li><b>Nota final do trimestre</b> (recomendado) guarda a nota real do RCO e aparece com o selo <b>RCO</b>. <b>Distribuir nas avaliações</b> reparte o total entre as avaliações cadastradas; é só uma estimativa, porque o RCO não traz a nota de cada avaliação.</li>
+                <li>Confira a ligação de cada aluno (o RCO corta nomes longos), importe e, se precisar, toque em <b>Desfazer</b>. Para limpar tudo depois, use <b>Remover as notas do RCO desta turma</b>.</li>
+                <li>Se você lançar notas nas avaliações daquele trimestre, elas passam a valer no lugar da nota do RCO. As faltas do RCO não são importadas.</li>
+              </ol>
+            </details>
+            <details><summary><i data-i="book"></i>9. Dúvidas frequentes</summary>
               <dl>
                 <dt>As notas sumiram.</dt><dd>No iPhone, o app instalado na tela inicial e o Safari guardam dados separados. Abra sempre pelo ícone. Se limpou os dados do navegador, importe o último backup.</dd>
                 <dt>Não aparece o botão de instalar.</dt><dd>Abra o link no Chrome ou no Safari (não dentro do WhatsApp ou Instagram). No iPhone use Compartilhar → Adicionar à Tela de Início.</dd>
@@ -456,6 +467,19 @@
     </div>
   </dialog>
 
+  <!-- Diálogo: importar notas do RCO (PDF) -->
+  <dialog id="rcoDialog" class="panel">
+    <div class="stack rco">
+      <h2>Importar do RCO (PDF)</h2>
+      <p class="muted">Escolha o PDF <b>“Resultado Final do Registro de Classe”</b> baixado do RCO. O arquivo é lido aqui no aparelho; nada é enviado a nenhum servidor.</p>
+      <label class="btn rco-pick"><input type="file" id="rcoFile" accept="application/pdf,.pdf" hidden><i data-i="upload"></i><span id="rcoPickTxt">Escolher PDF</span></label>
+      <div id="rcoErro" class="rco-erro hidden" role="alert"></div>
+      <div id="rcoPasso2" class="hidden"></div>
+      <button type="button" class="btn danger sm hidden" id="rcoRemover">Remover as notas do RCO desta turma</button>
+      <div class="dialog-actions"><button type="button" class="btn" data-close>Fechar</button><span class="spacer"></span><button type="button" class="btn primary hidden" id="rcoGo"><i data-i="upload"></i><span id="rcoGoTxt">Importar</span></button></div>
+    </div>
+  </dialog>
+
   <!-- Diálogo: adicionar alunos -->
   <dialog id="studentDialog" class="panel">
     <form id="studentForm" class="stack">
@@ -494,6 +518,7 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"><span id="toastMsg"></span><button type="button" id="toastBtn" class="toast-btn hidden"></button></div>
   <div id="printArea"></div>
+<script src="rco.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

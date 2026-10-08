@@ -1240,3 +1240,24 @@ body:has(#installSheet:not(.hidden)) .toast{bottom:calc(235px + env(safe-area-in
 .tuto b{color:#fff}
 .link{appearance:none;background:none;border:0;padding:0;font:inherit;color:#7fc8ff;text-decoration:underline;cursor:pointer}
 .rd-links{margin:6px 0 0!important;font-size:13px}
+
+/* ---------- Importação do RCO ---------- */
+.rco-tag{display:inline-block;margin-left:5px;padding:1px 5px;border-radius:6px;font-size:9.5px;font-weight:700;letter-spacing:.04em;color:#9fd2ff;border:1px solid rgba(120,190,255,.45);vertical-align:middle}
+.rco-pick{justify-content:center;cursor:pointer}
+.rco-erro{padding:10px 12px;border-radius:10px;border:1px solid rgba(255,77,125,.5);background:rgba(255,77,125,.08);color:#ffb3c6;font-size:14px}
+.rco-aviso{padding:10px 12px;border-radius:10px;border:1px solid rgba(245,179,1,.5);background:rgba(245,179,1,.08);color:#ffe29a;font-size:13.5px}
+.rco-info{font-size:14px;color:#dfe8ff}
+.rco-box{display:grid;gap:8px;padding:10px;border:1px dashed rgba(120,170,255,.35);border-radius:10px}
+.rco-box b{font-size:14px}
+.rco-tri{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.rco-tri .chk{flex:1 1 180px}
+.rco-tri label.pts{display:flex;align-items:center;gap:6px;font-size:12.5px;color:#a9bde0}
+.rco-tri label.pts input{width:84px!important;margin:0!important;padding:8px 10px!important}
+.rco-list{display:grid;gap:8px}
+.rco-row{display:grid;grid-template-columns:1fr;gap:6px;padding:10px;border:1px solid var(--line);border-radius:10px}
+.rco-row.off{opacity:.55}
+.rco-nome{font-weight:650;color:#fff;font-size:14px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.rco-sel{display:block;width:100%;padding:9px 10px;border-radius:9px}
+.rco-notas{font-size:13px;color:#9fd2ff}
+.rco-selo{padding:1px 6px;border-radius:6px;font-size:11px;border:1px solid rgba(245,179,1,.5);color:#ffe29a}
+.rco-nota-txt{font-size:12.5px}

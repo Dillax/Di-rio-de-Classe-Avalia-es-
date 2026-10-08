@@ -23,6 +23,7 @@ const ICONS = {
   pencil: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
   user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.2 3.6-7 8-7s8 2.8 8 7"/>',
   printer: '<path d="M6 9V3h12v6"/><path d="M6 18H4v-7h16v7h-2"/><rect x="7" y="14" width="10" height="7"/>',
+  upload: '<path d="M12 15V3M7 8l5-5 5 5M4 21h16"/>',
   download: '<path d="M12 3v12M7 10l5 5 5-5M4 21h16"/>',
   search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
@@ -122,8 +123,11 @@ function recEfetiva(t, k, a, rec) {
   const n = nota(a, rec); if (n == null || !rec.max) return null;
   const bm = blocoMax(t, k, rec); return bm ? n / rec.max * bm : null;
 }
+/* nota final do trimestre importada do RCO (usada só quando não há notas lançadas nas avaliações) */
+const rcoDe = (a, k) => (a.rco && a.rco[k] != null) ? a.rco[k] : null;
+const usaRco = (t, a, k) => { const l = avals(t, k); return (!l.length || l.every(v => nota(a, v) == null)) && rcoDe(a, k) != null; };
 function termTotal(t, a, k) {
-  const lista = avals(t, k); if (!lista.length || lista.every(v => nota(a, v) == null)) return null;
+  const lista = avals(t, k); if (!lista.length || lista.every(v => nota(a, v) == null)) return rcoDe(a, k);
   const cobertas = new Set(recs(t, k).flatMap(r => r.subs || []));
   let total = 0;
   normais(t, k).forEach(v => { if (!cobertas.has(v.id)) total += nota(a, v) || 0; });
@@ -338,7 +342,7 @@ function thAval(t, k, v) {
 function renderTable() {
   const t = turma(), k = ui.term, q = $("#search").value.trim().toLowerCase(), lista = avals(t, k);
   $("#studentCount").textContent = `(${t.alunos.length})`;
-  $("#gradesTable thead").innerHTML = `<tr><th>#</th><th class="l">Aluno</th>${lista.map(v => thAval(t, k, v)).join("")}<th>${icon("sigma")}Trim.<small>de ${fmt(termMax(t, k))}</small></th><th>${icon("sigma")}Total ano</th><th>${icon("target")}Falta p/ ${S.config.meta}</th></tr>`;
+  $("#gradesTable thead").innerHTML = `<tr><th>#</th><th class="l">Aluno</th>${lista.map(v => thAval(t, k, v)).join("")}<th>${icon("sigma")}Trim.<small>de ${fmt(maxPrev(t, k))}</small></th><th>${icon("sigma")}Total ano</th><th>${icon("target")}Falta p/ ${S.config.meta}</th></tr>`;
   const body = $("#gradesTable tbody");
   if (!t.alunos.length) { body.innerHTML = `<tr><td colspan="${lista.length + 5}" class="muted" style="padding:22px">Nenhum aluno. Use “Adicionar Aluno” e cole a lista de nomes.</td></tr>`; return; }
   const aviso = lista.length ? "" : `<tr class="aviso-row"><td colspan="5" style="padding:14px 18px">${semAvaliacoes(t, k)}</td></tr>`;
@@ -347,7 +351,7 @@ function renderTable() {
     const an = annual(t, a), sit = situacao(t, a);
     return `<tr data-id="${a.id}" class="${a.id === ui.alunoId ? "selected" : ""}"><td class="num">${i + 1}</td><td class="l">${esc(a.nome)}</td>
       ${lista.map(v => { const n = nota(a, v); return `<td class="cat" style="--c:${tipoOf(v).c}"><input class="grade${n == null ? "" : " has"}" inputmode="decimal" data-a="${a.id}" data-v="${v.id}" placeholder="${n == null ? "–" : fmt(n)}" aria-label="Somar pontos em ${esc(v.nome)} de ${esc(a.nome)} (atual ${n == null ? "sem nota" : fmt(n)})"></td>`; }).join("")}
-      <td class="num r-tri"><b>${fmt(termTotal(t, a, k))}</b></td><td class="num r-ano">${fmt(an.soma)}</td><td class="num r-falta ${clsText(sit.cls)}">${an.falta ? fmt(an.falta) : "Aprovado"}</td></tr>`;
+      <td class="num r-tri"><b>${fmt(termTotal(t, a, k))}</b>${usaRco(t, a, k) ? '<span class="rco-tag" title="Nota final importada do RCO">RCO</span>' : ""}</td><td class="num r-ano">${fmt(an.soma)}</td><td class="num r-falta ${clsText(sit.cls)}">${an.falta ? fmt(an.falta) : "Aprovado"}</td></tr>`;
   }).join("");
   if (aviso) body.insertAdjacentHTML("afterbegin", aviso);
 }
@@ -358,7 +362,7 @@ function renderCards() {
     if (q && !a.nome.toLowerCase().includes(q)) return "";
     const an = annual(t, a), sit = situacao(t, a);
     return `<div class="scard ${a.id === ui.alunoId ? "selected" : ""}" data-id="${a.id}" role="button" tabindex="0"><span class="n">${i + 1}</span>
-      <div><b>${esc(a.nome)}</b><div class="chips"><span class="chip">Trim. ${fmt(termTotal(t, a, k))}</span><span class="chip">Ano ${fmt(an.soma)}</span><span class="chip ${clsText(sit.cls)}">${an.falta ? "Falta " + fmt(an.falta) : "Aprovado"}</span></div></div>
+      <div><b>${esc(a.nome)}</b><div class="chips"><span class="chip">Trim. ${fmt(termTotal(t, a, k))}${usaRco(t, a, k) ? " (RCO)" : ""}</span><span class="chip">Ano ${fmt(an.soma)}</span><span class="chip ${clsText(sit.cls)}">${an.falta ? "Falta " + fmt(an.falta) : "Aprovado"}</span></div></div>
       <button class="go" data-notas="${a.id}" aria-label="Inserir notas de ${esc(a.nome)}">${icon("pencil")}</button></div>`;
   }).join("") || `<p class="muted" style="padding:6px">Nenhum aluno. Toque em “Adicionar Aluno”.</p>`;
   if (aviso) $("#cardList").insertAdjacentHTML("afterbegin", aviso);
@@ -393,7 +397,7 @@ function lancarNaCelula(inp) {
   inp.classList.remove("invalid"); inp.value = "";
   const n = nota(a, v); inp.placeholder = n == null ? "–" : fmt(n); inp.classList.toggle("has", n != null);
   const tr = inp.closest("tr"), an = annual(t, a), sit = situacao(t, a);
-  tr.querySelector(".r-tri b").textContent = fmt(termTotal(t, a, ui.term)); tr.querySelector(".r-ano").textContent = fmt(an.soma);
+  tr.querySelector(".r-tri b").textContent = fmt(termTotal(t, a, ui.term)); const tg = tr.querySelector(".rco-tag"); if (tg) tg.style.display = usaRco(t, a, ui.term) ? "" : "none"; tr.querySelector(".r-ano").textContent = fmt(an.soma);
   const f = tr.querySelector(".r-falta"); f.textContent = an.falta ? fmt(an.falta) : "Aprovado"; f.className = "num r-falta " + clsText(sit.cls);
   inp.classList.add("flash"); setTimeout(() => inp.classList.remove("flash"), 500);
   renderClassStats(); renderCards(); if (a.id === ui.alunoId) renderDetail();
@@ -506,7 +510,7 @@ function openGrades() {
   if (temTecladoFisico()) setTimeout(() => $("#gdFields input")?.focus(), 60);
   else { document.activeElement?.blur?.(); $("#gradesForm").scrollTop = 0; }
 }
-function updateGdTotal() { const t = turma(), a = aluno(); if (!t || !a) return; $("#gdTotal").textContent = `${fmt(termTotal(t, a, ui.term) ?? 0)} / ${fmt(termMax(t, ui.term))}`; }
+function updateGdTotal() { const t = turma(), a = aluno(); if (!t || !a) return; $("#gdTotal").textContent = `${fmt(termTotal(t, a, ui.term) ?? 0)} / ${fmt(maxPrev(t, ui.term))}`; }
 function lancarNoDialogo(inp) {
   const t = turma(), a = aluno(), v = avals(t, ui.term).find(x => x.id === inp.dataset.v);
   if (!v || inp.value.trim() === "") return true;
@@ -623,6 +627,132 @@ $("#studentForm").onsubmit = e => {
   const ex = new Set(t.alunos.map(a => a.nome.toLowerCase())); let n = 0;
   nomes.forEach(nome => { if (ex.has(nome.toLowerCase())) return; t.alunos.push({ id: uid(), nome, notas: {} }); ex.add(nome.toLowerCase()); n++; });
   save(); $("#studentDialog").close(); renderTurmas(); toast(n ? `${n} aluno(s) adicionado(s).` : "Nenhum nome novo para adicionar.");
+};
+
+/* ---------- Importar notas do RCO (PDF) ---------- */
+const rco = { dados: null, pts: {}, sel: [], tocado: [] };
+const rcoPontosPadrao = (t, k) => termMax(t, k) || 100;
+function rcoTemNotas(t, a, k) { return avals(t, k).some(v => nota(a, v) != null); }
+function rcoPtsAluno(p, k) { const m = p.tri[k] && p.tri[k].media; return m == null ? null : RCO.paraPontos(m, rco.dados.escala, Number(String(rco.pts[k]).replace(",", ".")) || 0); }
+function rcoTris() { return $$("#rcoPasso2 [data-tri]").filter(c => c.checked).map(c => Number(c.dataset.tri)); }
+function rcoEscolhaPadrao(i, lig) {
+  const p = rco.dados.alunos[i];
+  if (lig[i] != null) return String(lig[i]);
+  if (p.situacao && !$("#rcoIncSit").checked) return "x";
+  return $("#rcoAddNovos").checked ? "n" : "x";
+}
+function rcoResumoLinha(i) {
+  const p = rco.dados.alunos[i], partes = rcoTris().map(k => { const v = rcoPtsAluno(p, k); return `${k}º: ${v == null ? "sem nota" : fmt(v) + " pts (" + fmt(p.tri[k].media) + ")"}`; });
+  return partes.join(" · ") || "Nenhum trimestre marcado";
+}
+function rcoDesenharLista() {
+  const t = turma(), lig = rco.lig;
+  $("#rcoLista").innerHTML = rco.dados.alunos.map((p, i) => {
+    const opts = `<option value="x">Ignorar</option><option value="n">Criar como novo aluno</option>` + t.alunos.map((a, j) => `<option value="${j}">${esc(a.nome)}</option>`).join("");
+    return `<div class="rco-row" data-i="${i}"><div class="rco-nome"><span>${p.n}. ${esc(p.nome)}</span>${p.situacao ? `<span class="rco-selo">${esc(p.situacao)}</span>` : ""}</div>
+      <div class="rco-notas">${esc(rcoResumoLinha(i))}</div>
+      <select class="rco-sel" data-sel="${i}" aria-label="Aluno no app para ${esc(p.nome)}">${opts}</select></div>`;
+  }).join("");
+  $$("#rcoLista .rco-sel").forEach(sl => { const i = Number(sl.dataset.sel); sl.value = rco.sel[i]; sl.closest(".rco-row").classList.toggle("off", sl.value === "x"); });
+}
+function rcoAtualizar() {
+  $$("#rcoLista .rco-row").forEach(r => { const i = Number(r.dataset.i); r.querySelector(".rco-notas").textContent = rcoResumoLinha(i); });
+  const n = rco.sel.filter(v => v !== "x").length; $("#rcoGoTxt").textContent = `Importar ${n} aluno${n === 1 ? "" : "s"}`; $("#rcoGo").disabled = !n || !rcoTris().length;
+}
+function rcoAbrir() {
+  if (!turma()) return toast("Crie uma turma primeiro.");
+  rco.dados = null; $("#rcoFile").value = ""; $("#rcoPickTxt").textContent = "Escolher PDF"; $("#rcoErro").classList.add("hidden"); $("#rcoPasso2").classList.add("hidden"); $("#rcoPasso2").innerHTML = ""; $("#rcoGo").classList.add("hidden");
+  $("#rcoRemover").classList.toggle("hidden", !turma().alunos.some(a => a.rco && Object.keys(a.rco).length));
+  $("#rcoDialog").showModal();
+}
+function rcoErro(msg) { const e = $("#rcoErro"); e.textContent = msg; e.classList.remove("hidden"); $("#rcoPasso2").classList.add("hidden"); $("#rcoGo").classList.add("hidden"); }
+async function rcoLer(file) {
+  $("#rcoErro").classList.add("hidden"); $("#rcoPickTxt").textContent = "Lendo…";
+  try {
+    if (typeof RCO === "undefined") throw new Error("O leitor de PDF não carregou. Atualize o aplicativo e tente de novo.");
+    const dados = RCO.analisar(await RCO.lerPDF(await file.arrayBuffer()));
+    $("#rcoPickTxt").textContent = file.name.length > 40 ? file.name.slice(0, 37) + "…" : file.name;
+    if (!dados.alunos.length) return rcoErro(dados.avisos[0] || "Não encontrei alunos neste PDF.");
+    if (!dados.trimestres.length) return rcoErro("Este PDF não tem notas de nenhum trimestre ainda.");
+    rcoMontar(dados);
+  } catch (e) { $("#rcoPickTxt").textContent = "Escolher PDF"; rcoErro(e.message || "Não consegui ler este PDF."); }
+}
+function rcoMontar(dados) {
+  const t = turma(); rco.dados = dados; rco.lig = RCO.ligar(dados.alunos, t.alunos); rco.pts = {};
+  dados.trimestres.forEach(k => { rco.pts[k] = rcoPontosPadrao(t, k); });
+  const i = dados.info, nd = RCO.norm(i.disciplina || ""), nt = RCO.norm(t.disciplina || "");
+  const difere = nd && nt && !(nd.includes(nt) || nt.includes(nd));
+  const algumAval = dados.trimestres.some(k => normais(t, k).length);
+  const casados = rco.lig.filter(v => v != null).length;
+  $("#rcoPasso2").innerHTML = `
+    <p class="rco-info"><b>${esc(i.disciplina || "Disciplina não identificada")}</b> — ${esc(i.serie || "")} ${esc(i.turma || "")} ${i.turno ? "· " + esc(i.turno) : ""}<br>${dados.alunos.length} alunos no PDF · ${casados} já estão em <b>${esc(t.nome)} — ${esc(t.disciplina)}</b></p>
+    ${difere ? `<div class="rco-aviso">A disciplina do PDF (${esc(i.disciplina)}) é diferente da turma aberta (${esc(t.disciplina)}). Confira se é a turma certa antes de importar.</div>` : ""}
+    <div class="rco-box"><b>1. Trimestres e pontos</b>
+      ${dados.trimestres.map(k => `<div class="rco-tri"><label class="chk"><input type="checkbox" data-tri="${k}" checked> ${k}º trimestre</label><label class="pts">vale <input type="number" min="1" step="any" inputmode="decimal" data-pts="${k}" value="${rco.pts[k]}"> pts</label></div>`).join("")}
+      <small class="muted">A média do RCO (0 a ${dados.escala}) vira pontos do trimestre: média ÷ ${dados.escala} × pontos. Ex.: média 7,0 num trimestre de 100 pontos = 70 pontos.</small></div>
+    <div class="rco-box"><b>2. Onde colocar a nota</b>
+      <label class="chk"><input type="radio" name="rcoModo" value="final" checked> <span>Como <b>nota final do trimestre</b> (recomendado: é a nota real do RCO)</span></label>
+      <label class="chk"><input type="radio" name="rcoModo" value="dist" ${algumAval ? "" : "disabled"}> <span>Distribuir nas <b>avaliações</b> já cadastradas</span></label>
+      <small class="muted">${algumAval ? "Distribuir é uma estimativa: o RCO não informa a nota de cada avaliação, então o total é repartido proporcionalmente aos pontos de cada uma. Recuperações não recebem nota." : "Para distribuir, cadastre antes as avaliações do trimestre."}</small></div>
+    <div class="rco-box"><b>3. Alunos</b>
+      <label class="chk"><input type="checkbox" id="rcoAddNovos" ${t.alunos.length ? "" : "checked"}> Criar os alunos do PDF que não estão na turma</label>
+      <label class="chk"><input type="checkbox" id="rcoIncSit"> Incluir alunos transferidos/desistentes que não estão na turma</label>
+      <label class="chk"><input type="checkbox" id="rcoSubst"> Substituir notas que o aluno já tenha no trimestre</label></div>
+    <div class="rco-box"><b>Conferência</b><small class="muted">Confira a ligação de cada aluno (nomes longos vêm cortados no RCO).</small><div id="rcoLista" class="rco-list"></div></div>
+    <small class="muted">Faltas do RCO não são importadas. Depois de importar, aparece “Desfazer”.</small>`;
+  rco.sel = dados.alunos.map((p, j) => rcoEscolhaPadrao(j, rco.lig)); rco.tocado = dados.alunos.map(() => false);
+  rcoDesenharLista(); rcoAtualizar();
+  $("#rcoPasso2").classList.remove("hidden"); $("#rcoGo").classList.remove("hidden");
+}
+function rcoReaplicarPadroes() { rco.dados.alunos.forEach((p, i) => { if (!rco.tocado[i]) rco.sel[i] = rcoEscolhaPadrao(i, rco.lig); }); rcoDesenharLista(); rcoAtualizar(); }
+function rcoImportar() {
+  const t = turma(), d = rco.dados; if (!t || !d) return;
+  const tris = rcoTris(), modo = ($("input[name=rcoModo]:checked") || {}).value || "final", subst = $("#rcoSubst").checked;
+  for (const k of tris) { const v = Number(String(rco.pts[k]).replace(",", ".")); if (!(v > 0)) return toast(`Informe quantos pontos vale o ${k}º trimestre.`); rco.pts[k] = v; }
+  if (!tris.length) return toast("Marque pelo menos um trimestre.");
+  const snap = { criados: [], antes: new Map() }, guardar = a => { if (!snap.antes.has(a)) snap.antes.set(a, { rco: a.rco ? { ...a.rco } : undefined, notas: { ...(a.notas || {}) } }); };
+  let n = 0, criados = 0, mantidos = 0, distrib = 0;
+  d.alunos.forEach((p, i) => {
+    const sel = rco.sel[i]; if (sel === "x") return;
+    let a;
+    if (sel === "n") { a = { id: uid(), nome: p.nome, notas: {} }; t.alunos.push(a); snap.criados.push(a); criados++; }
+    else a = t.alunos[Number(sel)];
+    if (!a) return; guardar(a); let tocou = false;
+    tris.forEach(k => {
+      const pts = rcoPtsAluno(p, k); if (pts == null) return;
+      if (rcoTemNotas(t, a, k)) { if (!subst) { mantidos++; return; } avals(t, k).forEach(v => { delete a.notas[v.id]; }); }
+      const normaisK = normais(t, k);
+      if (modo === "dist" && normaisK.length) {
+        const parts = RCO.distribuir(pts, normaisK.map(v => Number(v.max) || 0));
+        normaisK.forEach((v, j) => { a.notas[v.id] = parts[j]; });
+        if (a.rco) delete a.rco[k]; distrib++;
+      } else { a.rco = a.rco || {}; a.rco[k] = pts; }
+      tocou = true;
+    });
+    if (tocou) n++;
+  });
+  save(); $("#rcoDialog").close(); renderAll();
+  const extra = (mantidos ? ` ${mantidos} trimestre(s) já tinham notas e foram mantidos.` : "");
+  toast(`RCO importado: ${n} aluno(s)${criados ? `, ${criados} novo(s)` : ""}.${extra}`, "Desfazer", () => {
+    t.alunos = t.alunos.filter(x => !snap.criados.includes(x));
+    snap.antes.forEach((v, a) => { if (v.rco) a.rco = v.rco; else delete a.rco; a.notas = v.notas; });
+    save(); renderAll(); toast("Importação desfeita.");
+  }, 14000);
+}
+$("#rcoBtn").onclick = rcoAbrir;
+$("#rcoFile").onchange = e => { const f = e.target.files && e.target.files[0]; if (f) rcoLer(f); };
+$("#rcoGo").onclick = rcoImportar;
+$("#rcoPasso2").addEventListener("change", e => {
+  const el = e.target;
+  if (el.dataset.sel != null) { const i = Number(el.dataset.sel); rco.sel[i] = el.value; rco.tocado[i] = true; el.closest(".rco-row").classList.toggle("off", el.value === "x"); rcoAtualizar(); }
+  else if (el.dataset.tri != null) rcoAtualizar();
+  else if (el.dataset.pts != null) { rco.pts[el.dataset.pts] = el.value; rcoAtualizar(); }
+  else if (el.id === "rcoAddNovos" || el.id === "rcoIncSit") rcoReaplicarPadroes();
+});
+$("#rcoPasso2").addEventListener("input", e => { const el = e.target; if (el.dataset.pts != null) { rco.pts[el.dataset.pts] = el.value; rcoAtualizar(); } });
+$("#rcoRemover").onclick = async () => {
+  const t = turma(); if (!t || !await ask("Remover de todos os alunos desta turma as notas finais importadas do RCO? As notas lançadas nas avaliações não são afetadas.", "Remover")) return;
+  t.alunos.forEach(a => { delete a.rco; }); save(); $("#rcoDialog").close(); renderAll(); toast("Notas do RCO removidas desta turma.");
 };
 
 /* ---------- Relatórios ---------- */
@@ -1119,7 +1249,7 @@ async function logoJPEG() {
 async function exportarPDF(t, k) {
   const lista = k ? avals(t, k) : [];
   const cols = k
-    ? [{ t: "Nº", w: 24, al: "c" }, { t: "Aluno", w: 0, al: "e" }, ...lista.map(v => ({ t: v.nome, sub: (isRec(v) ? "rec. " : "") + fmt(v.max), w: 54, al: "c", c: tipoOf(v).c })), { t: "Total trim.", sub: fmt(termMax(t, k)), w: 52, al: "c" }, { t: "Total ano", w: 48, al: "c" }, { t: "Situação", w: 76, al: "c" }]
+    ? [{ t: "Nº", w: 24, al: "c" }, { t: "Aluno", w: 0, al: "e" }, ...lista.map(v => ({ t: v.nome, sub: (isRec(v) ? "rec. " : "") + fmt(v.max), w: 54, al: "c", c: tipoOf(v).c })), { t: "Total trim.", sub: fmt(maxPrev(t, k)), w: 52, al: "c" }, { t: "Total ano", w: 48, al: "c" }, { t: "Situação", w: 76, al: "c" }]
     : [{ t: "Nº", w: 24, al: "c" }, { t: "Aluno", w: 0, al: "e" }, { t: "1º Trim.", w: 58, al: "c" }, { t: "2º Trim.", w: 58, al: "c" }, { t: "3º Trim.", w: 58, al: "c" }, { t: "Total ano", w: 60, al: "c" }, { t: "Falta p/ " + S.config.meta, w: 64, al: "c" }, { t: "Situação", w: 84, al: "c" }];
   const paisagem = cols.length > 8;
   const pdf = new MiniPDF(paisagem), M = 34, larg = pdf.W - 2 * M;
