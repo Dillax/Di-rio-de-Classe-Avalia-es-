@@ -1292,3 +1292,12 @@ dialog>.brilho::before{animation-duration:3.6s}
 .lixeira.aberta .lixeira-btn{pointer-events:auto;height:100%;width:var(--abre,92px);border-radius:12px;background:linear-gradient(180deg,#ff4d7d,#d61f55);color:#fff;box-shadow:0 0 14px rgba(255,61,110,.55)}
 .lixeira.aberta i{transform:none}
 .revelado{transition:transform .2s ease!important}
+
+/* página inicial: cartões das turmas sem sobreposição */
+.home-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))!important}
+.home-card{min-width:0;overflow:hidden!important}
+.home-card h3{overflow-wrap:anywhere}
+.home-card .hc-row{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(64px,1fr));gap:8px}
+.home-card .hc-row div{min-width:0;padding:8px 6px}
+.home-card .hc-row small{font-size:11px!important}
+.home-card .hc-row small{white-space:normal;line-height:1.2;min-height:2.4em}
