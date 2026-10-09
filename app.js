@@ -584,8 +584,24 @@ function openClassDialog(id) {
   $("#deleteClass").classList.toggle("hidden", !t);
   $("#classImportWrap").classList.toggle("hidden", !!t || !S.turmas.length);
   $("#classImport").innerHTML = `<option value="">— começar vazia —</option>` + S.turmas.map(x => `<option value="${x.id}">${esc(x.nome)} — ${esc(x.disciplina)} (${x.alunos.length} alunos)</option>`).join("");
+  rcoPend = null; $("#classRcoWrap").classList.toggle("hidden", !!t); $("#rcoNovaTxt").textContent = "Escolher PDF do RCO";
   $("#classDialog").showModal();
 }
+let rcoPend = null;
+const tituloCaso = x => String(x || "").toLowerCase().replace(/(^|\s)(\S)/g, (m, a, b) => a + b.toUpperCase());
+$("#rcoNovaFile").onchange = async e => {
+  const f = e.target.files && e.target.files[0]; e.target.value = ""; if (!f) return;
+  $("#rcoNovaTxt").textContent = "Lendo…";
+  try {
+    if (typeof RCO === "undefined") throw new Error("O leitor de PDF não carregou. Atualize o aplicativo.");
+    const d = RCO.analisar(await RCO.lerPDF(await f.arrayBuffer()));
+    if (!d.alunos.length) throw new Error(d.avisos[0] || "Não encontrei alunos neste PDF.");
+    rcoPend = d; const i = d.info, num = (i.serie || "").match(/\d+/);
+    $("#className").value = ((num ? num[0] + "º " : (i.serie ? i.serie + " " : "")) + (i.turma || "")).trim() || $("#className").value;
+    $("#classDisc").value = tituloCaso(i.disciplina) || $("#classDisc").value;
+    $("#rcoNovaTxt").textContent = `${d.alunos.length} alunos lidos — confira o nome e toque em Salvar`;
+  } catch (err) { rcoPend = null; $("#rcoNovaTxt").textContent = "Escolher PDF do RCO"; toast(err.message || "Não consegui ler este PDF."); }
+};
 $("#classForm").onsubmit = e => {
   e.preventDefault();
   const nome = $("#className").value.trim(), disc = $("#classDisc").value.trim();
@@ -597,7 +613,9 @@ $("#classForm").onsubmit = e => {
     if (orig && $("#impAvals").checked) TERMS.forEach(k => { t.avals[k] = copiarAvaliacoes(avals(orig, k)); });
     S.turmas.push(t); ui.turmaId = t.id; ui.alunoId = null;
   }
-  save(); $("#classDialog").close(); go("turmas"); toast(editingClassId ? "Turma salva." : "Turma criada. Agora cadastre as avaliações e os alunos.");
+  save(); $("#classDialog").close(); go("turmas");
+  if (!editingClassId && rcoPend) { const d = rcoPend; rcoPend = null; rcoAbrir(); rcoMontar(d); $("#rcoPickTxt").textContent = "PDF do RCO lido"; return; }
+  toast(editingClassId ? "Turma salva." : "Turma criada. Agora cadastre as avaliações e os alunos.");
 };
 $("#deleteClass").onclick = async () => {
   const t = S.turmas.find(x => x.id === editingClassId);

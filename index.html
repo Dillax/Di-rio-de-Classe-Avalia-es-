@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
   <meta name="theme-color" content="#040a26">
-  <meta name="app-versao" content="37">
+  <meta name="app-versao" content="38">
   <meta name="app-data" content="2026-10-08">
   <meta name="description" content="Diário de Classe — notas e desempenho. Os dados ficam somente no aparelho do professor.">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -274,6 +274,7 @@
             <details><summary><i data-i="users"></i>2. Turmas e alunos</summary>
               <ol>
                 <li>Toque em <b>Nova turma</b>. Cada disciplina é uma turma: “2º A — Física” e “2º A — Robótica” são turmas diferentes.</li>
+                <li><b>Atalho pelo RCO:</b> em <b>Nova turma</b>, escolha o PDF “Resultado Final do Registro de Classe”. O app preenche nome, disciplina, alunos e as notas dos trimestres (veja o tema 8).</li>
                 <li>Se você já tem outra turma com os mesmos alunos e o mesmo método de avaliar, escolha <b>Aproveitar outra turma</b> e marque importar alunos e/ou avaliações (as notas não vêm).</li>
                 <li><b>Adicionar Aluno</b>: cole a lista do RCO, um nome por linha. Números de chamada são removidos e nomes repetidos são ignorados. Também dá para importar os alunos de outra turma.</li>
                 <li><b>Editar Aluno</b> troca o nome ou remove o aluno.</li>
@@ -411,6 +412,11 @@
         <label>Aproveitar outra turma (opcional)<select id="classImport"><option value="">— começar vazia —</option></select></label>
         <label class="chk"><input type="checkbox" id="impAlunos" checked> Importar os alunos</label>
         <label class="chk"><input type="checkbox" id="impAvals" checked> Importar as avaliações (mesmos tipos e pontos, sem notas)</label>
+      </div>
+      <div id="classRcoWrap" class="import-box">
+        <b>Ou crie tudo pelo PDF do RCO</b>
+        <small class="muted">Use o “Resultado Final do Registro de Classe”: o app preenche a turma, a disciplina, os alunos e as notas de cada trimestre.</small>
+        <label class="btn rco-pick"><input type="file" id="rcoNovaFile" accept="application/pdf,.pdf" hidden><i data-i="upload"></i><span id="rcoNovaTxt">Escolher PDF do RCO</span></label>
       </div>
       <small class="muted">As avaliações são cadastradas por trimestre, no botão “Avaliações”.</small>
       <div class="dialog-actions">
