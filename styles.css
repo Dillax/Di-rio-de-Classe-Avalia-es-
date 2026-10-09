@@ -1277,12 +1277,12 @@ body:has(#installSheet:not(.hidden)) .toast{bottom:calc(235px + env(safe-area-in
 .topbar>.brilho{top:auto!important;bottom:-6px!important}
 .bottom-nav>.brilho{top:-6px!important}
 dialog>.brilho{top:-5px!important;border-radius:inherit}
-.brilho::before{content:"";position:absolute;top:50%;left:0;width:26%;height:2px;margin-top:-1px;border-radius:2px;
-  background:linear-gradient(90deg,transparent,rgba(160,215,255,.85) 30%,#ffffff 50%,rgba(160,215,255,.85) 70%,transparent);
-  box-shadow:0 0 6px 1px rgba(150,210,255,.9),0 0 14px 3px rgba(90,150,255,.55);
-  transform:translateX(-110%);animation:brilho 4.2s cubic-bezier(.45,.05,.55,.95) infinite}
-dialog>.brilho::before{animation-duration:3.6s}
-@keyframes brilho{0%{transform:translateX(-110%)}70%{transform:translateX(400%)}100%{transform:translateX(400%)}}
+.brilho::before{content:"";position:absolute;top:50%;left:0;width:34%;height:3px;margin-top:-1.5px;border-radius:3px;
+  background:linear-gradient(90deg,transparent 0%,#5ef3ff 14%,#5aa8ff 32%,#a07bff 50%,#ff6fd8 68%,#ffd36e 86%,transparent 100%);
+  filter:drop-shadow(0 0 3px rgba(160,123,255,.95)) drop-shadow(0 0 7px rgba(94,243,255,.7));
+  transform:translateX(-100%);animation:brilho 3.6s ease-in-out infinite alternate}
+dialog>.brilho::before{animation-duration:3s}
+@keyframes brilho{0%{transform:translateX(-100%)}100%{transform:translateX(294%)}}
 @media(prefers-reduced-motion:reduce){.brilho::before{animation:none;display:none}}
 @media print{.brilho{display:none!important}}
 
@@ -1301,3 +1301,10 @@ dialog>.brilho::before{animation-duration:3.6s}
 .home-card .hc-row div{min-width:0;padding:8px 6px}
 .home-card .hc-row small{font-size:11px!important}
 .home-card .hc-row small{white-space:normal;line-height:1.2;min-height:2.4em}
+
+/* navegadores mais antigos (sem color-mix): mantém as cores vivas das notas e contornos */
+@supports not (color:color-mix(in srgb,red,blue)){
+  .grade{color:rgb(var(--c))!important;filter:brightness(1.35) saturate(1.2)}
+  .grade:focus{color:#fff!important;filter:none}
+  .panel,.home-card,.filter{border-color:rgba(99,220,255,.28)!important}
+}
