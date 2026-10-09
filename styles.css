@@ -1270,3 +1270,25 @@ body:has(#installSheet:not(.hidden)) .toast{bottom:calc(235px + env(safe-area-in
 .lixeira.esq{justify-content:flex-start}.lixeira.dir{justify-content:flex-end}
 .lixeira i{width:26px;height:26px;transition:transform .12s}
 .lixeira.vai{background:rgba(255,77,125,.28);color:#fff}.lixeira.vai i{transform:scale(1.35)}
+
+/* ---------- reflexo de luz percorrendo a margem do cabeçalho, a barra de baixo e o topo das janelas ---------- */
+.brilho{position:absolute!important;left:0!important;right:0!important;height:12px!important;max-height:none!important;padding:0!important;margin:0!important;
+  overflow:hidden!important;pointer-events:none!important;z-index:9!important;display:block!important;background:none!important;border:0!important;box-shadow:none!important}
+.topbar>.brilho{top:auto!important;bottom:-6px!important}
+.bottom-nav>.brilho{top:-6px!important}
+dialog>.brilho{top:-5px!important;border-radius:inherit}
+.brilho::before{content:"";position:absolute;top:50%;left:0;width:26%;height:2px;margin-top:-1px;border-radius:2px;
+  background:linear-gradient(90deg,transparent,rgba(160,215,255,.85) 30%,#ffffff 50%,rgba(160,215,255,.85) 70%,transparent);
+  box-shadow:0 0 6px 1px rgba(150,210,255,.9),0 0 14px 3px rgba(90,150,255,.55);
+  transform:translateX(-110%);animation:brilho 4.2s cubic-bezier(.45,.05,.55,.95) infinite}
+dialog>.brilho::before{animation-duration:3.6s}
+@keyframes brilho{0%{transform:translateX(-110%)}70%{transform:translateX(400%)}100%{transform:translateX(400%)}}
+@media(prefers-reduced-motion:reduce){.brilho::before{animation:none;display:none}}
+@media print{.brilho{display:none!important}}
+
+/* lixeira revelada ao arrastar até o fim */
+.lixeira .lixeira-btn{pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:0;background:none;color:inherit;font:inherit;font-size:11px;font-weight:600;padding:0 8px;cursor:pointer}
+.lixeira.aberta{pointer-events:none;background:transparent;padding:0}
+.lixeira.aberta .lixeira-btn{pointer-events:auto;height:100%;width:var(--abre,92px);border-radius:12px;background:linear-gradient(180deg,#ff4d7d,#d61f55);color:#fff;box-shadow:0 0 14px rgba(255,61,110,.55)}
+.lixeira.aberta i{transform:none}
+.revelado{transition:transform .2s ease!important}

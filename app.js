@@ -777,8 +777,22 @@ $("#rcoRemover").onclick = async () => {
 };
 
 /* ---------- Excluir arrastando para o lado (deslizar) ---------- */
-function ativarDeslize(cont, itemSel, ignoreSel, onDismiss) {
-  const LIM = 90; let lix = null, it = null, x0 = 0, y0 = 0, dx = 0, moveu = false, pid = null;
+/* Arrastar o aluno até o fim (para qualquer lado) revela a lixeira; só exclui ao tocar nela. */
+const deslize = { aberto: null };
+function fecharDeslize(anim = true) {
+  const o = deslize.aberto; if (!o) return; deslize.aberto = null;
+  o.lix.remove(); o.el.classList.remove("revelado"); o.el.style.transition = anim ? "" : "none"; o.el.style.transform = ""; o.el.style.opacity = "";
+}
+document.addEventListener("pointerdown", e => { if (deslize.aberto && !e.target.closest(".lixeira-btn")) fecharDeslize(); }, true);
+addEventListener("scroll", () => fecharDeslize(false), true);
+addEventListener("resize", () => fecharDeslize(false));
+(function () {
+  const pos = sel => document.querySelectorAll(sel).forEach(el => el.insertAdjacentHTML("afterbegin", '<span class="brilho" aria-hidden="true"></span>'));
+  pos(".topbar"); pos(".bottom-nav"); pos("dialog.panel");
+})();
+function ativarDeslize(cont, itemSel, ignoreSel, onDismiss, rotulo = "Excluir") {
+  let lix = null, it = null, x0 = 0, y0 = 0, dx = 0, moveu = false, pid = null, fimLim = 200;
+  const ABERTO = 92;
   cont.addEventListener("pointerdown", e => {
     if ((e.pointerType === "mouse" && e.button !== 0) || e.target.closest(ignoreSel)) return;
     const el = e.target.closest(itemSel); if (!el) return;
@@ -791,20 +805,29 @@ function ativarDeslize(cont, itemSel, ignoreSel, onDismiss) {
       if (Math.abs(my) > 10 && Math.abs(my) > Math.abs(mx)) { it = null; return; }
       if (Math.abs(mx) < 10) return;
       moveu = true; try { cont.setPointerCapture(pid); } catch (_) {} it.classList.add("deslizando");
-      const r = it.getBoundingClientRect(); lix = document.createElement("div"); lix.className = "lixeira"; lix.innerHTML = icon("trash");
-      lix.style.cssText = `left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px`; document.body.appendChild(lix);
+      const r = it.getBoundingClientRect(); fimLim = Math.min(r.width * 0.6, 260);
+      lix = document.createElement("div"); lix.className = "lixeira";
+      lix.innerHTML = `<button type="button" class="lixeira-btn" aria-label="${rotulo}">${icon("trash")}<span>${rotulo}</span></button>`;
+      lix.style.cssText = `left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px`;
+      (it.closest("dialog") || document.body).appendChild(lix);           /* dentro da janela aberta, para ficar por cima e clicável */
+      const q = lix.getBoundingClientRect(); lix.style.left = (r.left * 2 - q.left) + "px"; lix.style.top = (r.top * 2 - q.top) + "px";
     }
-    dx = mx; it.style.transform = `translateX(${dx}px)`; it.style.opacity = String(1 - Math.min(.6, Math.abs(dx) / 300)); it.classList.toggle("vai", Math.abs(dx) >= LIM);
-    if (lix) { lix.classList.toggle("esq", dx > 0); lix.classList.toggle("dir", dx < 0); lix.classList.toggle("vai", Math.abs(dx) >= LIM); }
+    dx = mx; const chegou = Math.abs(dx) >= fimLim;
+    it.style.transform = `translateX(${dx}px)`; it.classList.toggle("vai", chegou);
+    lix.classList.toggle("esq", dx > 0); lix.classList.toggle("dir", dx < 0); lix.classList.toggle("vai", chegou);
   });
-  const fim = e => {
-    if (!it || e.pointerId !== pid) return; const el = it; it = null; if (!moveu) return;
-    const passou = e.type === "pointerup" && Math.abs(dx) >= LIM;
-    if (lix) { lix.remove(); lix = null; }
-    el.classList.remove("deslizando", "vai"); el.style.transform = ""; el.style.opacity = "";
-    ativarDeslize.t = Date.now(); if (passou) onDismiss(el);
+  const fim = () => {
+    if (!it) return; const el = it; it = null; if (!moveu) return;
+    ativarDeslize.t = Date.now(); el.classList.remove("deslizando", "vai");
+    if (Math.abs(dx) >= fimLim) {               /* chegou ao fim: fica aberto mostrando a lixeira */
+      const lado = dx < 0 ? -1 : 1; el.classList.add("revelado"); el.style.transform = `translateX(${lado * ABERTO}px)`;
+      lix.classList.remove("vai"); lix.classList.add("aberta"); lix.style.setProperty("--abre", ABERTO + "px");
+      const btn = lix.querySelector(".lixeira-btn"), alvo = el;
+      btn.onclick = ev => { ev.stopPropagation(); fecharDeslize(false); onDismiss(alvo); };
+      deslize.aberto = { el, lix }; lix = null;
+    } else { if (lix) lix.remove(); lix = null; el.style.transform = ""; }
   };
-  cont.addEventListener("pointerup", fim); cont.addEventListener("pointercancel", fim);
+  document.addEventListener("pointerup", fim, true); document.addEventListener("pointercancel", fim, true);
   cont.addEventListener("click", e => { if (Date.now() - (ativarDeslize.t || 0) < 350) { e.stopPropagation(); e.preventDefault(); } }, true);
 }
 function removerAlunoDeslizando(id) {
@@ -817,7 +840,7 @@ ativarDeslize($("#cardList"), ".scard", ".go", el => removerAlunoDeslizando(el.d
 ativarDeslize($("#gradesTable tbody"), "tr[data-id]", "input", el => removerAlunoDeslizando(el.dataset.id));
 ativarDeslize($("#rcoPasso2"), ".rco-row", "select,input,label,button", el => {
   const i = Number(el.dataset.i); rco.sel[i] = "x"; const sl = el.querySelector(".rco-sel"); if (sl) sl.value = "x"; rco.tocado[i] = true; el.classList.add("off"); rcoAtualizar();
-});
+}, "Ignorar");
 
 /* ---------- Relatórios ---------- */
 function renderReport() {
