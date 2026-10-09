@@ -1,5 +1,5 @@
 /* Ao publicar uma nova versão do app, aumente o número abaixo (já vem aumentado em cada pacote). */
-const CACHE = "diario-classe-v36";
+const CACHE = "diario-classe-v37";
 const ASSETS = ["./", "./index.html", "./styles.css", "./app.js", "./rco.js", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png", "./apple-touch-icon.png", "./favicon-64.png", "./logo-escola.png", "./logo-parana.png"];
 /* Instala TODOS os arquivos novos de uma vez (ignorando o cache HTTP do GitHub). Só então a nova versão assume. */
 self.addEventListener("install", e => {

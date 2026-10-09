@@ -1636,7 +1636,7 @@ function graficoTrimestres(t, a, an) {
     else {
       const dif = v - notas[j], pct = notas[j] > 0 ? Math.abs(dif) / notas[j] * 100 : null, de = `em relação ao ${j + 1}º trimestre`;
       if (Math.abs(dif) < 0.05) txt = `= igual ${de}`;
-      else { cls = dif > 0 ? "sobe" : "desce"; txt = `${dif > 0 ? "▲ melhorou" : "▼ piorou"} ${pct == null ? "" : fmtPct(pct) + " "}(${dif > 0 ? "+" : "−"}${fmt(Math.abs(dif))} pts) ${de}`; }
+      else { cls = dif > 0 ? "sobe" : "desce"; txt = `${dif > 0 ? "▲ avanço" : "▼ recuo"}${pct == null ? "" : " de " + fmtPct(pct)} (${dif > 0 ? "+" : "−"}${fmt(Math.abs(dif))} pts) ${de}`; }
     }
     return `<div class="cv"><span class="cv-k">${i + 1}º trimestre</span><b>${v == null ? "—" : fmt(v)}${v == null ? "" : " <small>pts</small>"}</b><span class="cv-v ${cls}">${txt}</span></div>`;
   }).join("");
