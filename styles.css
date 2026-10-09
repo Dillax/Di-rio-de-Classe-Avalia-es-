@@ -1261,3 +1261,12 @@ body:has(#installSheet:not(.hidden)) .toast{bottom:calc(235px + env(safe-area-in
 .rco-notas{font-size:13px;color:#9fd2ff}
 .rco-selo{padding:1px 6px;border-radius:6px;font-size:11px;border:1px solid rgba(245,179,1,.5);color:#ffe29a}
 .rco-nota-txt{font-size:12.5px}
+
+/* deslizar para excluir */
+.scard,#gradesTable tbody tr[data-id],.rco-row{touch-action:pan-y;transition:transform .18s ease,opacity .18s ease}
+.deslizando{transition:none!important;user-select:none;-webkit-user-select:none;cursor:grabbing}
+.vai{outline:2px solid #ff4d7d;outline-offset:-2px;background:rgba(255,77,125,.14)!important}
+.lixeira{position:fixed;z-index:70;pointer-events:none;display:flex;align-items:center;padding:0 18px;color:#ff8fae;border-radius:12px;background:rgba(255,77,125,.10);opacity:.9}
+.lixeira.esq{justify-content:flex-start}.lixeira.dir{justify-content:flex-end}
+.lixeira i{width:26px;height:26px;transition:transform .12s}
+.lixeira.vai{background:rgba(255,77,125,.28);color:#fff}.lixeira.vai i{transform:scale(1.35)}

@@ -31,6 +31,7 @@ const ICONS = {
   up: '<path d="M12 19V5M5 12l7-7 7 7"/>',
   down: '<path d="M12 5v14M5 12l7 7 7-7"/>',
   x: '<path d="M6 6l12 12M18 6L6 18"/>',
+  trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
   cap: '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3.5 2.4 8.5 2.4 12 0v-5M22 9v6"/>',
   install: '<rect x="4" y="3" width="16" height="18" rx="3"/><path d="M12 7v8M8.5 11.5L12 15l3.5-3.5M9 18h6"/>',
   share: '<path d="M12 3v12M8 7l4-4 4 4"/><path d="M5 11v8a2 2 0 002 2h10a2 2 0 002-2v-8"/>',
@@ -622,11 +623,13 @@ $("#studentImportBtn").onclick = () => {
 };
 $("#studentForm").onsubmit = e => {
   e.preventDefault(); const t = turma();
-  const nomes = $("#studentNames").value.split(/\r?\n/).map(s => s.replace(/^\s*\d+[\s.\-–)]*/, "").trim()).filter(Boolean);
-  if (!nomes.length) return toast("Cole ou digite pelo menos um nome.");
+  const SIT = /\s+(trans(f(erid[oa])?)?|desist(ente)?|remanej(ad[oa])?|evadid[oa]|cancelad[oa])\.?\s*$|\s+(trans|desist|remanej\w*)\b.*$/i;
+  const brutos = $("#studentNames").value.split(/\r?\n/).map(s => s.replace(/^\s*\d+[\s.\-–)]*/, "").trim()).filter(Boolean);
+  const nomes = brutos.filter(n => !SIT.test(n)), ignorados = brutos.length - nomes.length;
+  if (!nomes.length) return toast(ignorados ? "Todas as linhas eram de alunos transferidos/desistentes e foram ignoradas." : "Cole ou digite pelo menos um nome.");
   const ex = new Set(t.alunos.map(a => a.nome.toLowerCase())); let n = 0;
   nomes.forEach(nome => { if (ex.has(nome.toLowerCase())) return; t.alunos.push({ id: uid(), nome, notas: {} }); ex.add(nome.toLowerCase()); n++; });
-  save(); $("#studentDialog").close(); renderTurmas(); toast(n ? `${n} aluno(s) adicionado(s).` : "Nenhum nome novo para adicionar.");
+  save(); $("#studentDialog").close(); renderTurmas(); toast((n ? `${n} aluno(s) adicionado(s).` : "Nenhum nome novo para adicionar.") + (ignorados ? ` ${ignorados} transferido(s)/desistente(s) ignorado(s).` : ""));
 };
 
 /* ---------- Importar notas do RCO (PDF) ---------- */
@@ -698,7 +701,7 @@ function rcoMontar(dados) {
       <label class="chk"><input type="checkbox" id="rcoAddNovos" ${t.alunos.length ? "" : "checked"}> Criar os alunos do PDF que não estão na turma</label>
       <label class="chk"><input type="checkbox" id="rcoIncSit"> Incluir alunos transferidos/desistentes que não estão na turma</label>
       <label class="chk"><input type="checkbox" id="rcoSubst"> Substituir notas que o aluno já tenha no trimestre</label></div>
-    <div class="rco-box"><b>Conferência</b><small class="muted">Confira a ligação de cada aluno (nomes longos vêm cortados no RCO).</small><div id="rcoLista" class="rco-list"></div></div>
+    <div class="rco-box"><b>Conferência</b><small class="muted">Confira a ligação de cada aluno (nomes longos vêm cortados no RCO). <b>Deslize o aluno para o lado para ignorá-lo.</b></small><div id="rcoLista" class="rco-list"></div></div>
     <small class="muted">Faltas do RCO não são importadas. Depois de importar, aparece “Desfazer”.</small>`;
   rco.sel = dados.alunos.map((p, j) => rcoEscolhaPadrao(j, rco.lig)); rco.tocado = dados.alunos.map(() => false);
   rcoDesenharLista(); rcoAtualizar();
@@ -754,6 +757,49 @@ $("#rcoRemover").onclick = async () => {
   const t = turma(); if (!t || !await ask("Remover de todos os alunos desta turma as notas finais importadas do RCO? As notas lançadas nas avaliações não são afetadas.", "Remover")) return;
   t.alunos.forEach(a => { delete a.rco; }); save(); $("#rcoDialog").close(); renderAll(); toast("Notas do RCO removidas desta turma.");
 };
+
+/* ---------- Excluir arrastando para o lado (deslizar) ---------- */
+function ativarDeslize(cont, itemSel, ignoreSel, onDismiss) {
+  const LIM = 90; let lix = null, it = null, x0 = 0, y0 = 0, dx = 0, moveu = false, pid = null;
+  cont.addEventListener("pointerdown", e => {
+    if ((e.pointerType === "mouse" && e.button !== 0) || e.target.closest(ignoreSel)) return;
+    const el = e.target.closest(itemSel); if (!el) return;
+    it = el; x0 = e.clientX; y0 = e.clientY; dx = 0; moveu = false; pid = e.pointerId;
+  });
+  cont.addEventListener("pointermove", e => {
+    if (!it || e.pointerId !== pid) return;
+    const mx = e.clientX - x0, my = e.clientY - y0;
+    if (!moveu) {
+      if (Math.abs(my) > 10 && Math.abs(my) > Math.abs(mx)) { it = null; return; }
+      if (Math.abs(mx) < 10) return;
+      moveu = true; try { cont.setPointerCapture(pid); } catch (_) {} it.classList.add("deslizando");
+      const r = it.getBoundingClientRect(); lix = document.createElement("div"); lix.className = "lixeira"; lix.innerHTML = icon("trash");
+      lix.style.cssText = `left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px`; document.body.appendChild(lix);
+    }
+    dx = mx; it.style.transform = `translateX(${dx}px)`; it.style.opacity = String(1 - Math.min(.6, Math.abs(dx) / 300)); it.classList.toggle("vai", Math.abs(dx) >= LIM);
+    if (lix) { lix.classList.toggle("esq", dx > 0); lix.classList.toggle("dir", dx < 0); lix.classList.toggle("vai", Math.abs(dx) >= LIM); }
+  });
+  const fim = e => {
+    if (!it || e.pointerId !== pid) return; const el = it; it = null; if (!moveu) return;
+    const passou = e.type === "pointerup" && Math.abs(dx) >= LIM;
+    if (lix) { lix.remove(); lix = null; }
+    el.classList.remove("deslizando", "vai"); el.style.transform = ""; el.style.opacity = "";
+    ativarDeslize.t = Date.now(); if (passou) onDismiss(el);
+  };
+  cont.addEventListener("pointerup", fim); cont.addEventListener("pointercancel", fim);
+  cont.addEventListener("click", e => { if (Date.now() - (ativarDeslize.t || 0) < 350) { e.stopPropagation(); e.preventDefault(); } }, true);
+}
+function removerAlunoDeslizando(id) {
+  const t = turma(); if (!t) return; const i = t.alunos.findIndex(a => a.id === id); if (i < 0) return;
+  const [a] = t.alunos.splice(i, 1); if (ui.alunoId === id) { ui.alunoId = null; closeSheet(); }
+  save(); renderTurmas();
+  toast(`${a.nome} removido(a) da turma.`, "Desfazer", () => { t.alunos.splice(Math.min(i, t.alunos.length), 0, a); save(); renderTurmas(); }, 3000);
+}
+ativarDeslize($("#cardList"), ".scard", ".go", el => removerAlunoDeslizando(el.dataset.id));
+ativarDeslize($("#gradesTable tbody"), "tr[data-id]", "input", el => removerAlunoDeslizando(el.dataset.id));
+ativarDeslize($("#rcoPasso2"), ".rco-row", "select,input,label,button", el => {
+  const i = Number(el.dataset.i); rco.sel[i] = "x"; const sl = el.querySelector(".rco-sel"); if (sl) sl.value = "x"; rco.tocado[i] = true; el.classList.add("off"); rcoAtualizar();
+});
 
 /* ---------- Relatórios ---------- */
 function renderReport() {
