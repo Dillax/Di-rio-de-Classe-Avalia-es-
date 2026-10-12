@@ -86,7 +86,7 @@ async function sha256(s) { const b = await crypto.subtle.digest("SHA-256", new T
 
 /* ---------- Estado ---------- */
 let S = null, LOGO = null;
-const DEFAULT_LOGO = "logo-escola.png";
+const DEFAULT_LOGO = "logo-quantica.png";
 let ui = { turmaId: null, disc: null, term: 1, alunoId: null, section: "turmas", reportId: null };
 const emptyState = () => ({ version: 4, demo: false, perfil: null, config: { meta: 180 }, pinHash: null, lastBackup: null, turmas: [] });
 let saveTimer = null;
@@ -786,6 +786,12 @@ function fecharDeslize(anim = true) {
 document.addEventListener("pointerdown", e => { if (deslize.aberto && !e.target.closest(".lixeira-btn")) fecharDeslize(); }, true);
 addEventListener("scroll", () => fecharDeslize(false), true);
 addEventListener("resize", () => fecharDeslize(false));
+/* Prisma: arte do Portal IFA + clarões cintilantes nos seis pontos ópticos (coordenadas em % da arte) */
+const PRISM_TWINKLES = [[33.2, 50.4, 13.0, 0], [22.8, 83.3, 9.5, -1.7], [45.2, 85.0, 9.5, -3.9], [67.1, 86.2, 10.0, -0.8], [56.4, 47.9, 12.0, -2.6], [45.2, 9.7, 10.5, -4.8]];
+document.querySelectorAll(".prisma-logo").forEach((el, n) => {
+  const pts = PRISM_TWINKLES.map((p, i) => `<circle class="lfh lfh-${(i % 5) + 1}" cx="${p[0]}" cy="${p[1]}" r="${(p[2] / 2 * 0.9).toFixed(2)}" style="animation-duration:${(2.6 + ((i * 7) % 11) * 0.41).toFixed(2)}s;animation-delay:${p[3]}s"/>`).join("");
+  el.insertAdjacentHTML("beforeend", `<svg class="prisma-glow" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><defs><radialGradient id="rg-prisma-${n}"><stop offset="0" stop-color="#fff" stop-opacity="1"/><stop offset="22%" stop-color="#e2f8ff" stop-opacity=".52"/><stop offset="46%" stop-color="#96d6ff" stop-opacity=".18"/><stop offset="66%" stop-color="#50aaff" stop-opacity=".05"/><stop offset="100%" stop-color="#3c96ff" stop-opacity="0"/></radialGradient></defs><g fill="url(#rg-prisma-${n})">${pts}</g></svg>`);
+});
 (function () {
   const pos = sel => document.querySelectorAll(sel).forEach(el => el.insertAdjacentHTML("afterbegin", '<span class="brilho" aria-hidden="true"></span>'));
   pos(".topbar"); pos(".bottom-nav"); pos("dialog.panel");

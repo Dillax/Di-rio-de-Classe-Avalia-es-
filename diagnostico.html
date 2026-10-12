@@ -79,7 +79,7 @@ addEventListener("beforeinstallprompt", e => { e.preventDefault(); avisoInstalar
     linha(st === 200 ? "ok" : "erro", "Página inicial do app (start_url)", st === 200 ? "" : "erro " + st);
   }
   /* logos usados dentro do app */
-  for (const f of ["logo-escola.png", "logo-parana.png"]) {
+  for (const f of ["logo-quantica.png", "prisma.png"]) {
     const r = await carregaImagem(f); linha(r.ok ? "ok" : "erro", "Imagem " + f, r.ok ? "" : "não abre (ausente ou corrompida).");
   }
 

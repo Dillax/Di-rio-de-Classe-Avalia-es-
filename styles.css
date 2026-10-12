@@ -1308,3 +1308,25 @@ dialog>.brilho::before{animation-duration:3s}
   .grade:focus{color:#fff!important;filter:none}
   .panel,.home-card,.filter{border-color:rgba(99,220,255,.28)!important}
 }
+
+/* ---------- Logos: Quântica (transparente) e prisma do Portal IFA com cintilação ---------- */
+.school-badge,.school-badge.sm,.school-badge.lg{background:transparent!important;padding:0!important;border-radius:0!important;box-shadow:none!important}
+.school-badge img{filter:drop-shadow(0 0 6px rgba(94,200,255,.45)) drop-shadow(0 0 14px rgba(120,110,255,.25))}
+.topbar .school-badge img{height:58px}
+.prisma-logo{position:relative;display:inline-block;flex:none;height:54px;aspect-ratio:943/528;line-height:0}
+.prisma-logo img{display:block;width:100%;height:100%;object-fit:contain;
+  filter:saturate(1.14) contrast(1.035) brightness(1.04) drop-shadow(0 0 .1rem rgb(202 251 255 / 40%)) drop-shadow(0 0 .45rem rgb(61 205 255 / 28%))}
+.prisma-logo .prisma-glow{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;mix-blend-mode:screen}
+.prisma-logo.sm{height:38px}
+.topbar .prisma-logo{height:60px}
+.lfh-1{animation:lfh-a 2.9s ease-in-out infinite}.lfh-2{animation:lfh-b 3.7s ease-in-out infinite}.lfh-3{animation:lfh-c 4.3s ease-in-out infinite}
+.lfh-4{animation:lfh-d 5.3s ease-in-out infinite}.lfh-5{animation:lfh-e 6.1s ease-in-out infinite}
+.prisma-glow circle{animation-timing-function:ease-in-out;animation-iteration-count:infinite}
+@keyframes lfh-a{0%,8%,100%{opacity:.04;filter:brightness(.72)}18%{opacity:1;filter:brightness(2.35) drop-shadow(0 0 .18rem #fff)}31%,72%{opacity:.08;filter:brightness(.82)}84%{opacity:.72;filter:brightness(1.75) drop-shadow(0 0 .1rem #dff8ff)}}
+@keyframes lfh-b{0%,21%{opacity:.09;filter:brightness(.78)}36%{opacity:.78;filter:brightness(1.82) drop-shadow(0 0 .11rem #e8fbff)}49%,78%{opacity:.05;filter:brightness(.74)}91%{opacity:1;filter:brightness(2.4) drop-shadow(0 0 .19rem #fff)}100%{opacity:.09;filter:brightness(.78)}}
+@keyframes lfh-c{0%,13%{opacity:.06;filter:brightness(.75)}27%{opacity:1;filter:brightness(2.3) drop-shadow(0 0 .18rem #fff)}41%,82%{opacity:.04;filter:brightness(.7)}63%{opacity:.64;filter:brightness(1.62) drop-shadow(0 0 .09rem #daf6ff)}100%{opacity:.06;filter:brightness(.75)}}
+@keyframes lfh-d{0%,29%{opacity:.05;filter:brightness(.72)}43%{opacity:.92;filter:brightness(2.12) drop-shadow(0 0 .15rem #fff)}56%,87%{opacity:.06;filter:brightness(.76)}96%{opacity:.7;filter:brightness(1.7) drop-shadow(0 0 .1rem #e5faff)}100%{opacity:.05;filter:brightness(.72)}}
+@keyframes lfh-e{0%,17%{opacity:.07;filter:brightness(.76)}32%{opacity:.66;filter:brightness(1.66) drop-shadow(0 0 .1rem #e0f8ff)}46%,68%{opacity:.04;filter:brightness(.7)}79%{opacity:1;filter:brightness(2.38) drop-shadow(0 0 .19rem #fff)}100%{opacity:.07;filter:brightness(.76)}}
+@media(max-width:760px){.topbar .prisma-logo{height:40px}.topbar .school-badge img{height:42px}}
+@media(prefers-reduced-motion:reduce){.prisma-glow circle{animation:none!important;opacity:.4}}
+.login-card .prisma-logo{height:84px}.login-card .school-badge img{height:84px}

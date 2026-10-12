@@ -9,7 +9,7 @@ somente no IndexedDB do aparelho dele. Não há servidor, conta ou banco central
 3. Link final: `https://SEU-USUARIO.github.io/diario-classe/`
 
 ## Logo padrão
-Coloque a logo em `logo-escola.png` antes de publicar.
+Logos: `logo-quantica.png` (padrão, trocável em Ajustes) e `prisma.png` (prisma com cintilação).
 Sem esse arquivo, o app mostra o nome da escola cadastrado no perfil.
 
 ## Instalar (cada professor, uma vez)
@@ -43,10 +43,11 @@ Chrome/Safari, não dentro do WhatsApp ou Instagram.
 - Tutorial dentro do app (botão ? no cabeçalho, menu lateral e rodapé).
 - Aba Contato: formulário que envia a mensagem ao desenvolvedor (Formspree, mesma caixa do site Quanta).
 - Rodapé com autoria, direitos autorais e versão do aplicativo (lidos de `app-versao` e `app-data` no index.html).
+- Importar notas do RCO: lê o PDF “Resultado Final do Registro de Classe” (no aparelho, sem enviar), converte a média em pontos e grava como nota final do trimestre (selo RCO) ou distribui nas avaliações; conferência por aluno, desfazer e remoção. Código em `rco.js`.
 - Relatório para impressão, CSV (Excel), backup JSON, funciona offline.
 
 ## Atualizar o app
-Altere os arquivos e aumente `CACHE` em `sw.js` (v2 → v3). Os dados dos
+Altere os arquivos e aumente `CACHE` em `sw.js` (v2 → v3). Mantenha `rco.js` na lista `ASSETS`. Os dados dos
 professores não são afetados por atualizações.
 
 ## Limites conhecidos
