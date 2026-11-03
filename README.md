@@ -43,7 +43,7 @@ Chrome/Safari, não dentro do WhatsApp ou Instagram.
 - Tutorial dentro do app (botão ? no cabeçalho, menu lateral e rodapé).
 - Aba Contato: formulário que envia a mensagem ao desenvolvedor (Formspree, mesma caixa do site Quanta).
 - Rodapé com autoria, direitos autorais e versão do aplicativo (lidos de `app-versao` e `app-data` no index.html).
-- Importar notas do RCO: lê o PDF “Resultado Final do Registro de Classe” (no aparelho, sem enviar), converte a média em pontos e grava como nota final do trimestre (selo RCO) ou distribui nas avaliações; conferência por aluno, desfazer e remoção. Código em `rco.js`.
+- Importar notas do RCO: lê o PDF “Resultado Final” ou “Resumo do Registro de Classe” (1º, 2º e 3º trimestres) (no aparelho, sem enviar), converte a média em pontos e grava como nota final do trimestre (selo RCO) ou distribui nas avaliações; conferência por aluno, desfazer e remoção. Código em `rco.js`.
 - Relatório para impressão, CSV (Excel), backup JSON, funciona offline.
 
 ## Atualizar o app

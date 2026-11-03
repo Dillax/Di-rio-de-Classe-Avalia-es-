@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
   <meta name="theme-color" content="#040a26">
-  <meta name="app-versao" content="43">
-  <meta name="app-data" content="2026-10-11">
+  <meta name="app-versao" content="44">
+  <meta name="app-data" content="2026-11-03">
   <meta name="description" content="Diário de Classe — notas e desempenho. Os dados ficam somente no aparelho do professor.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -274,7 +274,7 @@
             <details><summary><i data-i="users"></i>2. Turmas e alunos</summary>
               <ol>
                 <li>Toque em <b>Nova turma</b>. Cada disciplina é uma turma: “2º A — Física” e “2º A — Robótica” são turmas diferentes.</li>
-                <li><b>Atalho pelo RCO:</b> em <b>Nova turma</b>, escolha o PDF “Resultado Final do Registro de Classe”. O app preenche nome, disciplina, alunos e as notas dos trimestres (veja o tema 8).</li>
+                <li><b>Atalho pelo RCO:</b> em <b>Nova turma</b>, escolha o PDF “Resultado Final” ou “Resumo do Registro de Classe”. O app preenche nome, disciplina, alunos e as notas dos trimestres (veja o tema 8).</li>
                 <li>Se você já tem outra turma com os mesmos alunos e o mesmo método de avaliar, escolha <b>Aproveitar outra turma</b> e marque importar alunos e/ou avaliações (as notas não vêm).</li>
                 <li><b>Adicionar Aluno</b>: cole a lista do RCO, um nome por linha. Números de chamada são removidos e nomes repetidos são ignorados. Também dá para importar os alunos de outra turma.</li>
                 <li><b>Editar Aluno</b> troca o nome ou remove o aluno.</li>
@@ -325,7 +325,7 @@
             </details>
             <details><summary><i data-i="upload"></i>8. Importar notas do RCO (PDF)</summary>
               <ol>
-                <li>No RCO, baixe o PDF <b>“Resultado Final do Registro de Classe”</b> da turma. No app, abra a turma e toque em <b>Importar do RCO (PDF)</b>.</li>
+                <li>No RCO, baixe o PDF <b>“Resultado Final”</b> ou o <b>“Resumo do Registro de Classe”</b> da turma (o Resumo já traz os três trimestres). No app, abra a turma e toque em <b>Importar do RCO (PDF)</b>.</li>
                 <li>Escolha o arquivo. Ele é lido <b>no seu aparelho</b>; nada é enviado a servidor algum.</li>
                 <li>Marque os trimestres e diga <b>quantos pontos</b> vale cada um. A média do RCO vira pontos: média ÷ 10 × pontos (7,0 num trimestre de 100 = 70).</li>
                 <li><b>Nota final do trimestre</b> (recomendado) guarda a nota real do RCO e aparece com o selo <b>RCO</b>. <b>Distribuir nas avaliações</b> reparte o total entre as avaliações cadastradas; é só uma estimativa, porque o RCO não traz a nota de cada avaliação.</li>
@@ -415,7 +415,7 @@
       </div>
       <div id="classRcoWrap" class="import-box">
         <b>Ou crie tudo pelo PDF do RCO</b>
-        <small class="muted">Use o “Resultado Final do Registro de Classe”: o app preenche a turma, a disciplina, os alunos e as notas de cada trimestre.</small>
+        <small class="muted">Use o “Resultado Final” ou o “Resumo do Registro de Classe”: o app preenche a turma, a disciplina, os alunos e as notas de cada trimestre.</small>
         <label class="btn rco-pick"><input type="file" id="rcoNovaFile" accept="application/pdf,.pdf" hidden><i data-i="upload"></i><span id="rcoNovaTxt">Escolher PDF do RCO</span></label>
       </div>
       <small class="muted">As avaliações são cadastradas por trimestre, no botão “Avaliações”.</small>
@@ -478,7 +478,7 @@
   <dialog id="rcoDialog" class="panel">
     <div class="stack rco">
       <h2>Importar do RCO (PDF)</h2>
-      <p class="muted">Escolha o PDF <b>“Resultado Final do Registro de Classe”</b> baixado do RCO. O arquivo é lido aqui no aparelho; nada é enviado a nenhum servidor.</p>
+      <p class="muted">Escolha o PDF <b>“Resultado Final”</b> ou <b>“Resumo do Registro de Classe”</b> baixado do RCO. O arquivo é lido aqui no aparelho; nada é enviado a nenhum servidor.</p>
       <label class="btn rco-pick"><input type="file" id="rcoFile" accept="application/pdf,.pdf" hidden><i data-i="upload"></i><span id="rcoPickTxt">Escolher PDF</span></label>
       <div id="rcoErro" class="rco-erro hidden" role="alert"></div>
       <div id="rcoPasso2" class="hidden"></div>

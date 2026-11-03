@@ -217,7 +217,7 @@
     const alunos = [], avisos = []; let cab = null;
     paginas.forEach(trechos => {
       /* cabeçalho de colunas: as palavras "Média" e "Faltas" lado a lado */
-      const medias = trechos.filter(t => norm(t.texto) === "MEDIA"), faltas = trechos.filter(t => norm(t.texto) === "FALTAS");
+      const medias = trechos.filter(t => norm(t.texto) === "MEDIA" || norm(t.texto) === "NOTA")   /* "Resultado Final" usa Média; "Resumo" usa Nota */, faltas = trechos.filter(t => norm(t.texto) === "FALTAS");
       const nHdr = trechos.find(t => /^N[º°o]$/i.test(t.texto.trim())), mov = trechos.find(t => norm(t.texto) === "MOV");
       if (medias.length >= 2 && faltas.length >= 2) {
         const yHdr = medias[0].y, ms = medias.filter(t => Math.abs(t.y - yHdr) < 2).sort((a, b) => a.x - b.x), fs = faltas.filter(t => Math.abs(t.y - yHdr) < 2).sort((a, b) => a.x - b.x);
@@ -229,15 +229,15 @@
         if ((m = /^ANO LETIVO:\s*(.+)$/i.exec(x))) info.ano = m[1];
         else if ((m = /^SERIA[ÇC][ÃA]O:\s*(.+)$/i.exec(x))) info.serie = m[1];
         else if ((m = /^TURMA:\s*(.+)$/i.exec(x))) info.turma = m[1];
-        else if (/^ESTADO DO PARAN/i.test(x) || /^SECRETARIA/i.test(x) || /^RESULTADO FINAL/i.test(x)) { /* título */ }
+        else if (/^ESTADO DO PARAN/i.test(x) || /^SECRETARIA/i.test(x) || /^RESULTADO FINAL/i.test(x) || /^RESUMO DO REGISTRO/i.test(x)) { /* título */ }
       });
       if (!cab) return;
       const topo = trechos.filter(t => t.y > cab.yHdr + 4 && t.x < (cab.mov || 170));
       topo.forEach(t => {
         const x = t.texto.trim();
-        if (/^(ANO LETIVO|SERIA|TURMA|ESTADO|SECRETARIA|RESULTADO|null$)/i.test(norm(x).replace(/^(.)/, "$1")) || /^(ANO LETIVO|SERIA[ÇC]|TURMA)/i.test(x) || /^null$/i.test(x)) return;
+        if (/^(ANO LETIVO|SERIA|TURMA|ESTADO|SECRETARIA|RESULTADO|RESUMO|null$)/i.test(norm(x).replace(/^(.)/, "$1")) || /^(ANO LETIVO|SERIA[ÇC]|TURMA)/i.test(x) || /^null$/i.test(x)) return;
         if (/\bC E\b|\bCOLEGIO\b|\bESCOLA\b|\bC\.E\b/i.test(norm(x)) && !info.escola) { info.escola = x; return; }
-        if (/^ENSINO/i.test(x)) { info.curso = x; return; }
+        if (/^ENS(INO)?\b/i.test(x)) { info.curso = x; return; }
         if (/^(INTEGRAL|MATUTINO|VESPERTINO|NOTURNO|MANH|TARDE|NOITE)/i.test(norm(x))) { info.turno = x; return; }
         if (!info.disciplina && /^[A-ZÀ-Ý][A-ZÀ-Ý0-9 .\-\/]{2,}$/.test(x)) info.disciplina = x;
       });
@@ -264,7 +264,7 @@
         alunos.push({ n: parseInt(nTrecho.texto, 10), nome, situacao: situ, tri });
       });
     });
-    if (!alunos.length) avisos.push("Não encontrei a tabela de alunos. Confira se o PDF é o “Resultado Final do Registro de Classe”.");
+    if (!alunos.length) avisos.push("Não encontrei a tabela de alunos. Confira se o PDF é o “Resultado Final” ou o “Resumo do Registro de Classe”.");
     const todas = alunos.flatMap(a => [1, 2, 3].map(k => a.tri[k] && a.tri[k].media).filter(v => v != null));
     const escala = todas.length && Math.max(...todas) > 10 ? 100 : 10;
     return { info, alunos, avisos, escala, trimestres: [1, 2, 3].filter(k => alunos.some(a => a.tri[k] && a.tri[k].media != null)) };
